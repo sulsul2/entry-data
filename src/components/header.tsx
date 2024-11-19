@@ -1,10 +1,11 @@
 // components/Header.tsx
 import React from "react";
-import { FiSettings, FiBell } from "react-icons/fi"; // Using react-icons for icons
+import { IoIosSettings } from "react-icons/io";
+import { IoNotifications } from "react-icons/io5";
 
 const Header: React.FC = () => {
   return (
-    <header className="flex justify-between items-center bg-white shadow-md p-4">
+    <header className="flex justify-between items-center bg-white shadow-md px-14 py-8">
       {/* Left Side: Welcome Text */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-800">
@@ -16,15 +17,15 @@ const Header: React.FC = () => {
       </div>
 
       {/* Right Side: Icons */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-5">
         {/* Settings Icon */}
         <button className="text-gray-600 hover:text-gray-800">
-          <FiSettings size={20} />
+          <IoIosSettings size={20} />
         </button>
 
         {/* Notification Icon */}
         <button className="text-gray-600 hover:text-gray-800">
-          <FiBell size={20} />
+          <IoNotifications size={20} />
         </button>
       </div>
     </header>
