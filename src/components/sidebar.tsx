@@ -1,16 +1,29 @@
-// components/Sidebar.js
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import { MdFolderShared } from "react-icons/md";
+import { usePathname } from "next/navigation";
+import { IoPersonCircleSharp } from "react-icons/io5";
+import { LuLogOut } from "react-icons/lu";
 
 const Sidebar = () => {
-  const [isUserDataOpen, setUserDataOpen] = useState(true);
+  const pathname = usePathname();
+  const [isUserDataOpen, setUserDataOpen] = useState(false); // Default dropdown tertutup
+
+  // Helper: Aktifkan status halaman
+  const isActive = (path: string) => pathname === path;
+
+  // Helper: Tentukan apakah border dropdown harus muncul
+  const isDropdownActive =
+    pathname.startsWith("/persetujuan-data") ||
+    pathname.startsWith("/ekspor-data") ||
+    pathname.startsWith("/lihat-data");
 
   return (
-    <div className="w-64 h-screen bg-white border-r border-[#E6E7EC] flex flex-col">
+    <div className="w-72 h-screen bg-white border-r border-[#E6E7EC] flex flex-col rounded-3xl">
       {/* Header */}
-      <div className="p-4 border-b border-[#EDEEF3] items-center">
+      <div className="p-4 border-b border-[#EDEEF3]">
         <div className="p-4 border border-[#E6E7EC] flex flex-row rounded-2xl gap-4">
           <img src="/sidebar/icon.png" className="mb-2 text-4xl w-10" />
           <div>
@@ -21,61 +34,130 @@ const Sidebar = () => {
       </div>
 
       {/* Menu */}
-      <div className="p-4 flex-1 overflow-y-auto">
+      <div className="px-4 py-6 flex-1 overflow-y-auto">
         {/* Data Pengguna Section */}
         <div>
+          {/* Dropdown Button */}
           <button
-            className="flex items-center justify-between w-full text-indigo-600 font-medium mb-2"
-            onClick={() => setUserDataOpen(!isUserDataOpen)}
+            className={`flex items-center p-2 rounded-lg w-full ${
+              isDropdownActive || isUserDataOpen
+                ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
+                : "text-gray-700 hover:text-[#605BFF]"
+            }`}
+            onClick={() => setUserDataOpen((prev) => !prev)} // Toggle dropdown
           >
-            <div className="flex items-center">
-              <div className="text-indigo-600 w-6 h-6 rounded-full flex items-center justify-center">
-                <span>
-                  <MdFolderShared />
-                </span>
+            <div className="flex items-center hover:text-[#605BFF] w-full">
+              <MdFolderShared className="w-6 h-6" />
+              <span className="ml-3 mr-3">Data Pengguna</span>
+              <div className="justify-end items-end ml-12">
+                {isUserDataOpen ? (
+                  <FaChevronDown className="text-[#605BFF]" />
+                ) : (
+                  <FaChevronRight className="text-gray-700" />
+                )}
               </div>
-              <span className="ml-3">Data Pengguna</span>
             </div>
-            {isUserDataOpen ? <FaChevronDown /> : <FaChevronRight />}
           </button>
-          {isUserDataOpen && (
-            <div className="ml-6 space-y-2 flex-row">
-              <button className="text-gray-700 hover:text-indigo-600">
-                Persetujuan Data
-              </button>
-              <button className="text-gray-700 hover:text-indigo-600">
-                Ekspor Data
-              </button>
-              <button className="text-gray-700 hover:text-indigo-600">
-                Lihat Data
-              </button>
+
+          {/* Dropdown Links */}
+          {(isDropdownActive || isUserDataOpen) && (
+            <div className="relative ml-6 my-6 space-y-4">
+              {/* Garis Vertikal */}
+              {/* <div className="absolute top-0 left-2.5 h-full border-l border-[#605BFF]"></div> */}
+
+              {/* Persetujuan Data */}
+              <Link
+                href="/persetujuan-data"
+                className={`flex items-center space-x-2 ${
+                  isActive("/persetujuan-data")
+                    ? "text-[#605BFF] font-semibold"
+                    : "text-gray-700 hover:text-[#605BFF]"
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full ${
+                    isActive("/persetujuan-data")
+                      ? "bg-[#605BFF]"
+                      : "border bg-[#D8DBE4]"
+                  }`}
+                ></div>
+                <span>Persetujuan Data</span>
+              </Link>
+
+              {/* Ekspor Data */}
+              <Link
+                href="/ekspor-data"
+                className={`flex items-center space-x-2 ${
+                  isActive("/ekspor-data")
+                    ? "text-[#605BFF] font-semibold"
+                    : "text-gray-700 hover:text-[#605BFF]"
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full ${
+                    isActive("/ekspor-data")
+                      ? "bg-[#605BFF]"
+                      : "border bg-[#D8DBE4]"
+                  }`}
+                ></div>
+                <span>Ekspor Data</span>
+              </Link>
+
+              {/* Lihat Data */}
+              <Link
+                href="/lihat-data"
+                className={`flex items-center space-x-2 ${
+                  isActive("/lihat-data")
+                    ? "text-[#605BFF] font-semibold"
+                    : "text-gray-700 hover:text-[#605BFF]"
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full ${
+                    isActive("/lihat-data")
+                      ? "bg-[#605BFF]"
+                      : "border bg-[#D8DBE4]"
+                  }`}
+                ></div>
+                <span>Lihat Data</span>
+              </Link>
             </div>
           )}
         </div>
 
-        {/* Other Section */}
+        {/* Manajemen Akun Section */}
         <div className="mt-4">
-          <button className="flex items-center text-gray-700 hover:text-indigo-600 font-medium">
-            <div className="text-gray-600 w-6 h-6 rounded-full flex items-center justify-center">
-              <span> </span>
-            </div>
+          <Link
+            href="/manajemen-akun"
+            className={`flex items-center p-2 rounded-lg ${
+              isActive("/manajemen-akun")
+                ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
+                : "text-gray-700 hover:text-[#605BFF]"
+            }`}
+          >
+            <IoPersonCircleSharp className="w-6 h-6" />
             <span className="ml-3">Manajemen Akun</span>
-          </button>
+          </Link>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="px-8 py-6 border-t border-gray-200">
         <div className="flex items-center">
           <img
             src="https://via.placeholder.com/40"
             alt="User"
             className="w-10 h-10 rounded-full object-cover"
           />
-          <div className="ml-3">
-            <p className="text-gray-900 font-medium">Admin Bimo</p>
-            <p className="text-gray-500 text-sm">adminbim@gmail.m</p>
+          <div className="ml-2">
+            <p className="text-[#181D27] text-sm font-semibold">Admin Bimo</p>
+            <p className="text-[#535862] text-sm font-normal">
+              adminbim@gmail.m
+            </p>
           </div>
+          <button>
+            <LuLogOut className="text-lg text-gray-600 ml-8" />
+          </button>
         </div>
       </div>
     </div>
