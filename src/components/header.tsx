@@ -5,7 +5,7 @@ import { IoNotifications } from "react-icons/io5";
 
 const Header: React.FC = () => {
   return (
-    <header className="flex justify-between items-center bg-white shadow-md px-14 py-8">
+    <header className="flex justify-between items-center bg-white border-b-2 border-[#EDEEF3] w-[98%] mx-auto px-10 py-9">
       {/* Left Side: Welcome Text */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-800">
