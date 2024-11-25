@@ -2,16 +2,16 @@
 import Table from "@/components/table";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaCheck } from "react-icons/fa6";
-import { RxCross1 } from "react-icons/rx";
 
 interface DataUser {
   IdUser: number;
   NamaPengguna: string;
-  NoIdentitas: string;
+  JenisKelamin?: string;
+  Email?: string;
+  NoIdentitas?: string;
   Alamat: string;
-  NoTelpon: string;
-  Status: string;
+  NoTelpon?: string;
+  Status: JSX.Element;
   Action: JSX.Element;
 }
 
@@ -20,17 +20,16 @@ export default function persetujuan() {
 
   const header1 = [
     "Id User",
-    "Nama Pengguna",
-    "No. Identitas",
+    "Username",
+    "Jenis Kelamin",
+    "Email",
     "Alamat",
-    "No. Telpon",
     "Status",
     "Action",
   ];
 
-  const getApprovalData = async () => {
+  const getData = async () => {
     try {
-      // Data lokal yang Anda miliki
       const localData = [
         {
           idUser: 1,
@@ -38,7 +37,9 @@ export default function persetujuan() {
           noIdentitas: "176984332667845",
           alamat: "Jl. Ganesha 10, Coblong",
           noTelpon: "081356565930",
-          status: "Menunggu Persetujuan",
+          status: "Disetujui",
+          jenisKelamin: "Laki-laki",
+          email: "andi.lane@gmail.com",
         },
         {
           idUser: 2,
@@ -46,7 +47,9 @@ export default function persetujuan() {
           noIdentitas: "176984332667845",
           alamat: "Jl. Ganesha 10, Coblong",
           noTelpon: "081356565930",
-          status: "Menunggu Persetujuan",
+          status: "Disetujui",
+          jenisKelamin: "Perempuan",
+          email: "olivia.rhye@gmail.com",
         },
         {
           idUser: 3,
@@ -54,28 +57,38 @@ export default function persetujuan() {
           noIdentitas: "176984332667845",
           alamat: "Jl. Ganesha 10, Coblong",
           noTelpon: "081356565930",
-          status: "Disetujui",
-        },
-        {
-          idUser: 4,
-          namaPengguna: "Olivia Rhye",
-          noIdentitas: "176984332667845",
-          alamat: "Jl. Ganesha 10, Coblong",
-          noTelpon: "081356565930",
-          status: "Ditolak",
+          status: "Menunggu Persetujuan", // Data ini tidak akan ditampilkan
+          jenisKelamin: "Perempuan",
+          email: "olivia.rhye@gmail.com",
         },
       ];
 
+      // Filter hanya data dengan status "Disetujui"
+      const approvedData = localData.filter(
+        (user) => user.status === "Disetujui"
+      );
+
       // Transformasi data
-      const transformedData = localData.map((user) => {
+      const transformedData = approvedData.map((user) => {
         return {
           IdUser: user.idUser,
           NamaPengguna: user.namaPengguna,
-          NoIdentitas: user.noIdentitas,
+          JenisKelamin: user.jenisKelamin,
+          Email: user.email,
           Alamat: user.alamat,
-          NoTelpon: user.noTelpon,
-          Status: user.status,
-          Action: getActionButtons(user.status, user.idUser),
+          Status: (
+            <div className="w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]">
+              {user.status}
+            </div>
+          ),
+          Action: (
+            <Link
+              href={`/user-list/${user.idUser}`}
+              className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
+            >
+              lihat detail
+            </Link>
+          ),
         };
       });
 
@@ -85,66 +98,19 @@ export default function persetujuan() {
       return [];
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
-      const approvalData = await getApprovalData();
-      setData(approvalData);
+      const UserData = await getData();
+      setData(UserData);
     };
 
     fetchData();
   }, []);
 
-  // Fungsi untuk menentukan tombol berdasarkan status
-  const getActionButtons = (status: string, idUser: number) => {
-    if (status === "Menunggu Persetujuan") {
-      return (
-        <div className="flex justify-center items-center gap-2">
-          <button
-            className="text-[#F04438] text-sm border-2 border-[#F04438] p-2 rounded-lg"
-            onClick={() => handleReject(idUser)}
-          >
-            <RxCross1 />
-          </button>
-          <button
-            className="text-[#12B76A] text-sm border-2 border-[#12B76A] p-2 rounded-lg"
-            onClick={() => handleApprove(idUser)}
-          >
-            <FaCheck />
-          </button>
-        </div>
-      );
-    } else {
-      return <p></p>;
-    }
-  };
-
-  // Fungsi untuk menangani aksi "Setujui"
-  const handleApprove = (idUser: number) => {
-    console.log(`User dengan ID ${idUser} disetujui.`);
-    // Tambahkan logika untuk memperbarui status di backend atau state lokal
-  };
-
-  // Fungsi untuk menangani aksi "Tolak"
-  const handleReject = (idUser: number) => {
-    console.log(`User dengan ID ${idUser} ditolak.`);
-    // Tambahkan logika untuk memperbarui status di backend atau state lokal
-  };
-
   return (
     <>
       <div className="px-6 py-2">
-        <div className="flex items-center gap-2 text-xs font-inter font-medium mb-2">
-          <Link href={`/user-list/`} className="text-[#605BFF] cursor-pointer">
-            Data Pengguna
-          </Link>
-          <p className="text-[#2A3D4A]"> / </p>
-          <p className="text-[#2A3D4A]">Persetujuan Data</p>
-        </div>
-
-        <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-20">
-          Persetujuan Data
-        </h1>
-
         <Table data={data} header={header1} isLoading={false} />
       </div>
     </>
