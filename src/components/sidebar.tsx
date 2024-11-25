@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { FaChevronDown, FaChevronRight } from "react-icons/fa";
+import { FaChevronDown, FaChevronRight, FaChevronUp } from "react-icons/fa";
 import { MdFolderShared } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { IoPersonCircleSharp } from "react-icons/io5";
@@ -51,9 +51,9 @@ const Sidebar = () => {
               <span className="ml-3 mr-3">Data Pengguna</span>
               <div className="justify-end items-end ml-12">
                 {isUserDataOpen ? (
-                  <FaChevronDown className="text-[#605BFF]" />
+                  <FaChevronUp className="text-gray-700" />
                 ) : (
-                  <FaChevronRight className="text-gray-700" />
+                  <FaChevronDown className="text-gray-700" />
                 )}
               </div>
             </div>
@@ -102,25 +102,6 @@ const Sidebar = () => {
                 ></div>
                 <span>Ekspor Data</span>
               </Link>
-
-              {/* Lihat Data */}
-              <Link
-                href="/lihat-data"
-                className={`flex items-center space-x-2 ${
-                  isActive("/lihat-data")
-                    ? "text-[#605BFF] font-semibold"
-                    : "text-gray-700 hover:text-[#605BFF]"
-                }`}
-              >
-                <div
-                  className={`w-4 h-4 rounded-full ${
-                    isActive("/lihat-data")
-                      ? "bg-[#605BFF]"
-                      : "border bg-[#D8DBE4]"
-                  }`}
-                ></div>
-                <span>Lihat Data</span>
-              </Link>
             </div>
           )}
         </div>
@@ -136,7 +117,7 @@ const Sidebar = () => {
             }`}
           >
             <IoPersonCircleSharp className="w-6 h-6" />
-            <span className="ml-3">Manajemen Akun</span>
+            <span className="ml-3">Manajemen User</span>
           </Link>
         </div>
       </div>
