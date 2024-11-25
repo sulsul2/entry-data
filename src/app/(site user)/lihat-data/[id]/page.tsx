@@ -1,19 +1,20 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { use } from "react"; // Import `use` from React
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState } from "react";
 
-export default function UserDetailPage({ params }: { params: { id: number } }) {
-  const id = params.id;
+export default function UserDetailPage({
+  params,
+}: {
+  params: Promise<{ id: number }>;
+}) {
+  const { id } = use(params); // Use `use()` to unwrap the promise
   const router = useRouter();
-  const [dataCar, setDataCar] = useState([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dataUser, setDataUser] = useState([]);
 
   return (
-    <>
-      <div className="px-6 py-2">
-        <h1>MEMEK</h1>
-      </div>
-    </>
+    <div className="px-6 py-2">
+      <h1>Detail User ID: {id}</h1>
+    </div>
   );
 }

@@ -2,6 +2,7 @@
 import Table from "@/components/table";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import HeaderUser from "@/components/header-user";
 
 interface DataUser {
   IdUser: number;
@@ -83,7 +84,7 @@ export default function persetujuan() {
           ),
           Action: (
             <Link
-              href={`/user-list/${user.idUser}`}
+              href={`/lihat-data/${user.idUser}`}
               className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
             >
               lihat detail
@@ -109,10 +110,11 @@ export default function persetujuan() {
   }, []);
 
   return (
-    <>
-      <div className="px-6 py-2">
+    <div className="h-screen bg-white">
+      <HeaderUser />
+      <div className="p-6">
         <Table data={data} header={header1} isLoading={false} />
       </div>
-    </>
+    </div>
   );
 }
