@@ -11,7 +11,7 @@ interface DataUser {
   NoIdentitas: string;
   Alamat: string;
   NoTelpon: string;
-  Status: string;
+  Status: JSX.Element;
   Action: JSX.Element;
 }
 
@@ -74,7 +74,19 @@ export default function persetujuan() {
           NoIdentitas: user.noIdentitas,
           Alamat: user.alamat,
           NoTelpon: user.noTelpon,
-          Status: user.status,
+          Status: (
+            <div
+              className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center ${
+                user.status === "Menunggu Persetujuan"
+                  ? "bg-[#FFFAEB] text-[#B54708]"
+                  : user.status === "Disetujui"
+                  ? "bg-[#ECFDF3] text-[#027A48]"
+                  : "bg-[#FEF3F2] text-[#B42318]"
+              }`}
+            >
+              {user.status}
+            </div>
+          ),
           Action: getActionButtons(user.status, user.idUser),
         };
       });

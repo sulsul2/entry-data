@@ -2,80 +2,87 @@
 import Table from "@/components/table";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaCheck } from "react-icons/fa6";
-import { RxCross1 } from "react-icons/rx";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
-interface DataUser {
-  IdUser: number;
-  NamaPengguna: string;
-  NoIdentitas: string;
-  Alamat: string;
-  NoTelpon: string;
-  Status: string;
+interface AccountData {
+  No: number;
+  Username: string;
+  Role: string;
+  Status: JSX.Element;
   Action: JSX.Element;
 }
 
 export default function manajemenAkun() {
-  const [data, setData] = useState<DataUser[]>([]);
+  const [data, setData] = useState<AccountData[]>([]);
 
-  const header1 = [
-    "Id User",
-    "Nama Pengguna",
-    "No. Identitas",
-    "Alamat",
-    "No. Telpon",
-    "Status",
-    "Action",
-  ];
+  const header1 = ["No", "Username", "Role", "Status", "Action"];
 
-  const getApprovalData = async () => {
+  const getData = async () => {
     try {
-      // Data lokal yang Anda miliki
+      // Data lokal
       const localData = [
         {
           idUser: 1,
           namaPengguna: "Andi Lane",
-          noIdentitas: "176984332667845",
-          alamat: "Jl. Ganesha 10, Coblong",
-          noTelpon: "081356565930",
-          status: "Menunggu Persetujuan",
+          role: "Data Entry",
+          status: "Active",
         },
         {
           idUser: 2,
           namaPengguna: "Olivia Rhye",
-          noIdentitas: "176984332667845",
-          alamat: "Jl. Ganesha 10, Coblong",
-          noTelpon: "081356565930",
-          status: "Menunggu Persetujuan",
+          role: "Manager",
+          status: "Non-Active",
         },
         {
           idUser: 3,
-          namaPengguna: "Olivia Rhye",
-          noIdentitas: "176984332667845",
-          alamat: "Jl. Ganesha 10, Coblong",
-          noTelpon: "081356565930",
-          status: "Disetujui",
+          namaPengguna: "John Doe",
+          role: "Kementrian",
+          status: "Non-Active",
         },
         {
           idUser: 4,
-          namaPengguna: "Olivia Rhye",
-          noIdentitas: "176984332667845",
-          alamat: "Jl. Ganesha 10, Coblong",
-          noTelpon: "081356565930",
-          status: "Ditolak",
+          namaPengguna: "Jane Smith",
+          role: "Manager",
+          status: "Active",
         },
       ];
 
       // Transformasi data
-      const transformedData = localData.map((user) => {
+      const transformedData = localData.map((user, index) => {
         return {
-          IdUser: user.idUser,
-          NamaPengguna: user.namaPengguna,
-          NoIdentitas: user.noIdentitas,
-          Alamat: user.alamat,
-          NoTelpon: user.noTelpon,
-          Status: user.status,
-          Action: getActionButtons(user.status, user.idUser),
+          No: index + 1,
+          Username: user.namaPengguna,
+          Role: user.role,
+          Status: (
+            <div
+              className={`w-fit justify-center items-center mx-auto px-2 py-1 rounded-2xl text-sm font-semibold ${
+                user.status === "Active"
+                  ? "bg-[#ECFDF3] text-[#027A48]"
+                  : "bg-[#FEF3F2] text-[#B42318]"
+              }`}
+            >
+              {user.status}
+            </div>
+          ),
+          Action: (
+            <div className="flex justify-center items-center gap-4">
+              {/* Tombol Delete */}
+              <button
+                className="text-[#DC2626] text-xl"
+                onClick={() => handleDelete(user.idUser)}
+              >
+                <FiTrash2 />
+              </button>
+
+              {/* Tombol Edit */}
+              <button
+                className="text-[#1D4ED8] text-xl"
+                onClick={() => handleEdit(user.idUser)}
+              >
+                <FiEdit2 />
+              </button>
+            </div>
+          ),
         };
       });
 
@@ -85,64 +92,39 @@ export default function manajemenAkun() {
       return [];
     }
   };
+
   useEffect(() => {
     const fetchData = async () => {
-      const approvalData = await getApprovalData();
-      setData(approvalData);
+      const UserData = await getData();
+      setData(UserData);
     };
 
     fetchData();
   }, []);
 
-  // Fungsi untuk menentukan tombol berdasarkan status
-  const getActionButtons = (status: string, idUser: number) => {
-    if (status === "Menunggu Persetujuan") {
-      return (
-        <div className="flex justify-center items-center gap-2">
-          <button
-            className="text-[#F04438] text-sm border-2 border-[#F04438] p-2 rounded-lg"
-            onClick={() => handleReject(idUser)}
-          >
-            <RxCross1 />
-          </button>
-          <button
-            className="text-[#12B76A] text-sm border-2 border-[#12B76A] p-2 rounded-lg"
-            onClick={() => handleApprove(idUser)}
-          >
-            <FaCheck />
-          </button>
-        </div>
-      );
-    } else {
-      return <p></p>;
-    }
-  };
-
   // Fungsi untuk menangani aksi "Setujui"
-  const handleApprove = (idUser: number) => {
-    console.log(`User dengan ID ${idUser} disetujui.`);
+  const handleEdit = (idUser: number) => {
+    console.log(`User dengan ID ${idUser} diedit.`);
     // Tambahkan logika untuk memperbarui status di backend atau state lokal
   };
 
   // Fungsi untuk menangani aksi "Tolak"
-  const handleReject = (idUser: number) => {
-    console.log(`User dengan ID ${idUser} ditolak.`);
+  const handleDelete = (idUser: number) => {
+    console.log(`User dengan ID ${idUser} didelete.`);
+    // Tambahkan logika untuk memperbarui status di backend atau state lokal
+  };
+
+  // Fungsi untuk menangani aksi "Tolak"
+  const handleAdd = (idUser: number) => {
+    console.log(`User dengan ID ${idUser} ditambahkan.`);
     // Tambahkan logika untuk memperbarui status di backend atau state lokal
   };
 
   return (
     <>
       <div className="px-6 py-2">
-        <div className="flex items-center gap-2 text-xs font-inter font-medium mb-2">
-          <Link href={`/user-list/`} className="text-[#605BFF] cursor-pointer">
-            Data Pengguna
-          </Link>
-          <p className="text-[#2A3D4A]"> / </p>
-          <p className="text-[#2A3D4A]">Persetujuan Data</p>
-        </div>
-
-        <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-20">
-          Persetujuan Data
+        <h1 className="text-2xl font-semibold text-[#605BFF] mb-20">
+          Management Account
         </h1>
 
         <Table data={data} header={header1} isLoading={false} />
