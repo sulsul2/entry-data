@@ -1,5 +1,6 @@
 import Button from "@/components/button";
 import TextField from "@/components/textfield";
+import { FaYoutube } from "react-icons/fa";
 
 export default function Login() {
   return (
@@ -24,7 +25,7 @@ export default function Login() {
           placeholder={"Masukkan password"}
           label={"Password"}
         />
-        <Button text={"Log in"} type={undefined}/>
+        <Button text={"Log in"} type={undefined} />
       </div>
     </div>
   );
