@@ -29,7 +29,7 @@ export default function TextField({
   onChangeDropdown?: React.ChangeEventHandler<HTMLSelectElement> | undefined;
   onChangeArea?: React.ChangeEventHandler<HTMLTextAreaElement> | undefined;
 }) {
-  const useLabel = type != "search";
+  const useLabel = (type != "search") || label == "";
   const [showPassword, setShowPassword] = useState("password");
   const [eyeIcon, setEyeIcon] = useState(<LuEyeOff></LuEyeOff>);
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -130,7 +130,7 @@ export default function TextField({
               e.currentTarget.style.height =
                 e.currentTarget.scrollHeight + "px";
             }}
-            style={{ height: "auto", minHeight: "100px" }}
+            style={{ height: "auto", minHeight: "96px" }}
             value={value}
             onChange={onChangeArea}
             className="grow resize-none focus:outline-none"

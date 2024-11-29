@@ -27,7 +27,7 @@ export default function Button({
       type={type}
       onClick={onClick}
       onSubmit={onSubmit}
-      className={`py-[10px] rounded-[8px] mt-2 ${
+      className={`${width == 350 ? "py-4" : "py-[10px]"} rounded-[8px] mt-2 ${
         disable
           ? "bg-[#D1D1D6]"
           : color == "primary"
@@ -40,7 +40,7 @@ export default function Button({
       <div
         className={`${
           color == "neutral" ? "text-[#414651]" : "text-white"
-        }  flex items-center justify-center gap-2 font-semibold`}
+        }  flex items-center justify-center gap-2 font-semibold text-[12px] md:text-[14px]`}
       >
         {icon}
         {text}
