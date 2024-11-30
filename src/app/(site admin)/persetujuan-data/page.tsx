@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
 import TextField from "@/components/textfield";
+import { CiSearch } from "react-icons/ci";
 
 interface DataUser {
   IdUser: number;
@@ -33,9 +34,11 @@ interface DataLembaga {
 export default function PersetujuanData() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type"); // Ambil parameter type dari URL
-  const [data, setData] = useState<any[]>([]); // We now use `any[]` to handle both user and institution data
+  const [data, setData] = useState<any[]>([]); // Data asli
+  const [filteredData, setFilteredData] = useState<any[]>([]); // Data setelah difilter
   const [header, setHeader] = useState<string[]>([]);
   const [title, setTitle] = useState("");
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     if (type === "data-pengguna") {
@@ -49,7 +52,9 @@ export default function PersetujuanData() {
         "Detail",
         "Action",
       ]);
-      setData(getUserData(dataPengguna));
+      const userData = getUserData(dataPengguna);
+      setData(userData);
+      setFilteredData(userData);
     } else if (type === "data-lembaga") {
       setTitle("Data Lembaga");
       setHeader([
@@ -61,9 +66,33 @@ export default function PersetujuanData() {
         "Details",
         "Action",
       ]);
-      setData(getInstitutionData(dataLembaga));
+      const institutionData = getInstitutionData(dataLembaga);
+      setData(institutionData);
+      setFilteredData(institutionData);
     }
   }, [type]);
+
+  // Fungsi untuk filter data berdasarkan pencarian
+  useEffect(() => {
+    if (search) {
+      const filtered = data.filter((item) => {
+        // Ambil semua nilai properti kecuali elemen JSX
+        const stringValues = Object.entries(item)
+          .filter(
+            ([key, value]) =>
+              typeof value === "string" || typeof value === "number"
+          )
+          .map(([key, value]) => String(value).toLowerCase());
+
+        return stringValues.some((value) =>
+          value.includes(search.toLowerCase())
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data); // Reset ke data asli jika pencarian kosong
+    }
+  }, [search, data]);
 
   // Data untuk type 'data-pengguna'
   const dataPengguna = [
@@ -266,14 +295,24 @@ export default function PersetujuanData() {
         <p className="text-[#2A3D4A]">Persetujuan Data</p>
       </div>
 
-      <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-20">
+      <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-6">
         Persetujuan Data
       </h1>
 
-      <div>
-        <TextField name={""} placeholder={""} label={""}/>
+      <div className="flex flex-col mb-6">
+        <div className="justify-end items-end content-end">
+          <TextField
+            name={"Search"}
+            type="search"
+            placeholder={"Search"}
+            label={""}
+            onChange={(e) => setSearch(e.target.value)}
+            width={320}
+          />
+        </div>
       </div>
-      <Table data={data} header={header} isLoading={false} />
+
+      <Table data={filteredData} header={header} isLoading={false} />
     </div>
   );
 }

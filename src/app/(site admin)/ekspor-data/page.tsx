@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
 import * as XLSX from "xlsx";
+import TextField from "@/components/textfield";
 
 interface DataUser {
   IdUser: number;
@@ -36,6 +37,8 @@ export default function PersetujuanData() {
   const [data, setData] = useState<any[]>([]); // We now use `any[]` to handle both user and institution data
   const [header, setHeader] = useState<string[]>([]);
   const [title, setTitle] = useState("");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     if (type === "data-pengguna") {
@@ -48,7 +51,9 @@ export default function PersetujuanData() {
         "Status",
         "Action",
       ]);
-      setData(getUserData(dataPengguna));
+      const userData = getUserData(dataPengguna);
+      setData(userData);
+      setFilteredData(userData);
     } else if (type === "data-lembaga") {
       setTitle("Data Lembaga");
       setHeader([
@@ -59,7 +64,9 @@ export default function PersetujuanData() {
         "Status",
         "Action",
       ]);
-      setData(getInstitutionData(dataLembaga));
+      const institutionData = getInstitutionData(dataLembaga);
+      setData(institutionData);
+      setFilteredData(institutionData);
     }
   }, [type]);
 
@@ -204,9 +211,7 @@ export default function PersetujuanData() {
     }));
   };
 
-  // Fungsi untuk menentukan tombol berdasarkan status
-
-  // Fungsi untuk menangani aksi "Setujui"
+  // Fungsi untuk menangani aksi ekspor
   const handleEksport = (id: number) => {
     console.log(`ID ${id} disetujui.`);
   };
@@ -221,11 +226,24 @@ export default function PersetujuanData() {
         <p className="text-[#2A3D4A]">Ekspor Data</p>
       </div>
 
-      <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-20">
+      <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-6">
         Ekspor Data
       </h1>
 
-      <Table data={data} header={header} isLoading={false} />
+      <div className="flex flex-col mb-6">
+        <div className="justify-end items-end content-end">
+          <TextField
+            name={"Search"}
+            type="search"
+            placeholder={"Search"}
+            label={""}
+            onChange={(e) => setSearch(e.target.value)}
+            width={320}
+          />
+        </div>
+      </div>
+
+      <Table data={filteredData} header={header} isLoading={false} />
     </div>
   );
 }
