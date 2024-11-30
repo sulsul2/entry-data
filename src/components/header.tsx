@@ -1,4 +1,5 @@
 // components/Header.tsx
+import Link from "next/link";
 import React from "react";
 import { IoIosSettings } from "react-icons/io";
 import { IoNotifications } from "react-icons/io5";
@@ -19,9 +20,12 @@ const Header: React.FC = () => {
       {/* Right Side: Icons */}
       <div className="flex items-center space-x-5">
         {/* Settings Icon */}
-        <button className="text-gray-600 hover:text-gray-800">
+        <Link
+          className="text-gray-600 hover:text-gray-800"
+          href={"/kustomisasi"}
+        >
           <IoIosSettings size={20} />
-        </button>
+        </Link>
 
         {/* Notification Icon */}
         <button className="text-gray-600 hover:text-gray-800">

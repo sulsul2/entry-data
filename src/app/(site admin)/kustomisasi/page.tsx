@@ -14,7 +14,7 @@ export default function Kustomisasi() {
     setSelectedColor(color);
   };
   return (
-    <div className="w-screen h-screen bg-white py-12">
+    <div className="bg-white">
       <div className="flex items-center justify-start px-5 md:px-20 gap-[14px] mb-3 md:mb-6">
         <div className="p-[6px] md:p-[10px] text-white bg-primary-900 flex justify-center items-center rounded-lg cursor-pointer">
           <IoArrowBackOutline className="w-3 md:w-[20px] h-3 md:h-[20px]" />

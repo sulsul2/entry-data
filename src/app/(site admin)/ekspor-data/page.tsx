@@ -5,7 +5,7 @@ import { JSXElementConstructor, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
-import TextField from "@/components/textfield";
+import * as XLSX from "xlsx";
 
 interface DataUser {
   IdUser: number;
@@ -46,7 +46,6 @@ export default function PersetujuanData() {
         "Jenis Kelamin",
         "Email",
         "Status",
-        "Detail",
         "Action",
       ]);
       setData(getUserData(dataPengguna));
@@ -58,7 +57,6 @@ export default function PersetujuanData() {
         "Alamat",
         "Kontak",
         "Status",
-        "Details",
         "Action",
       ]);
       setData(getInstitutionData(dataLembaga));
@@ -178,15 +176,7 @@ export default function PersetujuanData() {
           {user.status}
         </div>
       ),
-      Detail: (
-        <Link
-          href={`/lihat-data/${user.idUser}`}
-          className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
-        >
-          Lihat Detail
-        </Link>
-      ),
-      Action: getActionButtons(user.status, user.idUser),
+      Action: <div></div>,
     }));
   };
 
@@ -210,50 +200,15 @@ export default function PersetujuanData() {
           {lembaga.status}
         </div>
       ),
-      Detail: (
-        <Link
-          href={`/lihat-data/${lembaga.idLembaga}`}
-          className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
-        >
-          Lihat Detail
-        </Link>
-      ),
-      Action: getActionButtons(lembaga.status, lembaga.idLembaga),
+      Action: <div></div>,
     }));
   };
 
   // Fungsi untuk menentukan tombol berdasarkan status
-  const getActionButtons = (status: string, id: number) => {
-    if (status === "Menunggu Persetujuan") {
-      return (
-        <div className="flex justify-center items-center gap-2">
-          <button
-            className="text-[#F04438] text-sm border-2 border-[#F04438] p-2 rounded-lg"
-            onClick={() => handleReject(id)}
-          >
-            <RxCross1 />
-          </button>
-          <button
-            className="text-[#12B76A] text-sm border-2 border-[#12B76A] p-2 rounded-lg"
-            onClick={() => handleApprove(id)}
-          >
-            <FaCheck />
-          </button>
-        </div>
-      );
-    } else {
-      return <p></p>;
-    }
-  };
 
   // Fungsi untuk menangani aksi "Setujui"
-  const handleApprove = (id: number) => {
+  const handleEksport = (id: number) => {
     console.log(`ID ${id} disetujui.`);
-  };
-
-  // Fungsi untuk menangani aksi "Tolak"
-  const handleReject = (id: number) => {
-    console.log(`ID ${id} ditolak.`);
   };
 
   return (
@@ -263,16 +218,13 @@ export default function PersetujuanData() {
           {title}
         </Link>
         <p className="text-[#2A3D4A]"> / </p>
-        <p className="text-[#2A3D4A]">Persetujuan Data</p>
+        <p className="text-[#2A3D4A]">Ekspor Data</p>
       </div>
 
       <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-20">
-        Persetujuan Data
+        Ekspor Data
       </h1>
 
-      <div>
-        <TextField name={""} placeholder={""} label={""}/>
-      </div>
       <Table data={data} header={header} isLoading={false} />
     </div>
   );
