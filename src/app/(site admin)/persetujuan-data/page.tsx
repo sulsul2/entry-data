@@ -7,6 +7,7 @@ import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
 import TextField from "@/components/textfield";
 import { CiSearch } from "react-icons/ci";
+import ModalApprove from "@/components/modal-approval";
 
 interface DataUser {
   IdUser: number;
@@ -39,6 +40,9 @@ export default function PersetujuanData() {
   const [header, setHeader] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [search, setSearch] = useState<string>("");
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   useEffect(() => {
     if (type === "data-pengguna") {
@@ -258,13 +262,19 @@ export default function PersetujuanData() {
         <div className="flex justify-center items-center gap-2">
           <button
             className="text-[#F04438] text-sm border-2 border-[#F04438] p-2 rounded-lg"
-            onClick={() => handleReject(id)}
+            onClick={() => {
+              setShowRejectModal(true);
+              setSelectedId(id);
+            }}
           >
             <RxCross1 />
           </button>
           <button
             className="text-[#12B76A] text-sm border-2 border-[#12B76A] p-2 rounded-lg"
-            onClick={() => handleApprove(id)}
+            onClick={() => {
+              setShowApproveModal(true);
+              setSelectedId(id);
+            }}
           >
             <FaCheck />
           </button>
@@ -275,18 +285,58 @@ export default function PersetujuanData() {
     }
   };
 
+  const handleModalClose = () => {
+    setShowApproveModal(false);
+    setShowRejectModal(false);
+    setSelectedId(null);
+  };
+
   // Fungsi untuk menangani aksi "Setujui"
-  const handleApprove = (id: number) => {
+  const handleApprove = (id: number | null) => {
     console.log(`ID ${id} disetujui.`);
+    handleModalClose();
   };
 
   // Fungsi untuk menangani aksi "Tolak"
-  const handleReject = (id: number) => {
+  const handleReject = (id: number | null) => {
     console.log(`ID ${id} ditolak.`);
+    handleModalClose();
   };
 
   return (
     <div className="px-6 py-2">
+      {showApproveModal && (
+        <ModalApprove
+          image="/modal/approve-icon.svg"
+          title="Akun Disetujui"
+          subtitle="Apakah kamu yakin ingin menyetujui akun ini?"
+          button1Text="Cancel"
+          button2Text="Konfirmasi"
+          button1Color="bg-[#FFFFFF]"
+          button1TextColor="text-[#414651]"
+          button2Color="bg-[#605BFF]"
+          button2TextColor="text-[#FFFFFF]"
+          onButton1Click={handleModalClose}
+          onButton2Click={() => handleApprove(selectedId)}
+        />
+      )}
+
+      {showRejectModal && (
+        <ModalApprove
+          image="/modal/reject-icon.svg"
+          title="Akun Ditolak"
+          subtitle="Apakah kamu yakin ingin menolak akun ini?"
+          button1Text="Cancel"
+          button2Text="Tolak"
+          button1Color="bg-[#FFFFFF]"
+          button1TextColor="text-[#414651]"
+          button2Color="bg-[#D92D20]"
+          button2TextColor="text-[#FFFFFF]"
+          onButton1Click={handleModalClose}
+          onButton2Click={() => handleReject(selectedId)}
+        />
+      )}
+
       <div className="flex items-center gap-2 text-xs font-inter font-medium mb-2">
         <Link href={`/user-list/`} className="text-[#605BFF] cursor-pointer">
           {title}

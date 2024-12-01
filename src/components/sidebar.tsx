@@ -7,11 +7,13 @@ import { usePathname } from "next/navigation";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 import { GoSync } from "react-icons/go";
+import ModalApprove from "./modal-approval";
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [isUserDataOpen, setUserDataOpen] = useState(false);
   const [isInstitutionDataOpen, setInstitutionDataOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   // Helper: Aktifkan status halaman
   const isActive = (path: string) => pathname === path;
@@ -22,8 +24,28 @@ const Sidebar = () => {
     pathname.startsWith("/ekspor-data") ||
     pathname.startsWith("/lihat-data");
 
+  const handleLogOut = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="w-72 h-screen bg-white border-r border-[#E6E7EC] flex flex-col rounded-3xl">
+      {showModal && (
+        <ModalApprove
+          image="/modal/logout-icon.svg"
+          title="Log out Account"
+          subtitle="Apakah kamu yakin ingin log out dari akun ini?"
+          button1Text="Cancel"
+          button2Text="Ya"
+          button1Color="bg-[#FFFFFF]"
+          button1TextColor="text-[#414651]"
+          button2Color="bg-[#D92D20]"
+          button2TextColor="text-[#FFFFFF]"
+          onButton1Click={() => setShowModal(false)}
+          onButton2Click={() => handleLogOut()}
+        />
+      )}
+
       {/* Header */}
       <div className="p-4 border-b border-[#EDEEF3]">
         <div className="p-4 border border-[#E6E7EC] flex flex-row rounded-2xl gap-4">
@@ -206,7 +228,11 @@ const Sidebar = () => {
               adminbim@gmail.m
             </p>
           </div>
-          <button>
+          <button
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
             <LuLogOut className="text-lg text-gray-600 ml-8" />
           </button>
         </div>
