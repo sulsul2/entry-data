@@ -8,6 +8,7 @@ import { IoPersonCircleSharp } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 import { GoSync } from "react-icons/go";
 import ModalApprove from "./modal-approval";
+import { RiBankLine } from "react-icons/ri";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -132,7 +133,7 @@ const Sidebar = () => {
             onClick={() => setInstitutionDataOpen((prev) => !prev)}
           >
             <div className="flex items-center w-full">
-              <MdFolderShared className="w-6 h-6" />
+              <RiBankLine className="w-6 h-6" />
               <span className="ml-3 mr-3">Data Lembaga</span>
               <div className="ml-auto">
                 {isInstitutionDataOpen ? (

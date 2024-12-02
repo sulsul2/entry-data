@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
 import TextField from "@/components/textfield";
-import { CiSearch } from "react-icons/ci";
 import ModalApprove from "@/components/modal-approval";
 
 interface DataUser {
@@ -350,7 +349,7 @@ export default function PersetujuanData() {
       </h1>
 
       <div className="flex flex-col mb-6">
-        <div className="justify-end items-end content-end">
+        <div className="flex justify-end">
           <TextField
             name={"Search"}
             type="search"

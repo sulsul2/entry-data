@@ -231,7 +231,7 @@ export default function PersetujuanData() {
       </h1>
 
       <div className="flex flex-col mb-6">
-        <div className="justify-end items-end content-end">
+        <div className="flex justify-end">
           <TextField
             name={"Search"}
             type="search"
