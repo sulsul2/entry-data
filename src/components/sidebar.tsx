@@ -202,9 +202,9 @@ const Sidebar = () => {
         {/* Sinkronisasi Data Section */}
         <div className="mt-4">
           <Link
-            href="/sinkronisasi-data"
+            href="/sinkronisasi"
             className={`flex items-center p-2 rounded-lg ${
-              isActive("/sinkronisasi-data")
+              isActive("/sinkronisasi")
                 ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                 : "text-gray-700 hover:text-[#605BFF]"
             }`}

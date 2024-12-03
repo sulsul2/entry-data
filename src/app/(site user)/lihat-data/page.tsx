@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import HeaderUser from "@/components/header-user";
 
 interface DataUser {
-  IdUser: number;
+  IdUser: string;
   NamaPengguna: string;
   JenisKelamin?: string;
   Email?: string;
@@ -33,7 +33,7 @@ export default function persetujuan() {
     try {
       const localData = [
         {
-          idUser: 1,
+          idUser: "1",
           namaPengguna: "Andi Lane",
           noIdentitas: "176984332667845",
           alamat: "Jl. Ganesha 10, Coblong",
@@ -43,7 +43,7 @@ export default function persetujuan() {
           email: "andi.lane@gmail.com",
         },
         {
-          idUser: 2,
+          idUser: "2",
           namaPengguna: "Olivia Rhye",
           noIdentitas: "176984332667845",
           alamat: "Jl. Ganesha 10, Coblong",
@@ -53,7 +53,7 @@ export default function persetujuan() {
           email: "olivia.rhye@gmail.com",
         },
         {
-          idUser: 3,
+          idUser: "3",
           namaPengguna: "Olivia Rhye",
           noIdentitas: "176984332667845",
           alamat: "Jl. Ganesha 10, Coblong",

@@ -4,11 +4,10 @@ import Link from "next/link";
 import { JSXElementConstructor, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FiDownload } from "react-icons/fi";
-import * as XLSX from "xlsx";
 import TextField from "@/components/textfield";
 
 interface DataUser {
-  IdUser: number;
+  IdUser: string;
   NamaPengguna: string;
   JenisKelamin: string;
   Email: string;
@@ -21,7 +20,7 @@ interface DataUser {
 }
 
 interface DataLembaga {
-  IdLembaga: number;
+  IdLembaga: string;
   NamaInstansi: string;
   Alamat: string;
   NoTelpon: string;
@@ -72,7 +71,7 @@ export default function PersetujuanData() {
   // Data untuk type 'data-pengguna'
   const dataPengguna = [
     {
-      idUser: 1,
+      idUser: "1",
       namaPengguna: "Andi Lane",
       jenisKelamin: "Pria",
       email: "andi@example.com",
@@ -82,7 +81,7 @@ export default function PersetujuanData() {
       status: "Menunggu Persetujuan",
     },
     {
-      idUser: 2,
+      idUser: "2",
       namaPengguna: "Maria Dewi",
       jenisKelamin: "Wanita",
       email: "maria.dewi@example.com",
@@ -92,7 +91,7 @@ export default function PersetujuanData() {
       status: "Disetujui",
     },
     {
-      idUser: 3,
+      idUser: "3",
       namaPengguna: "Joko Widodo",
       jenisKelamin: "Pria",
       email: "joko.widodo@example.com",
@@ -102,7 +101,7 @@ export default function PersetujuanData() {
       status: "Ditolak",
     },
     {
-      idUser: 4,
+      idUser: "4",
       namaPengguna: "Siti Aminah",
       jenisKelamin: "Wanita",
       email: "siti.aminah@example.com",
@@ -112,7 +111,7 @@ export default function PersetujuanData() {
       status: "Menunggu Persetujuan",
     },
     {
-      idUser: 5,
+      idUser: "5",
       namaPengguna: "Budi Santoso",
       jenisKelamin: "Pria",
       email: "budi.santoso@example.com",
@@ -126,35 +125,35 @@ export default function PersetujuanData() {
   // Data untuk type 'data-lembaga'
   const dataLembaga = [
     {
-      idLembaga: 1,
+      idLembaga: "1",
       namaInstansi: "Instansi Pendidikan A",
       alamat: "Jl. Raya Pendidikan No. 1",
       noTelpon: "021-567890",
       status: "Menunggu Persetujuan",
     },
     {
-      idLembaga: 2,
+      idLembaga: "2",
       namaInstansi: "Sekolah Dasar B",
       alamat: "Jl. Merdeka No. 10",
       noTelpon: "021-567891",
       status: "Disetujui",
     },
     {
-      idLembaga: 3,
+      idLembaga: "3",
       namaInstansi: "Universitas C",
       alamat: "Jl. Pendidikan No. 20",
       noTelpon: "021-567892",
       status: "Ditolak",
     },
     {
-      idLembaga: 4,
+      idLembaga: "4",
       namaInstansi: "Sekolah Menengah Pertama D",
       alamat: "Jl. Raya No. 5",
       noTelpon: "021-567893",
       status: "Menunggu Persetujuan",
     },
     {
-      idLembaga: 5,
+      idLembaga: "5",
       namaInstansi: "Perguruan Tinggi E",
       alamat: "Jl. Raya No. 15, Malang",
       noTelpon: "021-567894",

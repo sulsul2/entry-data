@@ -2,7 +2,6 @@
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import Button from "./button";
 import { useState } from "react";
-import { render } from "react-dom";
 
 export default function Pagination({
   totalPages,
