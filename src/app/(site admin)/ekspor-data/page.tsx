@@ -3,8 +3,7 @@ import Table from "@/components/table";
 import Link from "next/link";
 import { JSXElementConstructor, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FaCheck } from "react-icons/fa6";
-import { RxCross1 } from "react-icons/rx";
+import { FiDownload } from "react-icons/fi";
 import * as XLSX from "xlsx";
 import TextField from "@/components/textfield";
 
@@ -183,7 +182,21 @@ export default function PersetujuanData() {
           {user.status}
         </div>
       ),
-      Action: <div></div>,
+      Action: (
+        <div className="w-fit">
+          <TextField
+            name={"Eskpor Data"}
+            placeholder={"Eskpor Data"}
+            label={""}
+            icon={<FiDownload />}
+            type="dropdown"
+            options={[
+              "Ekspor Format CSV (.csv)",
+              "Ekspor Format Excel (.xlsx)",
+            ]}
+          />
+        </div>
+      ),
     }));
   };
 
@@ -207,7 +220,21 @@ export default function PersetujuanData() {
           {lembaga.status}
         </div>
       ),
-      Action: <div></div>,
+      Action: (
+        <div>
+          <TextField
+            name={"Eskpor Data"}
+            placeholder={"Eskpor Data"}
+            label={""}
+            icon={<FiDownload />}
+            type="dropdown"
+            options={[
+              "Ekspor Format CSV (.csv)",
+              "Ekspor Format Excel (.xlsx)",
+            ]}
+          />
+        </div>
+      ),
     }));
   };
 

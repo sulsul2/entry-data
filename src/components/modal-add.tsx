@@ -68,7 +68,7 @@ export default function ModalAdd({
             type="dropdown"
             options={["manager", "admin", "data_entry"]}
             value={formData.role || ""}
-            onChange={(e) =>
+            onChangeDropdown={(e) =>
               setFormData((prev) => ({ ...prev, role: e.target.value }))
             }
           />

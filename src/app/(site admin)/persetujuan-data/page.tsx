@@ -212,7 +212,7 @@ export default function PersetujuanData() {
       ),
       Detail: (
         <Link
-          href={`/lihat-data/${user.idUser}`}
+          href={`/lihat-data/${type}/${user.idUser}`}
           className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
         >
           Lihat Detail
@@ -244,7 +244,7 @@ export default function PersetujuanData() {
       ),
       Detail: (
         <Link
-          href={`/lihat-data/${lembaga.idLembaga}`}
+          href={`/lihat-data/${type}/${lembaga.idLembaga}`}
           className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
         >
           Lihat Detail
@@ -291,14 +291,25 @@ export default function PersetujuanData() {
   };
 
   // Fungsi untuk menangani aksi "Setujui"
-  const handleApprove = (id: number | null) => {
-    console.log(`ID ${id} disetujui.`);
+  const handleApprove = (id: number | null, type: string | null) => {
+    if (type === "data-pengguna") {
+      console.log(`Pengguna dengan ID ${id} disetujui.`);
+      // Tambahkan logika untuk pengguna
+    } else if (type === "data-lembaga") {
+      console.log(`Lembaga dengan ID ${id} disetujui.`);
+      // Tambahkan logika untuk lembaga
+    }
     handleModalClose();
   };
 
-  // Fungsi untuk menangani aksi "Tolak"
-  const handleReject = (id: number | null) => {
-    console.log(`ID ${id} ditolak.`);
+  const handleReject = (id: number | null, type: string | null) => {
+    if (type === "data-pengguna") {
+      console.log(`Pengguna dengan ID ${id} ditolak.`);
+      // Tambahkan logika untuk pengguna
+    } else if (type === "data-lembaga") {
+      console.log(`Lembaga dengan ID ${id} ditolak.`);
+      // Tambahkan logika untuk lembaga
+    }
     handleModalClose();
   };
 
@@ -316,7 +327,7 @@ export default function PersetujuanData() {
           button2Color="bg-[#605BFF]"
           button2TextColor="text-[#FFFFFF]"
           onButton1Click={handleModalClose}
-          onButton2Click={() => handleApprove(selectedId)}
+          onButton2Click={() => handleApprove(selectedId, type)}
         />
       )}
 
@@ -332,7 +343,7 @@ export default function PersetujuanData() {
           button2Color="bg-[#D92D20]"
           button2TextColor="text-[#FFFFFF]"
           onButton1Click={handleModalClose}
-          onButton2Click={() => handleReject(selectedId)}
+          onButton2Click={() => handleReject(selectedId, type)}
         />
       )}
 

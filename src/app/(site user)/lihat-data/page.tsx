@@ -84,7 +84,7 @@ export default function persetujuan() {
           ),
           Action: (
             <Link
-              href={`/lihat-data/${user.idUser}`}
+              href={`/lihat-data/${"data-pengguna"}/${user.idUser}`}
               className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
             >
               lihat detail

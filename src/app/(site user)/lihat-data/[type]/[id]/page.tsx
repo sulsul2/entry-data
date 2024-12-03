@@ -1,4 +1,4 @@
-import DetailPage from "../[type]/[id]/detailPage";
+import DetailPage from "./detailPage";
 
 export default function Page({
   params,
