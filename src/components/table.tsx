@@ -1,16 +1,21 @@
-import { ReactNode } from "react";
+"use client";
+import { ReactNode, useState } from "react";
+import Pagination from "./pagination";
 
 function Table({
   data,
   header,
   addedItems,
   isLoading,
+  totalPages = 1
 }: {
   data: any[];
   header: any[];
   addedItems?: ReactNode;
   isLoading: boolean;
+  totalPages?: number;
 }) {
+  const [current, setCurrent] = useState(1);
   const renderCell = (cell: any) => {
     if (Array.isArray(cell)) {
       return (
@@ -93,6 +98,19 @@ function Table({
             )
           }
         </tbody>
+        <tfoot>
+          <tr>
+            <td
+              colSpan={header.length}
+              className="px-5 py-4 bg-white"
+            >
+              <Pagination
+                totalPages={totalPages}
+                current={(page) => setCurrent(page)}
+              />
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );

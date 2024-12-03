@@ -1,10 +1,12 @@
-// components/Header.tsx
+"use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { IoIosSettings } from "react-icons/io";
 import { IoNotifications } from "react-icons/io5";
 
 const Header: React.FC = () => {
+  const router = useRouter();
   return (
     <header className="flex justify-between items-center bg-white border-b-2 border-[#EDEEF3] w-[98%] mx-auto px-10 py-9">
       {/* Left Side: Welcome Text */}
@@ -20,12 +22,12 @@ const Header: React.FC = () => {
       {/* Right Side: Icons */}
       <div className="flex items-center space-x-5">
         {/* Settings Icon */}
-        <Link
+        <button
           className="text-gray-600 hover:text-gray-800"
-          href={"/kustomisasi"}
+          onClick={() => router.push("/kustomisasi")}
         >
           <IoIosSettings size={20} />
-        </Link>
+        </button>
 
         {/* Notification Icon */}
         <button className="text-gray-600 hover:text-gray-800">

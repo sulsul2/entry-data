@@ -1,10 +1,61 @@
+"use client";
 import Button from "@/components/button";
 import TextField from "@/components/textfield";
-import { FaYoutube } from "react-icons/fa";
+import Toast from "@/components/toast";
+import { post } from "@/services/api";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Cookies from "universal-cookie";
 
 export default function Login() {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const cookies = new Cookies();
+  const router = useRouter();
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = {
+      username: username,
+      password: password,
+    };
+    setIsLoading(true);
+
+    try {
+      const response = await post("login", data);
+      if (response.status === 200) {
+        const token = response.data.data.token;
+        const role = response.data.data.user.role;
+        cookies.set("token", token);
+        cookies.set("role", role);
+        if (role == "manager") {
+          router.push("/persetujuan-data");
+        } else if (role == "data_entry") {
+          router.push("/data-entry");
+        } else {
+          router.push("/lihat-data");
+        }
+      } else {
+        setIsError(true);
+      }
+    } catch (error) {
+      setIsError(true);
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="w-screen h-screen bg-[url('/assets/background.png')] bg-cover flex justify-center items-center">
+    <div className="w-screen h-screen bg-[url('/assets/background.png')] bg-cover flex flex-col justify-center items-center gap-6">
+      <div className={`${isError ? "block" : "hidden"}`}>
+        <Toast
+          type={"error"}
+          title={"Gagal Login"}
+          description={"Pastikan semua field terisi dengan benar."}
+        />
+      </div>
       <div className="w-auto h-auto flex flex-col items-center bg-white rounded-[20px] drop-shadow-2xl shadow-[#0A0D1224] p-5 md:p-6">
         <img src="/globe.svg" alt="" className="w-12 h-12" />
         <p className="text-[#181D27] text-[24px] md:text-[30px] font-semibold mt-6">
@@ -18,14 +69,30 @@ export default function Login() {
           type={"field"}
           placeholder={"Masukkan username"}
           label={"Username"}
+          value={username}
+          onChange={(val) => setUsername(val.target.value)}
         />
         <TextField
           name={"password"}
           type={"password"}
           placeholder={"Masukkan password"}
           label={"Password"}
+          value={password}
+          onChange={(val) => setPassword(val.target.value)}
         />
-        <Button text={"Log in"} type={undefined} />
+        <Button
+          text={"Log in"}
+          type={"submit"}
+          onClick={handleLogin}
+          isLoading={isLoading}
+        />
+      </div>
+      <div className={`${isError ? "invisible" : "hidden"}`}>
+        <Toast
+          type={"error"}
+          title={"Gagal Login"}
+          description={"Pastikan semua field terisi dengan benar."}
+        />
       </div>
     </div>
   );
