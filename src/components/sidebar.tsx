@@ -1,37 +1,71 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { FaChevronDown, FaChevronRight, FaChevronUp } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { MdFolderShared } from "react-icons/md";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 import { GoSync } from "react-icons/go";
 import ModalApprove from "./modal-approval";
 import { RiBankLine } from "react-icons/ri";
+import { useSearchParams } from "next/navigation";
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isUserDataOpen, setUserDataOpen] = useState(false);
   const [isInstitutionDataOpen, setInstitutionDataOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+  const [stickyClass, setStickyClass] = useState("absolute bg-black");
+  const location = usePathname();
+  const [active, setActive] = useState(0);
 
-  // Helper: Aktifkan status halaman
-  const isActive = (path: string) => pathname === path;
+  useEffect(() => {
+    const type = searchParams.get("type"); // Ambil nilai 'type' dari query string
 
-  // Helper: Tentukan apakah dropdown "Data Pengguna" harus aktif
-  const isUserDropdownActive =
-    pathname.startsWith("/persetujuan-data/?type=data-pengguna") ||
-    pathname.startsWith("/ekspor-data/?type=data-pengguna");
-
-  // Helper: Tentukan apakah dropdown "Data Lembaga" harus aktif
-  const isInstitutionDropdownActive =
-    pathname.startsWith("/persetujuan-data/?type=data-lembaga") ||
-    pathname.startsWith("/ekspor-data/?type=data-lembaga");
+    if (pathname === "/persetujuan-data") {
+      if (type === "data-pengguna") {
+        setActive(1.1);
+      } else if (type === "data-lembaga") {
+        setActive(1.2);
+      }
+    } else if (pathname === "/ekspor-data") {
+      if (type === "data-pengguna") {
+        setActive(2.1);
+      } else if (type === "data-lembaga") {
+        setActive(2.2);
+      }
+    } else if (pathname === "/manajemen-akun") {
+      setActive(3);
+    } else if (pathname === "/sinkronisasi") {
+      setActive(4);
+    } else {
+      setActive(-1); // Default jika path tidak dikenali
+    }
+  }, [pathname, searchParams]);
 
   const handleLogOut = () => {
     setShowModal(false);
   };
+
+  const stickNavbar = () => {
+    const header = document.querySelector("nav");
+    if (header != null) {
+      window.scrollY > header.offsetTop
+        ? setStickyClass("fixed bg-black bg-opacity-80 backdrop-blur-sm")
+        : setStickyClass("absolute bg-black");
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", stickNavbar);
+
+    return () => {
+      window.removeEventListener("scroll", stickNavbar);
+    };
+  }, []);
 
   return (
     <div className="w-72 h-screen bg-white border-r border-[#E6E7EC] flex flex-col rounded-3xl">
@@ -68,7 +102,7 @@ const Sidebar = () => {
         <div>
           <button
             className={`flex items-center p-2 rounded-lg w-full ${
-              isUserDropdownActive
+              active === 1.1 || active === 2.1
                 ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                 : "text-gray-700 hover:text-[#605BFF]"
             }`}
@@ -91,16 +125,14 @@ const Sidebar = () => {
               <Link
                 href="/persetujuan-data/?type=data-pengguna"
                 className={`flex items-center space-x-2 ${
-                  isActive("/persetujuan-data/?type=data-pengguna")
+                  active === 1.1
                     ? "text-[#605BFF] font-semibold"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full ${
-                    isActive("/persetujuan-data/?type=data-pengguna")
-                      ? "bg-[#605BFF]"
-                      : "border bg-[#D8DBE4]"
+                    active === 1.1 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
                   }`}
                 ></div>
                 <span>Persetujuan Data</span>
@@ -108,16 +140,14 @@ const Sidebar = () => {
               <Link
                 href="/ekspor-data/?type=data-pengguna"
                 className={`flex items-center space-x-2 ${
-                  isActive("/ekspor-data/?type=data-pengguna")
+                  active === 2.1
                     ? "text-[#605BFF] font-semibold"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full ${
-                    isActive("/ekspor-data/?type=data-pengguna")
-                      ? "bg-[#605BFF]"
-                      : "border bg-[#D8DBE4]"
+                    active === 2.1 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
                   }`}
                 ></div>
                 <span>Ekspor Data</span>
@@ -130,7 +160,7 @@ const Sidebar = () => {
         <div className="mt-4">
           <button
             className={`flex items-center p-2 rounded-lg w-full ${
-              isInstitutionDropdownActive
+              active === 1.2 || active === 2.2
                 ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                 : "text-gray-700 hover:text-[#605BFF]"
             }`}
@@ -153,16 +183,14 @@ const Sidebar = () => {
               <Link
                 href="/persetujuan-data/?type=data-lembaga"
                 className={`flex items-center space-x-2 ${
-                  isActive("/persetujuan-data/?type=data-lembaga")
+                  active === 1.2
                     ? "text-[#605BFF] font-semibold"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full ${
-                    isActive("/persetujuan-data/?type=data-lembaga")
-                      ? "bg-[#605BFF]"
-                      : "border bg-[#D8DBE4]"
+                    active === 1.2 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
                   }`}
                 ></div>
                 <span>Persetujuan Data</span>
@@ -170,16 +198,14 @@ const Sidebar = () => {
               <Link
                 href="/ekspor-data/?type=data-lembaga"
                 className={`flex items-center space-x-2 ${
-                  isActive("/ekspor-data/?type=data-lembaga")
+                  active === 2.2
                     ? "text-[#605BFF] font-semibold"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full ${
-                    isActive("/ekspor-data/?type=data-lembaga")
-                      ? "bg-[#605BFF]"
-                      : "border bg-[#D8DBE4]"
+                    active === 2.2 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
                   }`}
                 ></div>
                 <span>Ekspor Data</span>
@@ -193,7 +219,7 @@ const Sidebar = () => {
           <Link
             href="/manajemen-akun"
             className={`flex items-center p-2 rounded-lg ${
-              isActive("/manajemen-akun")
+              active === 3
                 ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                 : "text-gray-700 hover:text-[#605BFF]"
             }`}
@@ -208,7 +234,7 @@ const Sidebar = () => {
           <Link
             href="/sinkronisasi"
             className={`flex items-center p-2 rounded-lg ${
-              isActive("/sinkronisasi")
+              active === 4
                 ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                 : "text-gray-700 hover:text-[#605BFF]"
             }`}

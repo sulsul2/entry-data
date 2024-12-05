@@ -1,18 +1,10 @@
 "use client";
 import Table from "@/components/table";
 import Link from "next/link";
-import { Fragment, JSXElementConstructor, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FiDownload } from "react-icons/fi";
-import { FaChevronDown } from "react-icons/fa";
 import TextField from "@/components/textfield";
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-} from "@headlessui/react";
+import DropdownButton from "@/components/exportDropdown";
 
 interface DataUser {
   IdUser: string;
@@ -37,7 +29,7 @@ interface DataLembaga {
   Action: JSX.Element;
 }
 
-export default function PersetujuanData() {
+export default function EksporData() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type"); // Ambil parameter type dari URL
   const [data, setData] = useState<any[]>([]); // We now use `any[]` to handle both user and institution data
@@ -75,6 +67,27 @@ export default function PersetujuanData() {
       setFilteredData(institutionData);
     }
   }, [type]);
+
+  useEffect(() => {
+    if (search) {
+      const filtered = data.filter((item) => {
+        // Ambil semua nilai properti kecuali elemen JSX
+        const stringValues = Object.entries(item)
+          .filter(
+            ([key, value]) =>
+              typeof value === "string" || typeof value === "number"
+          )
+          .map(([key, value]) => String(value).toLowerCase());
+
+        return stringValues.some((value) =>
+          value.includes(search.toLowerCase())
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data); // Reset ke data asli jika pencarian kosong
+    }
+  }, [search, data]);
 
   // Data untuk type 'data-pengguna'
   const dataPengguna = [
@@ -202,7 +215,7 @@ export default function PersetujuanData() {
             {user.status}
           </div>
         ),
-        Action: dropdownButton(user.idUser),
+        Action: <DropdownButton id={user.idUser} type={type} />,
       }));
   };
 
@@ -222,76 +235,8 @@ export default function PersetujuanData() {
             {lembaga.status}
           </div>
         ),
-        Action: dropdownButton(lembaga.idLembaga),
+        Action: <DropdownButton id={lembaga.idLembaga} type={type} />,
       }));
-  };
-
-  const dropdownButton = (id: string) => {
-    return (
-      <div className="relative">
-        <Menu as="div" className="relative inline-block text-left">
-          <div>
-            <MenuButton className="flex justify-center items-center px-4 py-2 text-sm font-medium text-[#181D27] bg-white border-2 border-[#D5D7DA] rounded-md gap-2">
-              <div>
-                <FiDownload />
-              </div>
-              <p>Ekspor Data</p>
-              <div>
-                <FaChevronDown />
-              </div>
-            </MenuButton>
-          </div>
-          <div>
-            <MenuItems className="z-[1000] absolute flex w-full mt-2 bg-white border border-[#F5F5F5] rounded-sm shadow-lg">
-              <div className="px-1 py-1">
-                <MenuItem>
-                  {() => (
-                    <button
-                      className="flex items-left w-full p-2 text-[#181D27] text-[10px]"
-                      onClick={() => console.log(`Export CSV for ID ${id}`)}
-                    >
-                      Ekspor Format CSV (.csv)
-                    </button>
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {() => (
-                    <button
-                      className="flex items-left w-full p-2 text-[#181D27] text-[10px]"
-                      onClick={() => console.log(`Export XLSX for ID ${id}`)}
-                    >
-                      Ekspor Format XLSX (.xlsx)
-                    </button>
-                  )}
-                </MenuItem>
-              </div>
-            </MenuItems>
-          </div>
-        </Menu>
-      </div>
-    );
-  };
-
-  // Fungsi untuk menangani aksi ekspor
-  const handleEksportCSV = (id: number | null, type: string | null) => {
-    if (type === "data-pengguna") {
-      console.log(`Pengguna dengan ID ${id} disetujui.`);
-      // Tambahkan logika untuk pengguna
-    } else if (type === "data-lembaga") {
-      console.log(`Lembaga dengan ID ${id} disetujui.`);
-      // Tambahkan logika untuk lembaga
-    }
-  };
-
-  // Fungsi untuk menangani aksi ekspor
-  const handleEksportXLSX = (id: number | null, type: string | null) => {
-    if (type === "data-pengguna") {
-      console.log(`Pengguna dengan ID ${id} disetujui.`);
-      // Tambahkan logika untuk pengguna
-    } else if (type === "data-lembaga") {
-      console.log(`Lembaga dengan ID ${id} disetujui.`);
-      // Tambahkan logika untuk lembaga
-    }
   };
 
   return (
