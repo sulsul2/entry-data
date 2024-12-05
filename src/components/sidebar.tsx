@@ -19,11 +19,15 @@ const Sidebar = () => {
   // Helper: Aktifkan status halaman
   const isActive = (path: string) => pathname === path;
 
-  // Helper: Tentukan apakah border dropdown harus muncul
-  const isDropdownActive =
-    pathname.startsWith("/persetujuan-data") ||
-    pathname.startsWith("/ekspor-data") ||
-    pathname.startsWith("/lihat-data");
+  // Helper: Tentukan apakah dropdown "Data Pengguna" harus aktif
+  const isUserDropdownActive =
+    pathname.startsWith("/persetujuan-data/?type=data-pengguna") ||
+    pathname.startsWith("/ekspor-data/?type=data-pengguna");
+
+  // Helper: Tentukan apakah dropdown "Data Lembaga" harus aktif
+  const isInstitutionDropdownActive =
+    pathname.startsWith("/persetujuan-data/?type=data-lembaga") ||
+    pathname.startsWith("/ekspor-data/?type=data-lembaga");
 
   const handleLogOut = () => {
     setShowModal(false);
@@ -64,7 +68,7 @@ const Sidebar = () => {
         <div>
           <button
             className={`flex items-center p-2 rounded-lg w-full ${
-              isDropdownActive
+              isUserDropdownActive
                 ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                 : "text-gray-700 hover:text-[#605BFF]"
             }`}
@@ -126,7 +130,7 @@ const Sidebar = () => {
         <div className="mt-4">
           <button
             className={`flex items-center p-2 rounded-lg w-full ${
-              isDropdownActive
+              isInstitutionDropdownActive
                 ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                 : "text-gray-700 hover:text-[#605BFF]"
             }`}

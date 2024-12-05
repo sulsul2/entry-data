@@ -1,10 +1,18 @@
 "use client";
 import Table from "@/components/table";
 import Link from "next/link";
-import { JSXElementConstructor, useEffect, useState } from "react";
+import { Fragment, JSXElementConstructor, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FiDownload } from "react-icons/fi";
+import { FaChevronDown } from "react-icons/fa";
 import TextField from "@/components/textfield";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
 
 interface DataUser {
   IdUser: string;
@@ -120,6 +128,16 @@ export default function PersetujuanData() {
       noTelpon: "081356565934",
       status: "Menunggu Persetujuan",
     },
+    {
+      idUser: "6",
+      namaPengguna: "Budi Santoso",
+      jenisKelamin: "Pria",
+      email: "budi.santoso@example.com",
+      noIdentitas: "176984332667849",
+      alamat: "Jl. Raya No. 9, Surabaya",
+      noTelpon: "081356565934",
+      status: "Disetujui",
+    },
   ];
 
   // Data untuk type 'data-lembaga'
@@ -159,87 +177,121 @@ export default function PersetujuanData() {
       noTelpon: "021-567894",
       status: "Menunggu Persetujuan",
     },
+    {
+      idLembaga: "6",
+      namaInstansi: "Perguruan Tinggi E",
+      alamat: "Jl. Raya No. 15, Malang",
+      noTelpon: "021-567894",
+      status: "Disetujui",
+    },
   ];
 
   // Fungsi untuk transformasi data Pengguna
   const getUserData = (data: any[]) => {
-    return data.map((user) => ({
-      IdUser: user.idUser,
-      NamaPengguna: user.namaPengguna,
-      JenisKelamin: user.jenisKelamin || "-",
-      Email: user.email || "-",
-      Status: (
-        <div
-          className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center ${
-            user.status === "Menunggu Persetujuan"
-              ? "bg-[#FFFAEB] text-[#B54708]"
-              : user.status === "Disetujui"
-              ? "bg-[#ECFDF3] text-[#027A48]"
-              : "bg-[#FEF3F2] text-[#B42318]"
-          }`}
-        >
-          {user.status}
-        </div>
-      ),
-      Action: (
-        <div className="w-fit">
-          <TextField
-            name={"Eskpor Data"}
-            placeholder={"Eskpor Data"}
-            label={""}
-            icon={<FiDownload />}
-            type="dropdown"
-            options={[
-              "Ekspor Format CSV (.csv)",
-              "Ekspor Format Excel (.xlsx)",
-            ]}
-          />
-        </div>
-      ),
-    }));
+    return data
+      .filter((user) => user.status === "Disetujui")
+      .map((user) => ({
+        IdUser: user.idUser,
+        NamaPengguna: user.namaPengguna,
+        JenisKelamin: user.jenisKelamin || "-",
+        Email: user.email || "-",
+        Status: (
+          <div
+            className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
+          >
+            {user.status}
+          </div>
+        ),
+        Action: dropdownButton(user.idUser),
+      }));
   };
 
   // Fungsi untuk transformasi data Lembaga
   const getInstitutionData = (data: any[]) => {
-    return data.map((lembaga) => ({
-      IdLembaga: lembaga.idLembaga,
-      NamaInstansi: lembaga.namaInstansi,
-      Alamat: lembaga.alamat || "-",
-      NoTelpon: lembaga.noTelpon || "-",
-      Status: (
-        <div
-          className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center ${
-            lembaga.status === "Menunggu Persetujuan"
-              ? "bg-[#FFFAEB] text-[#B54708]"
-              : lembaga.status === "Disetujui"
-              ? "bg-[#ECFDF3] text-[#027A48]"
-              : "bg-[#FEF3F2] text-[#B42318]"
-          }`}
-        >
-          {lembaga.status}
-        </div>
-      ),
-      Action: (
-        <div>
-          <TextField
-            name={"Eskpor Data"}
-            placeholder={"Eskpor Data"}
-            label={""}
-            icon={<FiDownload />}
-            type="dropdown"
-            options={[
-              "Ekspor Format CSV (.csv)",
-              "Ekspor Format Excel (.xlsx)",
-            ]}
-          />
-        </div>
-      ),
-    }));
+    return data
+      .filter((lembaga) => lembaga.status === "Disetujui")
+      .map((lembaga) => ({
+        IdLembaga: lembaga.idLembaga,
+        NamaInstansi: lembaga.namaInstansi,
+        Alamat: lembaga.alamat || "-",
+        NoTelpon: lembaga.noTelpon || "-",
+        Status: (
+          <div
+            className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
+          >
+            {lembaga.status}
+          </div>
+        ),
+        Action: dropdownButton(lembaga.idLembaga),
+      }));
+  };
+
+  const dropdownButton = (id: string) => {
+    return (
+      <div className="relative">
+        <Menu as="div" className="relative inline-block text-left">
+          <div>
+            <MenuButton className="flex justify-center items-center px-4 py-2 text-sm font-medium text-[#181D27] bg-white border-2 border-[#D5D7DA] rounded-md gap-2">
+              <div>
+                <FiDownload />
+              </div>
+              <p>Ekspor Data</p>
+              <div>
+                <FaChevronDown />
+              </div>
+            </MenuButton>
+          </div>
+          <div>
+            <MenuItems className="z-[1000] absolute flex w-full mt-2 bg-white border border-[#F5F5F5] rounded-sm shadow-lg">
+              <div className="px-1 py-1">
+                <MenuItem>
+                  {() => (
+                    <button
+                      className="flex items-left w-full p-2 text-[#181D27] text-[10px]"
+                      onClick={() => console.log(`Export CSV for ID ${id}`)}
+                    >
+                      Ekspor Format CSV (.csv)
+                    </button>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {() => (
+                    <button
+                      className="flex items-left w-full p-2 text-[#181D27] text-[10px]"
+                      onClick={() => console.log(`Export XLSX for ID ${id}`)}
+                    >
+                      Ekspor Format XLSX (.xlsx)
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </div>
+        </Menu>
+      </div>
+    );
   };
 
   // Fungsi untuk menangani aksi ekspor
-  const handleEksport = (id: number) => {
-    console.log(`ID ${id} disetujui.`);
+  const handleEksportCSV = (id: number | null, type: string | null) => {
+    if (type === "data-pengguna") {
+      console.log(`Pengguna dengan ID ${id} disetujui.`);
+      // Tambahkan logika untuk pengguna
+    } else if (type === "data-lembaga") {
+      console.log(`Lembaga dengan ID ${id} disetujui.`);
+      // Tambahkan logika untuk lembaga
+    }
+  };
+
+  // Fungsi untuk menangani aksi ekspor
+  const handleEksportXLSX = (id: number | null, type: string | null) => {
+    if (type === "data-pengguna") {
+      console.log(`Pengguna dengan ID ${id} disetujui.`);
+      // Tambahkan logika untuk pengguna
+    } else if (type === "data-lembaga") {
+      console.log(`Lembaga dengan ID ${id} disetujui.`);
+      // Tambahkan logika untuk lembaga
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Kustomisasi from "./(site admin)/(layout)/kustomisasi/page";
+import Kustomisasi from "./(site admin)/kustomisasi/page";
 
 export default function Home() {
   return (
