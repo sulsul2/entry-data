@@ -212,7 +212,7 @@ export default function PersetujuanData() {
       ),
       Detail: (
         <Link
-          href={`/lihat-data/${type}/${user.idUser}`}
+          href={`/lihat-data/${user.idUser}/pengguna`}
           className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
         >
           Lihat Detail
@@ -244,7 +244,7 @@ export default function PersetujuanData() {
       ),
       Detail: (
         <Link
-          href={`/lihat-data/${type}/${lembaga.idLembaga}`}
+          href={`/lihat-data/${lembaga.idLembaga}/lembaga`}
           className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
         >
           Lihat Detail

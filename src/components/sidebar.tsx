@@ -68,7 +68,7 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <div className="w-72 h-screen bg-white border-r border-[#E6E7EC] flex flex-col rounded-3xl">
+    <>
       {showModal && (
         <ModalApprove
           image="/modal/logout-icon.svg"
@@ -84,191 +84,199 @@ const Sidebar = () => {
           onButton2Click={() => handleLogOut()}
         />
       )}
+      <div className="relative">
+        {/* Sidebar Desktop */}
+        <div className="hidden md:flex flex-col w-72 h-screen bg-white border-r border-[#E6E7EC] rounded-3xl">
+          {/* Header */}
+          <div className="p-4 border-b border-[#EDEEF3]">
+            <div className="p-4 border border-[#E6E7EC] flex flex-row rounded-2xl gap-4">
+              <img src="/sidebar/icon.png" className="mb-2 text-4xl w-10" />
+              <div>
+                <h1 className="text-[15px] font-bold text-black">
+                  Lorem Ipsum
+                </h1>
+                <h2 className="text-[14px] text-black">Company</h2>
+              </div>
+            </div>
+          </div>
 
-      {/* Header */}
-      <div className="p-4 border-b border-[#EDEEF3]">
-        <div className="p-4 border border-[#E6E7EC] flex flex-row rounded-2xl gap-4">
-          <img src="/sidebar/icon.png" className="mb-2 text-4xl w-10" />
-          <div>
-            <h1 className="text-[15px] font-bold text-black">Lorem Ipsum</h1>
-            <h2 className="text-[14px] text-black">Company</h2>
+          {/* Menu */}
+          <div className="px-4 py-6 flex-1 overflow-y-auto">
+            {/* Data Pengguna Section */}
+            <div>
+              <button
+                className={`flex items-center p-2 rounded-lg w-full ${
+                  active === 1.1 || active === 2.1
+                    ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
+                    : "text-gray-700 hover:text-[#605BFF]"
+                }`}
+                onClick={() => setUserDataOpen((prev) => !prev)}
+              >
+                <div className="flex items-center w-full">
+                  <MdFolderShared className="w-6 h-6" />
+                  <span className="ml-3 mr-3">Data Pengguna</span>
+                  <div className="ml-auto">
+                    {isUserDataOpen ? (
+                      <FaChevronUp className="text-gray-700" />
+                    ) : (
+                      <FaChevronDown className="text-gray-700" />
+                    )}
+                  </div>
+                </div>
+              </button>
+              {isUserDataOpen && (
+                <div className="relative ml-6 my-6 space-y-4">
+                  <Link
+                    href="/persetujuan-data/?type=data-pengguna"
+                    className={`flex items-center space-x-2 ${
+                      active === 1.1
+                        ? "text-[#605BFF] font-semibold"
+                        : "text-gray-700 hover:text-[#605BFF]"
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        active === 1.1 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
+                      }`}
+                    ></div>
+                    <span>Persetujuan Data</span>
+                  </Link>
+                  <Link
+                    href="/ekspor-data/?type=data-pengguna"
+                    className={`flex items-center space-x-2 ${
+                      active === 2.1
+                        ? "text-[#605BFF] font-semibold"
+                        : "text-gray-700 hover:text-[#605BFF]"
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        active === 2.1 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
+                      }`}
+                    ></div>
+                    <span>Ekspor Data</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Data Lembaga Section */}
+            <div className="mt-4">
+              <button
+                className={`flex items-center p-2 rounded-lg w-full ${
+                  active === 1.2 || active === 2.2
+                    ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
+                    : "text-gray-700 hover:text-[#605BFF]"
+                }`}
+                onClick={() => setInstitutionDataOpen((prev) => !prev)}
+              >
+                <div className="flex items-center w-full">
+                  <RiBankLine className="w-6 h-6" />
+                  <span className="ml-3 mr-3">Data Lembaga</span>
+                  <div className="ml-auto">
+                    {isInstitutionDataOpen ? (
+                      <FaChevronUp className="text-gray-700" />
+                    ) : (
+                      <FaChevronDown className="text-gray-700" />
+                    )}
+                  </div>
+                </div>
+              </button>
+              {isInstitutionDataOpen && (
+                <div className="relative ml-6 my-6 space-y-4">
+                  <Link
+                    href="/persetujuan-data/?type=data-lembaga"
+                    className={`flex items-center space-x-2 ${
+                      active === 1.2
+                        ? "text-[#605BFF] font-semibold"
+                        : "text-gray-700 hover:text-[#605BFF]"
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        active === 1.2 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
+                      }`}
+                    ></div>
+                    <span>Persetujuan Data</span>
+                  </Link>
+                  <Link
+                    href="/ekspor-data/?type=data-lembaga"
+                    className={`flex items-center space-x-2 ${
+                      active === 2.2
+                        ? "text-[#605BFF] font-semibold"
+                        : "text-gray-700 hover:text-[#605BFF]"
+                    }`}
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        active === 2.2 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
+                      }`}
+                    ></div>
+                    <span>Ekspor Data</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Manajemen Akun Section */}
+            <div className="mt-4">
+              <Link
+                href="/manajemen-akun"
+                className={`flex items-center p-2 rounded-lg ${
+                  active === 3
+                    ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
+                    : "text-gray-700 hover:text-[#605BFF]"
+                }`}
+              >
+                <IoPersonCircleSharp className="w-6 h-6" />
+                <span className="ml-3">Manajemen User</span>
+              </Link>
+            </div>
+
+            {/* Sinkronisasi Data Section */}
+            <div className="mt-4">
+              <Link
+                href="/sinkronisasi"
+                className={`flex items-center p-2 rounded-lg ${
+                  active === 4
+                    ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
+                    : "text-gray-700 hover:text-[#605BFF]"
+                }`}
+              >
+                <GoSync className="w-6 h-6" />
+                <span className="ml-3">Sinkronisasi Data</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="px-8 py-6 border-t border-gray-200">
+            <div className="flex items-center">
+              <img
+                src="https://via.placeholder.com/40"
+                alt="User"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <div className="ml-2">
+                <p className="text-[#181D27] text-sm font-semibold">
+                  Admin Bimo
+                </p>
+                <p className="text-[#535862] text-sm font-normal">
+                  adminbim@gmail.m
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowModal(true);
+                }}
+              >
+                <LuLogOut className="text-lg text-gray-600 ml-8" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Menu */}
-      <div className="px-4 py-6 flex-1 overflow-y-auto">
-        {/* Data Pengguna Section */}
-        <div>
-          <button
-            className={`flex items-center p-2 rounded-lg w-full ${
-              active === 1.1 || active === 2.1
-                ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
-                : "text-gray-700 hover:text-[#605BFF]"
-            }`}
-            onClick={() => setUserDataOpen((prev) => !prev)}
-          >
-            <div className="flex items-center w-full">
-              <MdFolderShared className="w-6 h-6" />
-              <span className="ml-3 mr-3">Data Pengguna</span>
-              <div className="ml-auto">
-                {isUserDataOpen ? (
-                  <FaChevronUp className="text-gray-700" />
-                ) : (
-                  <FaChevronDown className="text-gray-700" />
-                )}
-              </div>
-            </div>
-          </button>
-          {isUserDataOpen && (
-            <div className="relative ml-6 my-6 space-y-4">
-              <Link
-                href="/persetujuan-data/?type=data-pengguna"
-                className={`flex items-center space-x-2 ${
-                  active === 1.1
-                    ? "text-[#605BFF] font-semibold"
-                    : "text-gray-700 hover:text-[#605BFF]"
-                }`}
-              >
-                <div
-                  className={`w-4 h-4 rounded-full ${
-                    active === 1.1 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
-                  }`}
-                ></div>
-                <span>Persetujuan Data</span>
-              </Link>
-              <Link
-                href="/ekspor-data/?type=data-pengguna"
-                className={`flex items-center space-x-2 ${
-                  active === 2.1
-                    ? "text-[#605BFF] font-semibold"
-                    : "text-gray-700 hover:text-[#605BFF]"
-                }`}
-              >
-                <div
-                  className={`w-4 h-4 rounded-full ${
-                    active === 2.1 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
-                  }`}
-                ></div>
-                <span>Ekspor Data</span>
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Data Lembaga Section */}
-        <div className="mt-4">
-          <button
-            className={`flex items-center p-2 rounded-lg w-full ${
-              active === 1.2 || active === 2.2
-                ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
-                : "text-gray-700 hover:text-[#605BFF]"
-            }`}
-            onClick={() => setInstitutionDataOpen((prev) => !prev)}
-          >
-            <div className="flex items-center w-full">
-              <RiBankLine className="w-6 h-6" />
-              <span className="ml-3 mr-3">Data Lembaga</span>
-              <div className="ml-auto">
-                {isInstitutionDataOpen ? (
-                  <FaChevronUp className="text-gray-700" />
-                ) : (
-                  <FaChevronDown className="text-gray-700" />
-                )}
-              </div>
-            </div>
-          </button>
-          {isInstitutionDataOpen && (
-            <div className="relative ml-6 my-6 space-y-4">
-              <Link
-                href="/persetujuan-data/?type=data-lembaga"
-                className={`flex items-center space-x-2 ${
-                  active === 1.2
-                    ? "text-[#605BFF] font-semibold"
-                    : "text-gray-700 hover:text-[#605BFF]"
-                }`}
-              >
-                <div
-                  className={`w-4 h-4 rounded-full ${
-                    active === 1.2 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
-                  }`}
-                ></div>
-                <span>Persetujuan Data</span>
-              </Link>
-              <Link
-                href="/ekspor-data/?type=data-lembaga"
-                className={`flex items-center space-x-2 ${
-                  active === 2.2
-                    ? "text-[#605BFF] font-semibold"
-                    : "text-gray-700 hover:text-[#605BFF]"
-                }`}
-              >
-                <div
-                  className={`w-4 h-4 rounded-full ${
-                    active === 2.2 ? "bg-[#605BFF]" : "border bg-[#D8DBE4]"
-                  }`}
-                ></div>
-                <span>Ekspor Data</span>
-              </Link>
-            </div>
-          )}
-        </div>
-
-        {/* Manajemen Akun Section */}
-        <div className="mt-4">
-          <Link
-            href="/manajemen-akun"
-            className={`flex items-center p-2 rounded-lg ${
-              active === 3
-                ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
-                : "text-gray-700 hover:text-[#605BFF]"
-            }`}
-          >
-            <IoPersonCircleSharp className="w-6 h-6" />
-            <span className="ml-3">Manajemen User</span>
-          </Link>
-        </div>
-
-        {/* Sinkronisasi Data Section */}
-        <div className="mt-4">
-          <Link
-            href="/sinkronisasi"
-            className={`flex items-center p-2 rounded-lg ${
-              active === 4
-                ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
-                : "text-gray-700 hover:text-[#605BFF]"
-            }`}
-          >
-            <GoSync className="w-6 h-6" />
-            <span className="ml-3">Sinkronisasi Data</span>
-          </Link>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="px-8 py-6 border-t border-gray-200">
-        <div className="flex items-center">
-          <img
-            src="https://via.placeholder.com/40"
-            alt="User"
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <div className="ml-2">
-            <p className="text-[#181D27] text-sm font-semibold">Admin Bimo</p>
-            <p className="text-[#535862] text-sm font-normal">
-              adminbim@gmail.m
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setShowModal(true);
-            }}
-          >
-            <LuLogOut className="text-lg text-gray-600 ml-8" />
-          </button>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
