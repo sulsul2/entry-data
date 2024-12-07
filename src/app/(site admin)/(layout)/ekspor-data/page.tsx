@@ -215,7 +215,7 @@ export default function EksporData() {
             {user.status}
           </div>
         ),
-        Action: <DropdownButton id={user.idUser} type={type} />,
+        Action: <DropdownButton id={user.idUser} type={type}/>,
       }));
   };
 
@@ -235,7 +235,7 @@ export default function EksporData() {
             {lembaga.status}
           </div>
         ),
-        Action: <DropdownButton id={lembaga.idLembaga} type={type} />,
+        Action: <DropdownButton id={lembaga.idLembaga} type={type}/>,
       }));
   };
 
