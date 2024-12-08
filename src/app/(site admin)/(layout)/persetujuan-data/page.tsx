@@ -199,7 +199,7 @@ export default function PersetujuanData() {
       Email: user.email || "-",
       Status: (
         <div
-          className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center ${
+          className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center ${
             user.status === "Menunggu Persetujuan"
               ? "bg-[#FFFAEB] text-[#B54708]"
               : user.status === "Disetujui"
@@ -211,11 +211,10 @@ export default function PersetujuanData() {
         </div>
       ),
       Detail: (
-        <Link
-          href={`/lihat-data/${user.idUser}/pengguna`}
-          className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
-        >
-          Lihat Detail
+        <Link href={`/lihat-data/${user.idUser}/pengguna`}>
+          <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
+            Lihat Detail
+          </div>
         </Link>
       ),
       Action: getActionButtons(user.status, user.idUser),
@@ -231,7 +230,7 @@ export default function PersetujuanData() {
       NoTelpon: lembaga.noTelpon || "-",
       Status: (
         <div
-          className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center ${
+          className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center ${
             lembaga.status === "Menunggu Persetujuan"
               ? "bg-[#FFFAEB] text-[#B54708]"
               : lembaga.status === "Disetujui"
@@ -243,11 +242,10 @@ export default function PersetujuanData() {
         </div>
       ),
       Detail: (
-        <Link
-          href={`/lihat-data/${lembaga.idLembaga}/lembaga`}
-          className="border-2 border-[#D5D7DA] text-lg px-3 py-2 rounded-lg"
-        >
-          Lihat Detail
+        <Link href={`/lihat-data/${lembaga.idLembaga}/lembaga`}>
+          <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
+            Lihat Detail
+          </div>
         </Link>
       ),
       Action: getActionButtons(lembaga.status, lembaga.idLembaga),
@@ -260,7 +258,7 @@ export default function PersetujuanData() {
       return (
         <div className="flex justify-center items-center gap-2">
           <button
-            className="text-[#F04438] text-sm border-2 border-[#F04438] p-2 rounded-lg"
+            className="text-[#F04438] text-xs md:text-sm border-2 border-[#F04438] p-2 rounded-lg"
             onClick={() => {
               setShowRejectModal(true);
               setSelectedId(id);
@@ -269,7 +267,7 @@ export default function PersetujuanData() {
             <RxCross1 />
           </button>
           <button
-            className="text-[#12B76A] text-sm border-2 border-[#12B76A] p-2 rounded-lg"
+            className="text-[#12B76A] text-xs md:text-sm border-2 border-[#12B76A] p-2 rounded-lg"
             onClick={() => {
               setShowApproveModal(true);
               setSelectedId(id);
@@ -347,7 +345,7 @@ export default function PersetujuanData() {
         />
       )}
 
-      <div className="flex items-center gap-2 text-xs font-inter font-medium mb-2">
+      <div className="hidden md:flex items-center gap-2 text-xs font-inter font-medium mb-2">
         <Link href={`/user-list/`} className="text-[#605BFF] cursor-pointer">
           {title}
         </Link>
@@ -355,11 +353,11 @@ export default function PersetujuanData() {
         <p className="text-[#2A3D4A]">Persetujuan Data</p>
       </div>
 
-      <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-6">
+      <h1 className="text-[#2A3D4A] font-semibold text-[16px] md:text-[24px] mb-2 md:mb-6">
         Persetujuan Data
       </h1>
 
-      <div className="flex flex-col mb-6">
+      <div className="flex flex-col mb-3 md:mb-6">
         <div className="flex justify-end">
           <TextField
             name={"Search"}

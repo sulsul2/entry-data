@@ -210,12 +210,12 @@ export default function EksporData() {
         Email: user.email || "-",
         Status: (
           <div
-            className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
+            className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-smfont-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
           >
             {user.status}
           </div>
         ),
-        Action: <DropdownButton id={user.idUser} type={type}/>,
+        Action: <DropdownButton id={user.idUser} type={type} />,
       }));
   };
 
@@ -235,13 +235,13 @@ export default function EksporData() {
             {lembaga.status}
           </div>
         ),
-        Action: <DropdownButton id={lembaga.idLembaga} type={type}/>,
+        Action: <DropdownButton id={lembaga.idLembaga} type={type} />,
       }));
   };
 
   return (
     <div className="px-6 py-2">
-      <div className="flex items-center gap-2 text-xs font-inter font-medium mb-2">
+      <div className="hidden md:flex items-center gap-2 text-xs font-inter font-medium mb-2">
         <Link href={`/user-list/`} className="text-[#605BFF] cursor-pointer">
           {title}
         </Link>
@@ -249,7 +249,7 @@ export default function EksporData() {
         <p className="text-[#2A3D4A]">Ekspor Data</p>
       </div>
 
-      <h1 className="text-2xl font-semibold text-[#2A3D4A] mb-6">
+      <h1 className="font-semibold text-[#2A3D4A] text-[16px] md:text-[24px] mb-2 md:mb-6">
         Ekspor Data
       </h1>
 

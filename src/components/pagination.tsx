@@ -55,7 +55,10 @@ export default function Pagination({
             pushPage(pageNumbers, i);
           } else if (i == currentPage + 3) {
             pageNumbers.push(
-              <div key={`ellipsis-${i}`} className="bg-transparent px-[16.5px] py-[10px] rounded-lg font-medium flex items-center justify-center">
+              <div
+                key={`ellipsis-${i}`}
+                className="bg-transparent px-[16.5px] py-[10px] rounded-lg font-medium flex items-center justify-center"
+              >
                 ...
               </div>
             );
@@ -65,7 +68,10 @@ export default function Pagination({
             pushPage(pageNumbers, i);
           } else if (i == totalPages - 4) {
             pageNumbers.push(
-              <div key={`ellipsis-${i}`} className="bg-transparent px-[16.5px] py-[10px] rounded-lg font-medium flex items-center justify-center">
+              <div
+                key={`ellipsis-${i}`}
+                className="bg-transparent px-[16.5px] py-[10px] rounded-lg font-medium flex items-center justify-center"
+              >
                 ...
               </div>
             );
@@ -83,7 +89,7 @@ export default function Pagination({
         text={"Previous"}
         type={"button"}
         icon={<GrLinkPrevious />}
-        width={115}
+        width={88}
         onClick={() => handlePageChange(currentPage - 1)}
         disable={currentPage == 1}
       />

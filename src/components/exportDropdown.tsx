@@ -174,7 +174,7 @@ export default function DropdownButton({
     <div className="flex relative justify-center items-center">
       <button
         onClick={toggleDropdown}
-        className="flex items-center px-4 py-2 text-sm font-medium text-[#181D27] bg-white border-2 border-[#D5D7DA] rounded-md gap-2"
+        className="flex items-center px-4 py-2 text-xs md:text-sm font-medium text-[#181D27] bg-white border-2 border-[#D5D7DA] rounded-md gap-2"
       >
         <div>
           <FiDownload />
@@ -189,13 +189,13 @@ export default function DropdownButton({
         <div className="z-[1000] absolute top-full mt-2 bg-white border border-[#F5F5F5] rounded-sm shadow-lg w-fit">
           <div className="p-2">
             <button
-              className="flex items-left w-full p-2 text-[#181D27] text-[10px]"
+              className="flex items-left w-full text-[#181D27] text-[6px] md:text-[10px] p-1 md:p-2"
               onClick={() => handleExportCSV(id)}
             >
               Ekspor Format CSV (.csv)
             </button>
             <button
-              className="flex items-left w-full p-2 text-[#181D27] text-[10px]"
+              className="flex items-left w-full text-[#181D27] text-[6px] md:text-[10px] p-1 md:p-2"
               onClick={() => handleExportXLSX(id)}
             >
               Ekspor Format XLSX (.xlsx)

@@ -18,12 +18,11 @@ const Sidebar = () => {
   const [isInstitutionDataOpen, setInstitutionDataOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
-  const [stickyClass, setStickyClass] = useState("absolute bg-black");
   const location = usePathname();
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const type = searchParams.get("type"); // Ambil nilai 'type' dari query string
+    const type = searchParams.get("type");
 
     if (pathname === "/persetujuan-data") {
       if (type === "data-pengguna") {
@@ -42,30 +41,13 @@ const Sidebar = () => {
     } else if (pathname === "/sinkronisasi") {
       setActive(4);
     } else {
-      setActive(-1); // Default jika path tidak dikenali
+      setActive(-1);
     }
   }, [pathname, searchParams]);
 
   const handleLogOut = () => {
     setShowModal(false);
   };
-
-  const stickNavbar = () => {
-    const header = document.querySelector("nav");
-    if (header != null) {
-      window.scrollY > header.offsetTop
-        ? setStickyClass("fixed bg-black bg-opacity-80 backdrop-blur-sm")
-        : setStickyClass("absolute bg-black");
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", stickNavbar);
-
-    return () => {
-      window.removeEventListener("scroll", stickNavbar);
-    };
-  }, []);
 
   return (
     <>
@@ -84,14 +66,18 @@ const Sidebar = () => {
           onButton2Click={() => handleLogOut()}
         />
       )}
-      <div className="relative">
+      <aside className="relative h-screen">
         {/* Sidebar Desktop */}
-        <div className="hidden md:flex flex-col w-72 h-screen bg-white border-r border-[#E6E7EC] rounded-3xl">
+        <nav className="flex flex-col w-72 h-full bg-white border-r border-[#E6E7EC] rounded-3xl">
+          
           {/* Header */}
-          <div className="p-4 border-b border-[#EDEEF3]">
-            <div className="p-4 border border-[#E6E7EC] flex flex-row rounded-2xl gap-4">
-              <img src="/sidebar/icon.png" className="mb-2 text-4xl w-10" />
-              <div>
+          <div className="p-4 border-0 lg:border-b lg:border-[#EDEEF3]">
+            <div className="p-1 lg:p-4 border-0 lg:border-b lg:border-[#EDEEF3] flex flex-row rounded-2xl gap-0 lg:gap-4">
+              <img
+                src="/sidebar/icon.png"
+                className="lg-0 lg:mb-2 w-8 lg:w-10"
+              />
+              <div className="hidden lg:block">
                 <h1 className="text-[15px] font-bold text-black">
                   Lorem Ipsum
                 </h1>
@@ -274,8 +260,8 @@ const Sidebar = () => {
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </nav>
+      </aside>
     </>
   );
 };

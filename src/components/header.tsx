@@ -8,13 +8,13 @@ import { IoNotifications } from "react-icons/io5";
 const Header: React.FC = () => {
   const router = useRouter();
   return (
-    <header className="flex justify-between items-center bg-white border-b-2 border-[#EDEEF3] w-[98%] mx-auto px-10 py-9">
+    <header className="flex justify-between items-center bg-white border-b-2 border-[#EDEEF3] w-[98%] mx-auto p-6 md:p-10">
       {/* Left Side: Welcome Text */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-800">
+        <h1 className="text-sm md:text-2xl font-semibold text-gray-800">
           Welcome back, Admin!
         </h1>
-        <p className="text-gray-600 text-sm">
+        <p className="text-[9px] md:text-sm text-gray-600">
           Lacak dan kelola data pengguna perusahaan kamu.
         </p>
       </div>
@@ -26,12 +26,12 @@ const Header: React.FC = () => {
           className="text-gray-600 hover:text-gray-800"
           onClick={() => router.push("/kustomisasi")}
         >
-          <IoIosSettings size={20} />
+          <IoIosSettings className="text-sm md:text-xl" />
         </button>
 
         {/* Notification Icon */}
         <button className="text-gray-600 hover:text-gray-800">
-          <IoNotifications size={20} />
+          <IoNotifications className="text-sm md:text-xl" />
         </button>
       </div>
     </header>

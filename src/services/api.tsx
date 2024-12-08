@@ -48,7 +48,7 @@ export const get = async (
 };
 
 export const getWithAuth = async (
-  token: string,
+  token: string | undefined,
   apiParams: string
 ): Promise<AxiosResponse<any, any>> => {
   return await axios.get(url + apiParams, {

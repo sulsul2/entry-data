@@ -8,6 +8,8 @@ import ModalAdd from "@/components/modal-add";
 import TextField from "@/components/textfield";
 import Button from "@/components/button";
 import { MdAddCircleOutline } from "react-icons/md";
+import { get, post, getWithAuth } from "@/services/api";
+// import { cookies } from "next/headers";
 
 interface AccountData {
   No: number;
@@ -18,13 +20,15 @@ interface AccountData {
 }
 
 export default function manajemenAkun() {
-  const [data, setData] = useState<AccountData[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [filteredData, setFilteredData] = useState<any[]>([]); // Data setelah difilter
   const [search, setSearch] = useState<string>("");
 
+  // const token: string | undefined = cookies.get("token");
+  
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -35,76 +39,46 @@ export default function manajemenAkun() {
 
   const getData = async () => {
     try {
-      // Data lokal
-      const localData = [
-        {
-          idUser: 1,
-          namaPengguna: "Andi Lane",
-          role: "data_entry",
-          status: "Active",
-        },
-        {
-          idUser: 2,
-          namaPengguna: "Olivia Rhye",
-          role: "manager",
-          status: "Non-Active",
-        },
-        {
-          idUser: 3,
-          namaPengguna: "John Doe",
-          role: "manager",
-          status: "Non-Active",
-        },
-        {
-          idUser: 4,
-          namaPengguna: "Jane Smith",
-          role: "admin",
-          status: "Active",
-        },
-      ];
-
-      // Transformasi data
-      const transformedData = localData.map((user, index) => {
-        return {
-          No: index + 1,
-          Username: user.namaPengguna,
-          Role: user.role,
-          Status: (
-            <div
-              className={`w-fit justify-center items-center mx-auto px-2 py-1 rounded-2xl text-sm font-semibold ${
-                user.status === "Active"
-                  ? "bg-[#ECFDF3] text-[#027A48]"
-                  : "bg-[#FEF3F2] text-[#B42318]"
-              }`}
+      const response = await getWithAuth("token","users?page=1");
+      const data = response.data.data; 
+      const transformedData = data.map((user: any, index: number) => ({
+        No: index + 1,
+        Username: user.username,
+        Role: user.role,
+        Status: (
+          <div
+            className={`w-fit justify-center items-center mx-auto px-2 py-1 rounded-2xl text-xs md:text-sm font-semibold ${
+              user.status === "Active"
+                ? "bg-[#ECFDF3] text-[#027A48]"
+                : "bg-[#FEF3F2] text-[#B42318]"
+            }`}
+          >
+            {user.status}
+          </div>
+        ),
+        Action: (
+          <div className="flex justify-center items-center gap-4">
+            {/* Tombol Delete */}
+            <button
+              className="text-[#DC2626] text-base md:text-xl"
+              onClick={() => {
+                setShowDeleteModal(true);
+                setSelectedId(user.id);
+              }}
             >
-              {user.status}
-            </div>
-          ),
-          Action: (
-            <div className="flex justify-center items-center gap-4">
-              {/* Tombol Delete */}
-              <button
-                className="text-[#DC2626] text-xl"
-                onClick={() => {
-                  setShowDeleteModal(true);
-                  setSelectedId(user.idUser);
-                }}
-              >
-                <FiTrash2 />
-              </button>
+              <FiTrash2 />
+            </button>
 
-              {/* Tombol Edit */}
-              <button
-                className="text-[#1D4ED8] text-xl"
-                onClick={() => handleOpenEditButton(user)}
-              >
-                <FiEdit2 />
-              </button>
-            </div>
-          ),
-        };
-      });
-
+            {/* Tombol Edit */}
+            <button
+              className="text-[#1D4ED8] text-base md:text-xl"
+              onClick={() => handleOpenEditButton(user)}
+            >
+              <FiEdit2 />
+            </button>
+          </div>
+        ),
+      }));
       return transformedData;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -154,7 +128,6 @@ export default function manajemenAkun() {
     setSelectedId(user.idUser);
   };
 
-  // Fungsi untuk menangani tombol tambah
   const handleOpenAddButton = () => {
     setFormData({
       username: "",
@@ -165,22 +138,50 @@ export default function manajemenAkun() {
     setSelectedId(null);
   };
 
-  // Fungsi untuk menangani aksi "Setujui"
-  const handleEdit = (idUser: number) => {
-    console.log(`User dengan ID ${idUser} diedit.`);
-    setShowAddModal(false);
+  const handleEdit = async (idUser: number) => {
+    try {
+      await post(`users/${idUser}`, {
+        username: formData.username,
+        password: formData.password,
+        role: formData.role,
+      });
+      console.log(`User dengan ID ${idUser} berhasil diedit.`);
+      setShowAddModal(false);
+      const newData = await getData();
+      setData(newData);
+    } catch (error) {
+      console.error("Error editing user:", error);
+    }
   };
 
-  // Fungsi untuk menangani aksi "Tolak"
-  const handleDelete = (idUser: number | null) => {
-    console.log(`User dengan ID ${idUser} didelete.`);
-    setShowDeleteModal(false);
+  const handleDelete = async (idUser: number | null) => {
+    try {
+      if (idUser) {
+        await post(`users/${idUser}`, null); // Ganti dengan method DELETE jika diubah di API
+        console.log(`User dengan ID ${idUser} berhasil dihapus.`);
+        const newData = await getData();
+        setData(newData);
+      }
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
-  // Fungsi untuk menangani aksi "Tolak"
-  const handleAdd = (idUser: number | null) => {
-    console.log(`User dengan ID ${idUser} ditambahkan.`);
-    setShowAddModal(false);
+  const handleAdd = async () => {
+    try {
+      const response = await post(`users`, {
+        username: formData.username,
+        password: formData.password,
+        role: formData.role,
+      });
+      console.log("User berhasil ditambahkan:", response.data);
+      setShowAddModal(false);
+      const newData = await getData();
+      setData(newData);
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
   };
 
   const handleModalClose = () => {
@@ -217,17 +218,17 @@ export default function manajemenAkun() {
             button2Text={selectedId ? "Tambah" : "Simpan"}
             onButton1Click={handleModalClose}
             onButton2Click={() =>
-              selectedId ? handleEdit(selectedId) : handleAdd(selectedId)
+              selectedId ? handleEdit(selectedId) : handleAdd()
             }
           />
         )}
 
-        <h1 className="text-2xl font-semibold text-[#605BFF] mb-6">
+        <h1 className="font-semibold text-[#605BFF] text-[16px] md:text-[24px] mb-2 md:mb-6">
           Management Account
         </h1>
 
-        <div className="flex flex-col mb-6">
-          <div className="flex justify-end gap-4">
+        <div className="flex flex-col md:flex-row items-end md:items-baseline md:justify-end mb-4 md:mb-6 gap-0 md:gap-4">
+          <div className="flex">
             <TextField
               name={"Search"}
               type="search"
@@ -236,16 +237,15 @@ export default function manajemenAkun() {
               onChange={(e) => setSearch(e.target.value)}
               width={320}
             />
-
-            <div>
-              <Button
-                text={"Tambah Akun"}
-                type={"button"}
-                width={170}
-                icon={<MdAddCircleOutline className="text-lg" />}
-                onClick={handleOpenAddButton}
-              />
-            </div>
+          </div>
+          <div className="flex">
+            <Button
+              text={"Tambah Akun"}
+              type={"button"}
+              width={170}
+              icon={<MdAddCircleOutline className="text-sm md:text-lg" />}
+              onClick={handleOpenAddButton}
+            />
           </div>
         </div>
 
