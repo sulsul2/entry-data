@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaBars, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { MdFolderShared } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import { IoPersonCircleSharp } from "react-icons/io5";
@@ -17,9 +17,11 @@ const Sidebar = () => {
   const [isUserDataOpen, setUserDataOpen] = useState(false);
   const [isInstitutionDataOpen, setInstitutionDataOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
   const location = usePathname();
   const [active, setActive] = useState(0);
+
+  const [navOpen, setNavOpen] = useState(false); // Desktop toggle
+  const [isMobileOpen, setIsMobileOpen] = useState(false); // Mobile toggle
 
   useEffect(() => {
     const type = searchParams.get("type");
@@ -66,16 +68,33 @@ const Sidebar = () => {
           onButton2Click={() => handleLogOut()}
         />
       )}
-      <aside className="relative h-screen">
-        {/* Sidebar Desktop */}
-        <nav className="flex flex-col w-72 h-full bg-white border-r border-[#E6E7EC] rounded-3xl">
-          
+
+      <aside
+        className={`h-screen fixed lg:relative ${
+          isMobileOpen || navOpen ? "inset-0 bg-black bg-opacity-50 z-30" : ""
+        } z-40 overflow-hidden`}
+      >
+        <button
+          className="absolute top-4 left-4 lg:hidden z-20 bg-white hover:text-[#605BFF] p-2 rounded-md "
+          onClick={() => {
+            setIsMobileOpen((prev) => !prev);
+            setInstitutionDataOpen(false);
+            setUserDataOpen(false);
+          }}
+        >
+          <FaBars className="w-6 h-6 text-gray-700" />
+        </button>
+        <nav
+          className={`flex flex-col h-full bg-white border-r border-[#E6E7EC] transition-all duration-300 ${
+            isMobileOpen ? "w-72" : "w-[72px]"
+          } lg:w-72`}
+        >
           {/* Header */}
-          <div className="p-4 border-0 lg:border-b lg:border-[#EDEEF3]">
-            <div className="p-1 lg:p-4 border-0 lg:border-b lg:border-[#EDEEF3] flex flex-row rounded-2xl gap-0 lg:gap-4">
+          <div className="p-4 border-b border-[#EDEEF3]">
+            <div className="p-0 lg:p-4 border-b border-[#EDEEF3] flex rounded-2xl gap-4">
               <img
                 src="/sidebar/icon.png"
-                className="lg-0 lg:mb-2 w-8 lg:w-10"
+                className={`w-10 justify-center items-center transition-transform duration-300 `}
               />
               <div className="hidden lg:block">
                 <h1 className="text-[15px] font-bold text-black">
@@ -87,21 +106,28 @@ const Sidebar = () => {
           </div>
 
           {/* Menu */}
-          <div className="px-4 py-6 flex-1 overflow-y-auto">
+          <ul className="px-4 py-6 flex-1 overflow-y-auto">
             {/* Data Pengguna Section */}
-            <div>
+            <li>
               <button
                 className={`flex items-center p-2 rounded-lg w-full ${
                   active === 1.1 || active === 2.1
                     ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
-                onClick={() => setUserDataOpen((prev) => !prev)}
+                onClick={() => {
+                  setUserDataOpen((prev) => !prev);
+                  setIsMobileOpen(true);
+                }}
               >
                 <div className="flex items-center w-full">
                   <MdFolderShared className="w-6 h-6" />
-                  <span className="ml-3 mr-3">Data Pengguna</span>
-                  <div className="ml-auto">
+                  <div
+                    className={`flex items-center justify-between w-full ml-3 ${
+                      navOpen || isMobileOpen ? "block" : "hidden"
+                    } lg:flex`}
+                  >
+                    <span>Data Pengguna</span>
                     {isUserDataOpen ? (
                       <FaChevronUp className="text-gray-700" />
                     ) : (
@@ -144,22 +170,29 @@ const Sidebar = () => {
                   </Link>
                 </div>
               )}
-            </div>
+            </li>
 
             {/* Data Lembaga Section */}
-            <div className="mt-4">
+            <li className="mt-4">
               <button
                 className={`flex items-center p-2 rounded-lg w-full ${
                   active === 1.2 || active === 2.2
                     ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
-                onClick={() => setInstitutionDataOpen((prev) => !prev)}
+                onClick={() => {
+                  setInstitutionDataOpen((prev) => !prev);
+                  setIsMobileOpen(true);
+                }}
               >
                 <div className="flex items-center w-full">
                   <RiBankLine className="w-6 h-6" />
-                  <span className="ml-3 mr-3">Data Lembaga</span>
-                  <div className="ml-auto">
+                  <div
+                    className={`flex items-center justify-between w-full ml-3 ${
+                      navOpen || isMobileOpen ? "block" : "hidden"
+                    } lg:flex`}
+                  >
+                    <span>Data Lembaga</span>
                     {isInstitutionDataOpen ? (
                       <FaChevronUp className="text-gray-700" />
                     ) : (
@@ -202,10 +235,10 @@ const Sidebar = () => {
                   </Link>
                 </div>
               )}
-            </div>
+            </li>
 
             {/* Manajemen Akun Section */}
-            <div className="mt-4">
+            <li className="mt-4">
               <Link
                 href="/manajemen-akun"
                 className={`flex items-center p-2 rounded-lg ${
@@ -215,12 +248,18 @@ const Sidebar = () => {
                 }`}
               >
                 <IoPersonCircleSharp className="w-6 h-6" />
-                <span className="ml-3">Manajemen User</span>
+                <span
+                  className={`${
+                    navOpen || isMobileOpen ? "block" : "hidden"
+                  } lg:block ml-3`}
+                >
+                  Manajemen User
+                </span>
               </Link>
-            </div>
+            </li>
 
             {/* Sinkronisasi Data Section */}
-            <div className="mt-4">
+            <li className="mt-4">
               <Link
                 href="/sinkronisasi"
                 className={`flex items-center p-2 rounded-lg ${
@@ -230,20 +269,32 @@ const Sidebar = () => {
                 }`}
               >
                 <GoSync className="w-6 h-6" />
-                <span className="ml-3">Sinkronisasi Data</span>
+                <span
+                  className={`${
+                    navOpen || isMobileOpen ? "block" : "hidden"
+                  } lg:block ml-3`}
+                >
+                  Sinkronisasi Data
+                </span>
               </Link>
-            </div>
-          </div>
+            </li>
+          </ul>
 
           {/* Footer */}
-          <div className="px-8 py-6 border-t border-gray-200">
+          <div
+            className={`flex justify-center items-center mx-6 lg:mx-auto py-6 border-t border-gray-200`}
+          >
             <div className="flex items-center">
               <img
                 src="https://via.placeholder.com/40"
                 alt="User"
                 className="w-10 h-10 rounded-full object-cover"
               />
-              <div className="ml-2">
+              <div
+                className={`${
+                  navOpen || isMobileOpen ? "block" : "hidden"
+                } ml-2 lg:block`}
+              >
                 <p className="text-[#181D27] text-sm font-semibold">
                   Admin Bimo
                 </p>

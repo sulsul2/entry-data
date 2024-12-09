@@ -242,9 +242,7 @@ export default function EksporData() {
   return (
     <div className="px-6 py-2">
       <div className="hidden md:flex items-center gap-2 text-xs font-inter font-medium mb-2">
-        <Link href={`/user-list/`} className="text-[#605BFF] cursor-pointer">
-          {title}
-        </Link>
+        <p className="text-[#605BFF] cursor-pointer">{title}</p>
         <p className="text-[#2A3D4A]"> / </p>
         <p className="text-[#2A3D4A]">Ekspor Data</p>
       </div>
