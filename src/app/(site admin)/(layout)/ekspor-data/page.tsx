@@ -230,7 +230,7 @@ export default function EksporData() {
         NoTelpon: lembaga.noTelpon || "-",
         Status: (
           <div
-            className={`w-fit mx-auto px-2 py-1 rounded-lg text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
+            className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-smfont-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
           >
             {lembaga.status}
           </div>

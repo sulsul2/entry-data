@@ -28,7 +28,7 @@ export default function manajemenAkun() {
   const [search, setSearch] = useState<string>("");
 
   // const token: string | undefined = cookies.get("token");
-  
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -39,8 +39,8 @@ export default function manajemenAkun() {
 
   const getData = async () => {
     try {
-      const response = await getWithAuth("token","users?page=1");
-      const data = response.data.data; 
+      const response = await getWithAuth("token", "users?page=1");
+      const data = response.data.data;
       const transformedData = data.map((user: any, index: number) => ({
         No: index + 1,
         Username: user.username,
@@ -228,14 +228,13 @@ export default function manajemenAkun() {
         </h1>
 
         <div className="flex flex-col md:flex-row items-end md:items-baseline md:justify-end mb-4 md:mb-6 gap-0 md:gap-4">
-          <div className="flex">
+          <div className="flex w-52 md:w-80">
             <TextField
               name={"Search"}
               type="search"
               placeholder={"Search"}
               label={""}
               onChange={(e) => setSearch(e.target.value)}
-              width={320}
             />
           </div>
           <div className="flex">

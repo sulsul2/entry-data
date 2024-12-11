@@ -145,6 +145,10 @@ const Sidebar = () => {
                         ? "text-[#605BFF] font-semibold"
                         : "text-gray-700 hover:text-[#605BFF]"
                     }`}
+                    onClick={() => {
+                      // setIsMobileOpen(false);
+                      // setUserDataOpen(false);
+                    }}
                   >
                     <div
                       className={`w-4 h-4 rounded-full ${
@@ -160,6 +164,10 @@ const Sidebar = () => {
                         ? "text-[#605BFF] font-semibold"
                         : "text-gray-700 hover:text-[#605BFF]"
                     }`}
+                    onClick={() => {
+                      // setIsMobileOpen(false);
+                      // setUserDataOpen(false);
+                    }}
                   >
                     <div
                       className={`w-4 h-4 rounded-full ${
@@ -210,6 +218,10 @@ const Sidebar = () => {
                         ? "text-[#605BFF] font-semibold"
                         : "text-gray-700 hover:text-[#605BFF]"
                     }`}
+                    onClick={() => {
+                      // setIsMobileOpen(false);
+                      // setInstitutionDataOpen(false);
+                    }}
                   >
                     <div
                       className={`w-4 h-4 rounded-full ${
@@ -225,6 +237,10 @@ const Sidebar = () => {
                         ? "text-[#605BFF] font-semibold"
                         : "text-gray-700 hover:text-[#605BFF]"
                     }`}
+                    onClick={() => {
+                      // setIsMobileOpen(false);
+                      // setInstitutionDataOpen(false);
+                    }}
                   >
                     <div
                       className={`w-4 h-4 rounded-full ${
@@ -246,6 +262,7 @@ const Sidebar = () => {
                     ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
+                // onClick={() => setIsMobileOpen(false)}
               >
                 <IoPersonCircleSharp className="w-6 h-6" />
                 <span
@@ -267,6 +284,7 @@ const Sidebar = () => {
                     ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
                     : "text-gray-700 hover:text-[#605BFF]"
                 }`}
+                // onClick={() => setIsMobileOpen(false)}
               >
                 <GoSync className="w-6 h-6" />
                 <span

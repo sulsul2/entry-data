@@ -5,7 +5,13 @@ import { useState, useEffect } from "react";
 import React from "react";
 import Button from "@/components/button";
 import { IoMdArrowBack } from "react-icons/io";
-import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaFacebook,
+  FaLinkedin,
+  FaYoutube,
+  FaTwitter,
+} from "react-icons/fa";
 import { IconType } from "react-icons";
 
 const DataLembaga = [
@@ -21,6 +27,13 @@ const DataLembaga = [
     linkWebsite: "https://antikorupsi.org/id",
     deskripsi:
       "Indonesia Corruption Watch lahir di tengah gejolak reformasi 98, tepatnya 21 Juni 1998. Digawangi beberapa aktivis YLBHI, ICW berdiri dengan keyakinan bahwa korupsi harus diberantas...",
+    mediaSosial: {
+      instagram: "@sahabaticw",
+      facebook: "@sahabaticw",
+      x: "@sahabaticw",
+      Youtube: "@sahabaticw",
+      linkedin: "@sahabaticw",
+    },
     afiliasiNGO: [
       "YLBHI",
       "LBH Jakarta",
@@ -120,16 +133,19 @@ export default function DetailPage({
   }
 
   return (
-    <div className="px-14 py-16 w-screen h-screen bg-white overflow-auto">
-      <div className="flex flex-row gap-4 items-center mb-12">
-        <Button
-          text={""}
-          type={"button"}
-          icon={<IoMdArrowBack className="text-2xl" />}
-          onClick={() => router.back()}
-          width={48}
-        />
-        <h1 className="text-3xl text-[#2A3D4A] font-semibold">Detail Data</h1>
+    <div className="px-8 md:px-14 py-10 md:py-16 w-screen h-screen bg-white overflow-auto">
+      <div className="flex flex-row gap-4 items-center mb-8 md:mb-12">
+        <div className="w-8 md:w-12">
+          <Button
+            text={""}
+            type={"button"}
+            icon={<IoMdArrowBack className="text-lg md:text-2xl" />}
+            onClick={() => router.back()}
+          />
+        </div>
+        <h1 className="text-2xl md:text-3xl text-[#2A3D4A] font-semibold">
+          Detail Data
+        </h1>
       </div>
 
       <div>
@@ -137,58 +153,22 @@ export default function DetailPage({
           <>
             {/* Section A */}
             <div className="mb-12">
-              <h2 className="text-xl text-[#2A3D4A] font-semibold mb-4">
-                A. Data Personal
+              <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
+                A. Data Profil Lembaga
               </h2>
 
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-col md:flex-row gap-20">
                 {/* Kiri */}
                 <div>
-                  <div className="mb-3">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Nama
+                      Nama Lembaga
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.nama}
+                      {data.namaLembaga}
                     </p>
                   </div>
-                  <div className="mb-3">
-                    <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Jenis Kelamin:
-                    </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.jenisKelamin}
-                    </p>
-                  </div>
-                  <div className="mb-3">
-                    <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Tempat Lahir
-                    </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.tempatLahir}
-                    </p>
-                  </div>
-                  <div className="mb-3">
-                    <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Tanggal Lahir
-                    </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.tanggalLahir}
-                    </p>
-                  </div>
-                  <div className="mb-3">
-                    <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      MBTI
-                    </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.mbti || "-"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Tengah */}
-                <div>
-                  <div className="mb-3">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Alamat
                     </h3>
@@ -196,7 +176,7 @@ export default function DetailPage({
                       {data.alamat}
                     </p>
                   </div>
-                  <div className="mb-3">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Email
                     </h3>
@@ -204,19 +184,27 @@ export default function DetailPage({
                       {data.email}
                     </p>
                   </div>
-                  <div className="mb-3">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Nomor Telepon
+                      Nomor Kontak
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.kontak}
+                      {data.nomorKontak}
+                    </p>
+                  </div>
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-1">
+                      Link Website
+                    </h3>
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.linkWebsite || "-"}
                     </p>
                   </div>
                 </div>
 
-                {/* Kanan */}
+                {/* Tengah */}
                 <div>
-                  <div className="mb-3 flex flex-row gap-20">
+                  <div className="mb-4 flex flex-col md:flex-row gap-4 md:gap-32">
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
                         Akun Media Sosial
@@ -233,12 +221,16 @@ export default function DetailPage({
                                 Icon = FaFacebook;
                               } else if (key === "linkedin") {
                                 Icon = FaLinkedin;
+                              } else if (key === "Youtube") {
+                                Icon = FaYoutube;
+                              } else if (key === "x") {
+                                Icon = FaTwitter;
                               }
 
                               return (
                                 <div
                                   key={index}
-                                  className="flex items-center gap-2 mb-4"
+                                  className="flex items-center gap-2 mb-6"
                                 >
                                   {Icon && <Icon className="text-xl" />}
                                   <p>{value as string}</p>
@@ -256,6 +248,248 @@ export default function DetailPage({
                         {data.tempatLahir}
                       </p>
                     </div>
+                    <div>
+                      <h3 className="text-xs text-[#414651] font-medium mb-2">
+                        Akun E-commerce
+                      </h3>
+                      <p className="text-sm text-[#000000] font-semibold">
+                        {data.tempatLahir}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section B */}
+            <div className="mb-12">
+              <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
+                B. Data Pendukung Lembaga
+              </h2>
+
+              <div className="flex flex-col md:flex-row justify-between">
+                {/* Kiri */}
+                <div className="w-1/2">
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Deskripsi/Latar Belakang
+                    </h3>
+                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                      {/* {data.riwayat.parlemen.map(
+                        (parlemen: string, index: number) => (
+                          <li key={index}>{parlemen}</li>
+                        )
+                      )} */}
+                    </ul>
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Visi dan Misi
+                    </h3>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Visi:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Misi:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Dalam bekerja, ICW mengambil peran sebagai berikut:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Posisi ICW: Berpihak kepada masyarakat yang miskin
+                        secara ekonomi, politik dan budaya dengan menganut
+                        nilai:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Prinsip ICW:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Profil Pendiri
+                    </h3>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Visi:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Misi:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Dalam bekerja, ICW mengambil peran sebagai berikut:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Posisi ICW: Berpihak kepada masyarakat yang miskin
+                        secara ekonomi, politik dan budaya dengan menganut
+                        nilai:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Profil Pengurus
+                    </h3>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Visi:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Misi:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Dalam bekerja, ICW mengambil peran sebagai berikut:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-sm text-black font-medium mb-2">
+                        Posisi ICW: Berpihak kepada masyarakat yang miskin
+                        secara ekonomi, politik dan budaya dengan menganut
+                        nilai:
+                      </h4>
+                      <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                        {/* {data.riwayat.pekerjaan.map(
+                          (pekerjaan: string, index: number) => (
+                            <li key={index}>{pekerjaan}</li>
+                          )
+                        )} */}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Kanan */}
+                <div>
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Jabatan di Kelompok Media
+                    </h3>
+                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                      {/* {data.riwayat.kelompok_media.map(
+                        (kelompok_media: string, index: number) => (
+                          <li key={index}>{kelompok_media}</li>
+                        )
+                      )} */}
+                    </ul>
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Jabatan di Organisasi
+                    </h3>
+                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                      {/* {data.riwayat.organisasi.map(
+                        (organisasi: string, index: number) => (
+                          <li key={index}>{organisasi}</li>
+                        )
+                      )} */}
+                    </ul>
                   </div>
                 </div>
               </div>

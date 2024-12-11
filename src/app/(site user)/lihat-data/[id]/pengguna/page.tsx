@@ -100,16 +100,19 @@ export default function DetailPage({
   }
 
   return (
-    <div className="px-14 py-16 w-screen h-screen bg-white overflow-auto">
-      <div className="flex flex-row gap-4 items-center mb-12">
-        <Button
-          text={""}
-          type={"button"}
-          icon={<IoMdArrowBack className="text-2xl" />}
-          onClick={() => router.back()}
-          width={48}
-        />
-        <h1 className="text-3xl text-[#2A3D4A] font-semibold">Detail Data</h1>
+    <div className="px-8 md:px-14 py-10 md:py-16 w-screen h-screen bg-white overflow-auto">
+      <div className="flex flex-row gap-4 items-center mb-8 md:mb-12">
+        <div className="w-8 md:w-12">
+          <Button
+            text={""}
+            type={"button"}
+            icon={<IoMdArrowBack className="text-lg md:text-2xl" />}
+            onClick={() => router.back()}
+          />
+        </div>
+        <h1 className="text-2xl md:text-3xl text-[#2A3D4A] font-semibold">
+          Detail Data
+        </h1>
       </div>
 
       <div>
@@ -117,11 +120,11 @@ export default function DetailPage({
           <>
             {/* Section A */}
             <div className="mb-12">
-              <h2 className="text-xl text-[#2A3D4A] font-semibold mb-4">
+              <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
                 A. Data Personal
               </h2>
 
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-col md:flex-row justify-between">
                 {/* Kiri */}
                 <div>
                   <div className="mb-4">
@@ -217,7 +220,7 @@ export default function DetailPage({
                       ))}
                     </p>
                   </div>
-                  <div className="mb-4 flex flex-row gap-20">
+                  <div className="mb-4 flex flex-col md:flex-row gap-4 md:gap-20">
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
                         Akun Media Sosial
@@ -264,11 +267,11 @@ export default function DetailPage({
 
             {/* Section B */}
             <div className="mb-12">
-              <h2 className="text-xl text-[#2A3D4A] font-semibold mb-4">
+              <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
                 B. Riwayat Pekerjaan dan Organisasi
               </h2>
 
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-col md:flex-row justify-between">
                 {/* Kiri */}
                 <div>
                   <div className="mb-4">
@@ -331,11 +334,11 @@ export default function DetailPage({
 
             {/* Section C */}
             <div className="mb-12">
-              <h2 className="text-xl text-[#2A3D4A] font-semibold mb-4">
+              <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
                 C. Pendidikan dan Penghargaan
               </h2>
 
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-col md:flex-row justify-between">
                 {/* Kiri */}
                 <div>
                   <div className="mb-4">
@@ -376,12 +379,36 @@ export default function DetailPage({
                 D. Data Lainnya{" "}
               </h2>
 
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-col md:flex-row justify-betweens">
                 {/* Kiri */}
                 <div>
-                  <div className="mb-4">
+                  <div className="mb-6">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Pemberitaan/Isu yang sering diangkat terkait Kemenkeu{" "}
+                    </h3>
+                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                      {data.riwayat.parlemen.map(
+                        (parlemen: string, index: number) => (
+                          <li key={index}>{parlemen}</li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                  <div className="mb-6">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Sikap ke Kemenkeu
+                    </h3>
+                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                      {data.riwayat.parlemen.map(
+                        (parlemen: string, index: number) => (
+                          <li key={index}>{parlemen}</li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                  <div className="mb-6">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Riwayat Hukum
                     </h3>
                     <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.parlemen.map(
@@ -395,9 +422,21 @@ export default function DetailPage({
 
                 {/* Kanan */}
                 <div>
-                  <div className="mb-4">
+                  <div className="mb-6">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
-                      Jabatan di Kelompok Media
+                      Rekomendasi Pendekatan
+                    </h3>
+                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                      {data.riwayat.kelompok_media.map(
+                        (kelompok_media: string, index: number) => (
+                          <li key={index}>{kelompok_media}</li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                  <div className="mb-6">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      Tingkat Pengaruh Di Masyarakat
                     </h3>
                     <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.kelompok_media.map(

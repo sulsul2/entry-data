@@ -31,13 +31,15 @@ export default function ModalAdd({
 }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-96 p-6 text-center">
+      <div className="bg-white rounded-lg shadow-lg w-72 md:w-96 p-6 text-center">
         <img
           src={"/modal/add-icon.svg"}
           alt="Modal Icon"
           className="w-12 h-12 mx-auto mb-4"
         />
-        <h2 className="text-lg font-semibold text-[#181D27] mb-5">{title}</h2>
+        <h2 className="text-base md:text-lg font-semibold text-[#181D27] mb-5">
+          {title}
+        </h2>
 
         {/* Form Fields */}
         <div className="flex flex-col justify-start items-start text-left mb-8">
