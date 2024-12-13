@@ -12,8 +12,6 @@
     "@next/font": "^14.2.15",
     "@reduxjs/toolkit": "^2.4.0",
     "axios": "^1.7.8",
-    "exceljs": "^4.4.0",
-    "file-saver": "^2.0.5",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
@@ -23,7 +21,6 @@
     "universal-cookie": "^7.2.2"
   },
   "devDependencies": {
-    "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
