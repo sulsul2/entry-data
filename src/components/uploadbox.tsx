@@ -4,8 +4,13 @@ import { useState, useRef } from "react";
 import { RiUploadCloud2Line } from "react-icons/ri";
 import Button from "./button";
 
-export default function UploadBox({type} : {type:string;}) {
-  const [file, setFile] = useState<File | null>(null);
+export default function UploadBox({
+  type,
+  setFile,
+}: {
+  type: string;
+  setFile: (file: File | null) => void;
+}) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -64,7 +69,9 @@ export default function UploadBox({type} : {type:string;}) {
           imagePreview
             ? ""
             : `border-2 border-dashed ${
-                isDragging ? "border-primary-900 bg-primary-50" : "border-[#E0E0E0] bg-white"
+                isDragging
+                  ? "border-primary-900 bg-primary-50"
+                  : "border-[#E0E0E0] bg-white"
               }`
         }`}
         onDrop={handleDrop}

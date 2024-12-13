@@ -15,7 +15,7 @@ export default function Button({
   type: "button" | "submit" | "reset" | undefined;
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
   onSubmit?: FormEventHandler<HTMLButtonElement> | undefined;
-  color?: "primary" | "red" | "neutral";
+  color?: "primary" | "red" | "neutral" | "secondary" | "tersier";
   icon?: React.ReactNode;
   disable?: boolean;
   width?: number;
