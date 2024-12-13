@@ -89,7 +89,7 @@ export default function Pagination({
         text={"Previous"}
         type={"button"}
         icon={<GrLinkPrevious />}
-        width={88}
+        width={115}
         onClick={() => handlePageChange(currentPage - 1)}
         disable={currentPage == 1}
       />

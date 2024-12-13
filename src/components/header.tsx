@@ -24,7 +24,7 @@ const Header: React.FC = () => {
         {/* Settings Icon */}
         <button
           className="text-gray-600 hover:text-gray-800"
-          onClick={() => router.push("/kustomisasi")}
+          onClick={() => router.push("/admin/kustomisasi")}
         >
           <IoIosSettings className="text-sm md:text-xl" />
         </button>

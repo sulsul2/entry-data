@@ -26,21 +26,21 @@ const Sidebar = () => {
   useEffect(() => {
     const type = searchParams.get("type");
 
-    if (pathname === "/persetujuan-data") {
+    if (pathname === "/admin/persetujuan-data") {
       if (type === "data-pengguna") {
         setActive(1.1);
       } else if (type === "data-lembaga") {
         setActive(1.2);
       }
-    } else if (pathname === "/ekspor-data") {
+    } else if (pathname === "/admin/ekspor-data") {
       if (type === "data-pengguna") {
         setActive(2.1);
       } else if (type === "data-lembaga") {
         setActive(2.2);
       }
-    } else if (pathname === "/manajemen-akun") {
+    } else if (pathname === "/admin/manajemen-akun") {
       setActive(3);
-    } else if (pathname === "/sinkronisasi") {
+    } else if (pathname === "/admin/sinkronisasi") {
       setActive(4);
     } else {
       setActive(-1);
@@ -139,7 +139,7 @@ const Sidebar = () => {
               {isUserDataOpen && (
                 <div className="relative ml-6 my-6 space-y-4">
                   <Link
-                    href="/persetujuan-data/?type=data-pengguna"
+                    href="/admin/persetujuan-data/?type=data-pengguna"
                     className={`flex items-center space-x-2 ${
                       active === 1.1
                         ? "text-[#605BFF] font-semibold"
@@ -158,7 +158,7 @@ const Sidebar = () => {
                     <span>Persetujuan Data</span>
                   </Link>
                   <Link
-                    href="/ekspor-data/?type=data-pengguna"
+                    href="/admin/ekspor-data/?type=data-pengguna"
                     className={`flex items-center space-x-2 ${
                       active === 2.1
                         ? "text-[#605BFF] font-semibold"
@@ -212,7 +212,7 @@ const Sidebar = () => {
               {isInstitutionDataOpen && (
                 <div className="relative ml-6 my-6 space-y-4">
                   <Link
-                    href="/persetujuan-data/?type=data-lembaga"
+                    href="/admin/persetujuan-data/?type=data-lembaga"
                     className={`flex items-center space-x-2 ${
                       active === 1.2
                         ? "text-[#605BFF] font-semibold"
@@ -231,7 +231,7 @@ const Sidebar = () => {
                     <span>Persetujuan Data</span>
                   </Link>
                   <Link
-                    href="/ekspor-data/?type=data-lembaga"
+                    href="/admin/ekspor-data/?type=data-lembaga"
                     className={`flex items-center space-x-2 ${
                       active === 2.2
                         ? "text-[#605BFF] font-semibold"
@@ -256,7 +256,7 @@ const Sidebar = () => {
             {/* Manajemen Akun Section */}
             <li className="mt-4">
               <Link
-                href="/manajemen-akun"
+                href="/admin/manajemen-akun"
                 className={`flex items-center p-2 rounded-lg ${
                   active === 3
                     ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"
@@ -278,7 +278,7 @@ const Sidebar = () => {
             {/* Sinkronisasi Data Section */}
             <li className="mt-4">
               <Link
-                href="/sinkronisasi"
+                href="/admin/sinkronisasi"
                 className={`flex items-center p-2 rounded-lg ${
                   active === 4
                     ? "text-[#605BFF] font-semibold border border-[#E6E7EC]"

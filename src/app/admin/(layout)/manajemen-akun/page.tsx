@@ -8,16 +8,15 @@ import ModalAdd from "@/components/modal-add";
 import TextField from "@/components/textfield";
 import Button from "@/components/button";
 import { MdAddCircleOutline } from "react-icons/md";
-import { get, post, getWithAuth } from "@/services/api";
+import {
+  get,
+  post,
+  getWithAuth,
+  patchWithAuthJson,
+  deleteWithAuthJson,
+} from "@/services/api";
+import { toast, ToastContainer } from "react-toastify";
 // import { cookies } from "next/headers";
-
-interface AccountData {
-  No: number;
-  Username: string;
-  Role: string;
-  Status: JSX.Element;
-  Action: JSX.Element;
-}
 
 export default function manajemenAkun() {
   const [data, setData] = useState<any[]>([]);
@@ -26,8 +25,9 @@ export default function manajemenAkun() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [filteredData, setFilteredData] = useState<any[]>([]); // Data setelah difilter
   const [search, setSearch] = useState<string>("");
-
-  // const token: string | undefined = cookies.get("token");
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [current, setCurrent] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -39,16 +39,23 @@ export default function manajemenAkun() {
 
   const getData = async () => {
     try {
-      const response = await getWithAuth("token", "users?page=1");
-      const data = response.data.data;
-      const transformedData = data.map((user: any, index: number) => ({
+      setIsLoading(true);
+      const response = await getWithAuth(
+        "44|VZCpIetN36UXZtjUFNx8ir1AbnTVbJNFWhW927pxaacbb508",
+        `users?page=${current}`
+      );
+      setTotalPages(response.data.data?.pagination.last_page);
+      console.log("API Response:", response.data); // Debug log
+      const apiData = response.data.data?.data || []; // Correct nested path
+      console.log("User Data Array:", apiData); // Debug log
+      const transformedData = apiData.map((user: any, index: number) => ({
         No: index + 1,
         Username: user.username,
         Role: user.role,
         Status: (
           <div
             className={`w-fit justify-center items-center mx-auto px-2 py-1 rounded-2xl text-xs md:text-sm font-semibold ${
-              user.status === "Active"
+              user.status === "active"
                 ? "bg-[#ECFDF3] text-[#027A48]"
                 : "bg-[#FEF3F2] text-[#B42318]"
             }`}
@@ -83,6 +90,8 @@ export default function manajemenAkun() {
     } catch (error) {
       console.error("Error fetching data:", error);
       return [];
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,7 +102,7 @@ export default function manajemenAkun() {
     };
 
     fetchData();
-  }, []);
+  }, [current]);
 
   // Fungsi untuk filter data berdasarkan pencarian
   useEffect(() => {
@@ -140,11 +149,15 @@ export default function manajemenAkun() {
 
   const handleEdit = async (idUser: number) => {
     try {
-      await post(`users/${idUser}`, {
-        username: formData.username,
-        password: formData.password,
-        role: formData.role,
-      });
+      await patchWithAuthJson(
+        `users/${idUser}`,
+        {
+          username: formData.username,
+          password: formData.password,
+          role: formData.role,
+        },
+        "44|VZCpIetN36UXZtjUFNx8ir1AbnTVbJNFWhW927pxaacbb508"
+      );
       console.log(`User dengan ID ${idUser} berhasil diedit.`);
       setShowAddModal(false);
       const newData = await getData();
@@ -157,12 +170,17 @@ export default function manajemenAkun() {
   const handleDelete = async (idUser: number | null) => {
     try {
       if (idUser) {
-        await post(`users/${idUser}`, null); // Ganti dengan method DELETE jika diubah di API
+        setShowDeleteModal(false);
+        setIsLoading(true);
+        await deleteWithAuthJson(
+          `users/${idUser}`,
+          "44|VZCpIetN36UXZtjUFNx8ir1AbnTVbJNFWhW927pxaacbb508"
+        );
         console.log(`User dengan ID ${idUser} berhasil dihapus.`);
         const newData = await getData();
         setData(newData);
       }
-      setShowDeleteModal(false);
+      toast.success("User successfully deleted.");
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -205,7 +223,10 @@ export default function manajemenAkun() {
             button2Color="bg-[#D92D20]"
             button2TextColor="text-[#FFFFFF]"
             onButton1Click={handleModalClose}
-            onButton2Click={() => handleDelete(selectedId)}
+            onButton2Click={() => {
+              handleModalClose;
+              handleDelete(selectedId);
+            }}
           />
         )}
 
@@ -248,7 +269,13 @@ export default function manajemenAkun() {
           </div>
         </div>
 
-        <Table data={filteredData} header={header1} isLoading={false} />
+        <Table
+          data={filteredData}
+          header={header1}
+          isLoading={isLoading}
+          totalPages={totalPages}
+          current={(curr) => setCurrent(curr)}
+        />
       </div>
     </>
   );

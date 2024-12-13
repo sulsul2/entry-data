@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-const url = "https://communal-supposedly-macaque.ngrok-free.app/api/";
+const url = "https://entry-data-api.fly.dev/api/";
 
 export const post = async (
   api: string,
@@ -56,6 +56,45 @@ export const getWithAuth = async (
       Accept: "application/json",
       "Content-Type": "application/json",
       "ngrok-skip-browser-warning": "69420",
+      Authorization: "Bearer " + token,
+    },
+  });
+};
+
+export const patchWithAuthJson = async (
+  api: string,
+  json: any,
+  token: string
+): Promise<AxiosResponse<any, any>> => {
+  return await axios.patch(url + api, json, {
+    headers: {
+      // Accept: "multipart/form-data",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+};
+
+export const putWithAuthJson = async (
+  api: string,
+  json: any,
+  token: string
+): Promise<AxiosResponse<any, any>> => {
+  return await axios.put(url + api, json, {
+    headers: {
+      // Accept: "multipart/form-data",
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+};
+
+export const deleteWithAuthJson = async (
+  api: string,
+  token: string
+): Promise<AxiosResponse<any, any>> => {
+  return await axios.delete(url + api, {
+    headers: {
       Authorization: "Bearer " + token,
     },
   });
