@@ -2,17 +2,46 @@
 import Button from "@/components/button";
 import ColorBox from "@/components/colorbox";
 import UploadBox from "@/components/uploadbox";
+import { postWithAuth } from "@/services/api";
+import { RootState } from "@/store/store";
 import { useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import Cookies from "universal-cookie";
 
 export default function Kustomisasi() {
+  const customization = useSelector((state: RootState) => state.customization);
   const [selectedColor, setSelectedColor] = useState<
     "primary" | "secondary" | "tersier"
-  >("primary");
+  >(customization.color);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [faviconFile, setFaviconFile] = useState<File | null>(null);
+  const cookies = new Cookies();
 
   const handleColorChange = (color: "primary" | "secondary" | "tersier") => {
     setSelectedColor(color);
   };
+
+  const handleCustomization = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("active_color", selectedColor);
+
+      if (logoFile) {
+        formData.append("logo", logoFile);
+      }
+
+      if (faviconFile) {
+        formData.append("favicon", faviconFile);
+      }
+      const token = cookies.get("token");
+      const response = await postWithAuth("customization", formData, token);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="w-screen h-screen bg-white py-12">
       <div className="flex items-center justify-start px-5 md:px-20 gap-[14px] mb-3 md:mb-6">
@@ -50,17 +79,23 @@ export default function Kustomisasi() {
             <p className="text-[#2A3D4A] font-semibold text-[14px] md:text-[20px]">
               Logo
             </p>
-            <UploadBox type={"Logo"} />
+            <UploadBox type={"Logo"} setFile={setLogoFile} />
           </div>
           <div className="flex flex-col items-start justify-start gap-4">
             <p className="text-[#2A3D4A] font-semibold text-[14px] md:text-[20px]">
               Favicon
             </p>
-            <UploadBox type={"Favicon"} />
+            <UploadBox type={"Favicon"} setFile={setFaviconFile} />
           </div>
         </div>
         <div className="w-full flex justify-center items-center">
-          <Button text={"Simpan"} type={"button"} color="primary" width={350} />
+          <Button
+            text={"Simpan"}
+            type={"button"}
+            color="primary"
+            width={350}
+            onClick={handleCustomization}
+          />
         </div>
       </div>
     </div>

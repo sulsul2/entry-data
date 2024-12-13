@@ -3,8 +3,10 @@ import Button from "@/components/button";
 import TextField from "@/components/textfield";
 import Toast from "@/components/toast";
 import { post } from "@/services/api";
+import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Cookies from "universal-cookie";
 
 export default function Login() {
@@ -14,6 +16,27 @@ export default function Login() {
   const [isError, setIsError] = useState<boolean>(false);
   const cookies = new Cookies();
   const router = useRouter();
+  const customization = useSelector((state: RootState) => state.customization);
+
+  useEffect(() => {
+    const token = cookies.get("token");
+    const role = cookies.get("role");
+
+    if (token && role) {
+      switch (role) {
+        case "manager":
+          router.push("/admin/persetujuan-data");
+          break;
+        case "data_entry":
+          router.push("/data-entry");
+          break;
+        default:
+          router.push("/lihat-data");
+          break;
+      }
+    }
+  }, [cookies, router]);
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const data = {
@@ -30,7 +53,7 @@ export default function Login() {
         cookies.set("token", token);
         cookies.set("role", role);
         if (role == "manager") {
-          router.push("/persetujuan-data");
+          router.push("/admin/persetujuan-data");
         } else if (role == "data_entry") {
           router.push("/data-entry");
         } else {
@@ -57,7 +80,7 @@ export default function Login() {
         />
       </div>
       <div className="w-auto h-auto flex flex-col items-center bg-white rounded-[20px] drop-shadow-2xl shadow-[#0A0D1224] p-5 md:p-6">
-        <img src="/globe.svg" alt="" className="w-12 h-12" />
+        <img src={customization.logo} alt="" className="w-12 h-12" />
         <p className="text-[#181D27] text-[24px] md:text-[30px] font-semibold mt-6">
           Login
         </p>
@@ -85,6 +108,7 @@ export default function Login() {
           type={"submit"}
           onClick={handleLogin}
           isLoading={isLoading}
+          color={customization.color}
         />
       </div>
       <div className={`${isError ? "invisible" : "hidden"}`}>
