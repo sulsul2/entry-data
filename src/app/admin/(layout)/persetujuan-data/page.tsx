@@ -147,16 +147,16 @@ export default function PersetujuanData() {
       console.log("Fetched Lembaga Data:", apiData);
 
       const transformedData = apiData.map((lembaga: any, index: number) => ({
-        IdLembaga: lembaga.idLembaga,
+        IdLembaga: index + 1,
         NamaInstansi: lembaga.namaInstansi,
         Alamat: lembaga.alamat || "-",
-        NoTelpon: lembaga.noTelpon || "-",
+        NoTelpon: lembaga.no_kontak || "-",
         Status: (
           <div
             className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center ${
-              lembaga.status === "Menunggu Persetujuan"
+              lembaga.status === "waiting"
                 ? "bg-[#FFFAEB] text-[#B54708]"
-                : lembaga.status === "Disetujui"
+                : lembaga.status === "accepted"
                 ? "bg-[#ECFDF3] text-[#027A48]"
                 : "bg-[#FEF3F2] text-[#B42318]"
             }`}
@@ -165,20 +165,20 @@ export default function PersetujuanData() {
           </div>
         ),
         Detail: (
-          <Link href={`/lihat-data/${lembaga.idLembaga}/lembaga`}>
+          <Link href={`/lihat-data/${lembaga.id}/lembaga`}>
             <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
               Lihat Detail
             </div>
           </Link>
         ),
-        Action: getActionButtons(lembaga.status, lembaga.idLembaga),
+        Action: getActionButtons(lembaga.status, lembaga.id),
       }));
 
       setIsLoading(false); // Stop loading state
       return transformedData;
     } catch (error) {
       console.error("Error fetching user data:", error);
-      setIsLoading(false); // Stop loading state even on error
+      setIsLoading(false);
       return [];
     }
   };
@@ -232,17 +232,34 @@ export default function PersetujuanData() {
           },
           token
         );
-        console.log(`User dengan ID ${id} berhasil diedit.`);
         setShowApproveModal(false);
         const newData = await getUserData();
         setData(newData);
         toast.success("User successfully aprroved.");
       } catch (error) {
         console.error("Error editing user:", error);
+        setIsLoading(false);
       }
     } else if (type === "data-lembaga") {
-      console.log(`Lembaga dengan ID ${id} disetujui.`);
-      // Tambahkan logika untuk lembaga
+      try {
+        setShowApproveModal(false);
+        setIsLoading(true);
+        await putWithAuthJson(
+          `entry-lembaga/status/${id}`,
+          {
+            status: "accepted",
+          },
+          token
+        );
+        setShowApproveModal(false);
+        const newData = await getInstitutionData();
+        setData(newData);
+        toast.success("Lembaga berhasil disetujui.");
+      } catch (error) {
+        console.error("Error editing user:", error);
+        toast.error("Lembaga gagal disetujui.");
+        setIsLoading(false);
+      }
     }
     handleModalClose();
   };
@@ -265,10 +282,27 @@ export default function PersetujuanData() {
         toast.success("User successfully rejected.");
       } catch (error) {
         toast.error("Failed to reject user ");
+        setIsLoading(false);
       }
     } else if (type === "data-lembaga") {
-      console.log(`Lembaga dengan ID ${id} ditolak.`);
-      // Tambahkan logika untuk lembaga
+      try {
+        setShowRejectModal(false);
+        setIsLoading(true);
+        await putWithAuthJson(
+          `entry-lembaga/status/${id}`,
+          {
+            status: "rejected",
+          },
+          token
+        );
+        setShowRejectModal(false);
+        const newData = await getInstitutionData();
+        setData(newData);
+        toast.success("Lembaga berhasil ditolak.");
+      } catch (error) {
+        toast.error("Lembaga gagal ditolak.");
+        setIsLoading(false);
+      }
     }
     handleModalClose();
   };

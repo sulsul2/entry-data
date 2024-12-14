@@ -139,7 +139,7 @@ export default function EksporData() {
           IdLembaga: index + 1,
           NamaInstansi: lembaga.namaInstansi,
           Alamat: lembaga.alamat || "-",
-          NoTelpon: lembaga.noTelpon || "-",
+          NoTelpon: lembaga.no_kontak || "-",
           Status: (
             <div
               className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-smfont-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
@@ -147,7 +147,7 @@ export default function EksporData() {
               {lembaga.status}
             </div>
           ),
-          Action: <DropdownButton id={lembaga.idLembaga} type={type} />,
+          Action: <DropdownButton id={lembaga.id} type={type} />,
         }));
 
       setIsLoading(false);

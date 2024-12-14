@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import HeaderUser from "@/components/header-user";
 import { getWithAuth } from "@/services/api";
 import TextField from "@/components/textfield";
+import Cookies from "universal-cookie";
 
 export default function persetujuan() {
   const [data, setData] = useState<any[]>([]);
@@ -13,6 +14,9 @@ export default function persetujuan() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const cookies = new Cookies();
+
+  const token = cookies.get("token");
 
   const header = [
     "Id User",
@@ -26,10 +30,7 @@ export default function persetujuan() {
   const getData = async () => {
     try {
       setIsLoading(true); // Set loading state
-      const response = await getWithAuth(
-        "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120",
-        `entry-user?page=${current}`
-      );
+      const response = await getWithAuth(token, `entry-user?page=${current}`);
 
       console.log(response);
 

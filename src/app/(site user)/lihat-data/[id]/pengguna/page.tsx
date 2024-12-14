@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 import React from "react";
 import Button from "@/components/button";
 import { IoMdArrowBack } from "react-icons/io";
-import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa";
+import { FaFacebook, FaLinkedin } from "react-icons/fa";
+import { RiInstagramFill } from "react-icons/ri";
 import { IconType } from "react-icons";
 import { getWithAuth } from "@/services/api";
+import Cookies from "universal-cookie";
 
 export default function DetailPage({
   params,
@@ -18,24 +20,38 @@ export default function DetailPage({
   const [data, setData] = useState<any | null>(null); // Data for the page
   const [loading, setLoading] = useState(true);
   const { id } = React.use(params);
+  const cookies = new Cookies();
+  const token = cookies.get("token");
+
+  const platformIcons: {
+    [key in "facebook" | "instagram" | "linkedin"]: IconType;
+  } = {
+    facebook: FaFacebook,
+    instagram: RiInstagramFill,
+    linkedin: FaLinkedin,
+  };
 
   useEffect(() => {
-    const userData = getDataById(id);
-    setData(userData);
-    setLoading(false); // Mark as loaded
+    const fetchData = async () => {
+      try {
+        const userData = await getDataById(id);
+        setData(userData);
+        console.log(userData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [id]);
 
   // Fungsi untuk mencari data berdasarkan ID
   const getDataById = async (id: string) => {
     try {
-      const response = await getWithAuth(
-        "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120",
-        `entry-user/${id}`
-      );
-
-      console.log(`Fetched data for ID ${id}:`, response.data);
-
-      return response.data; // Pastikan data sesuai dengan kebutuhan
+      const response = await getWithAuth(token, `entry-user/${id}`);
+      const apiData = response.data.data; // Ambil data dari response
+      return apiData; // Pastikan data sesuai dengan kebutuhan
     } catch (error) {
       console.error(`Error fetching data for ID ${id}:`, error);
       return null; // Kembalikan nilai null jika terjadi kesalahan
@@ -71,7 +87,7 @@ export default function DetailPage({
                 A. Data Personal
               </h2>
 
-              <div className="flex flex-col md:flex-row justify-between">
+              <div className="flex flex-col md:flex-row justify-between gap-4">
                 {/* Kiri */}
                 <div>
                   <div className="mb-4">
@@ -79,15 +95,15 @@ export default function DetailPage({
                       Nama
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.nama}
+                      {data.nama || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Jenis Kelamin:
+                      Jenis Kelamin
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.jenisKelamin}
+                      {data.jenis_kelamin || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -95,7 +111,7 @@ export default function DetailPage({
                       Tempat Lahir
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.tempatLahir}
+                      {data.tempat_lahir || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -103,7 +119,7 @@ export default function DetailPage({
                       Tanggal Lahir
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.tanggalLahir}
+                      {data.tanggal_lahir || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -123,7 +139,7 @@ export default function DetailPage({
                       Alamat
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.alamat}
+                      {data.alamat || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -131,7 +147,7 @@ export default function DetailPage({
                       Email
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.email}
+                      {data.email || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -139,19 +155,19 @@ export default function DetailPage({
                       Nomor Telepon
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.kontak}
+                      {data.no_telp || "-"}
                     </p>
                   </div>
                 </div>
 
                 {/* Kanan */}
-                <div>
+                <div className="w-1/3">
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Data Keluarga Inti
+                      Data Keluarga
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.keluarga}
+                      {data.data_keluarga || "-"}
                     </p>
                   </div>
                   {/* <div className="mb-4">
@@ -172,40 +188,67 @@ export default function DetailPage({
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
                         Akun Media Sosial
                       </h3>
-                      {/* <div className="text-sm text-[#000000] font-semibold">
-                        {data.mediaSosial &&
-                          Object.entries(data.mediaSosial).map(
-                            ([key, value], index) => {
-                              let Icon: IconType | undefined;
+                      <div className="text-sm text-[#000000] font-normal">
+                        {["facebook", "instagram", "linkedin"].map(
+                          (platform, index) => {
+                            const Icon =
+                              platformIcons[
+                                platform as
+                                  | "facebook"
+                                  | "instagram"
+                                  | "linkedin"
+                              ];
+                            const handle = data[platform];
 
-                              if (key === "instagram") {
-                                Icon = FaInstagram;
-                              } else if (key === "facebook") {
-                                Icon = FaFacebook;
-                              } else if (key === "linkedin") {
-                                Icon = FaLinkedin;
-                              }
+                            if (!handle) return null;
 
-                              return (
-                                <div
-                                  key={index}
-                                  className="flex items-center gap-2 mb-4"
-                                >
-                                  {Icon && <Icon className="text-xl" />}
-                                  <p>{value as string}</p>
-                                </div>
-                              );
-                            }
-                          )}
-                      </div> */}
+                            return (
+                              <div
+                                key={index}
+                                className="flex items-center gap-2 mb-4"
+                              >
+                                {Icon && <Icon className="text-xl" />}
+                                <p>{handle || "-"}</p>
+                              </div>
+                            );
+                          }
+                        )}
+                      </div>
                     </div>
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
                         Jumlah Pengikut
                       </h3>
-                      <p className="text-sm text-[#000000] font-semibold">
-                        {data.tempatLahir}
-                      </p>
+                      <div className="text-sm text-[#000000] font-normal">
+                        {/* Display follower counts from all platforms */}
+                        {["facebook", "instagram", "linkedin"].map(
+                          (platform, index) => {
+                            const followers = data[`${platform}_follow`];
+                            const Icon =
+                              platformIcons[
+                                platform as
+                                  | "facebook"
+                                  | "instagram"
+                                  | "linkedin"
+                              ];
+                            const handle = data[platform];
+
+                            if (!handle) return null;
+
+                            if (followers === undefined) return null;
+
+                            return (
+                              <div
+                                key={index}
+                                className="flex items-center gap-2 mb-4"
+                              >
+                                {Icon && <Icon className="text-xl" />}
+                                {`${followers} followers` || "-"}
+                              </div>
+                            );
+                          }
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -220,60 +263,44 @@ export default function DetailPage({
 
               <div className="flex flex-col md:flex-row justify-between">
                 {/* Kiri */}
-                <div>
+                <div className="w-1/2">
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Parlemen
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.parlemen.map(
-                        (parlemen: string, index: number) => (
-                          <li key={index}>{parlemen}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.riwayat_parlemen || "-"}
+                    </p>
                   </div>
 
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Pekerjaan
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.pekerjaan.map(
-                        (pekerjaan: string, index: number) => (
-                          <li key={index}>{pekerjaan}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.riwayat_kerja || "-"}
+                    </p>
                   </div>
                 </div>
 
                 {/* Kanan */}
-                <div>
+                <div className="w-1/2">
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jabatan di Kelompok Media
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.kelompok_media.map(
-                        (kelompok_media: string, index: number) => (
-                          <li key={index}>{kelompok_media}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.jabatan_kelompok || "-"}
+                    </p>
                   </div>
 
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jabatan di Organisasi
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.organisasi.map(
-                        (organisasi: string, index: number) => (
-                          <li key={index}>{organisasi}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.jabatan_organisasi || "-"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -287,34 +314,26 @@ export default function DetailPage({
 
               <div className="flex flex-col md:flex-row justify-between">
                 {/* Kiri */}
-                <div>
+                <div className="w-1/2">
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
-                      Pemberitaan/Isu yang sering diangkat terkait Kemenkeu{" "}
+                      Riwayat Pendidikan
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.parlemen.map(
-                        (parlemen: string, index: number) => (
-                          <li key={index}>{parlemen}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.riwayat_pendidikan || "-"}
+                    </p>
                   </div>
                 </div>
 
                 {/* Kanan */}
-                <div>
+                <div className="w-1/2">
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
-                      Jabatan di Kelompok Media
+                      Riwayat Penghargaan
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.kelompok_media.map(
-                        (kelompok_media: string, index: number) => (
-                          <li key={index}>{kelompok_media}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.riwayat_penghargaan || "-"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -323,75 +342,55 @@ export default function DetailPage({
             {/* Section D */}
             <div className="mb-12">
               <h2 className="text-xl text-[#2A3D4A] font-semibold mb-4">
-                D. Data Lainnya{" "}
+                D. Data Lainnya
               </h2>
 
-              <div className="flex flex-col md:flex-row justify-betweens">
+              <div className="flex flex-col md:flex-row justify-between">
                 {/* Kiri */}
-                <div>
-                  <div className="mb-6">
+                <div className="w-1/2">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
-                      Pemberitaan/Isu yang sering diangkat terkait Kemenkeu{" "}
+                      Pemberitaan/Isu yang sering diangkat terkait Kemenkeu
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.parlemen.map(
-                        (parlemen: string, index: number) => (
-                          <li key={index}>{parlemen}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.isu_kemenkeu || "-"}
+                    </p>
                   </div>
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Sikap ke Kemenkeu
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.parlemen.map(
-                        (parlemen: string, index: number) => (
-                          <li key={index}>{parlemen}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.sikap_kemenkeu || "-"}
+                    </p>
                   </div>
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Hukum
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.parlemen.map(
-                        (parlemen: string, index: number) => (
-                          <li key={index}>{parlemen}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.riwayat_hukum || "-"}
+                    </p>
                   </div>
                 </div>
 
                 {/* Kanan */}
-                <div>
-                  <div className="mb-6">
+                <div className="w-1/2">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Rekomendasi Pendekatan
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.kelompok_media.map(
-                        (kelompok_media: string, index: number) => (
-                          <li key={index}>{kelompok_media}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.rekomen_pendekatan || "-"}
+                    </p>
                   </div>
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Tingkat Pengaruh Di Masyarakat
                     </h3>
-                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
-                      {data.riwayat.kelompok_media.map(
-                        (kelompok_media: string, index: number) => (
-                          <li key={index}>{kelompok_media}</li>
-                        )
-                      )}
-                    </ul> */}
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.tingkat_pengaruh || "-"}
+                    </p>
                   </div>
                 </div>
               </div>

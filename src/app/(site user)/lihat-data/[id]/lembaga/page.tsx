@@ -5,107 +5,13 @@ import { useState, useEffect } from "react";
 import React from "react";
 import Button from "@/components/button";
 import { IoMdArrowBack } from "react-icons/io";
-import {
-  FaInstagram,
-  FaFacebook,
-  FaLinkedin,
-  FaYoutube,
-  FaTwitter,
-} from "react-icons/fa";
+import { FaFacebook, FaYoutube } from "react-icons/fa";
+import { RiInstagramFill } from "react-icons/ri";
+import { SiApplepodcasts } from "react-icons/si";
+import { FaSquareXTwitter } from "react-icons/fa6";
 import { IconType } from "react-icons";
-
-const DataLembaga = [
-  {
-    idLembaga: "1",
-    namaLembaga: "Kemenkeu",
-    akunMediaSosial: "@sahabaticw",
-    jumlahPengikut: "1.000 followers",
-    akunEcommerce: "Sahabat ICW",
-    alamat: "Jl. Ganesha 10, Tamansari, Coblong, Dago, Kota Bandung",
-    email: "shintakamdani@gmail.com",
-    nomorKontak: "+6281817XXXX",
-    linkWebsite: "https://antikorupsi.org/id",
-    deskripsi:
-      "Indonesia Corruption Watch lahir di tengah gejolak reformasi 98, tepatnya 21 Juni 1998. Digawangi beberapa aktivis YLBHI, ICW berdiri dengan keyakinan bahwa korupsi harus diberantas...",
-    mediaSosial: {
-      instagram: "@sahabaticw",
-      facebook: "@sahabaticw",
-      x: "@sahabaticw",
-      Youtube: "@sahabaticw",
-      linkedin: "@sahabaticw",
-    },
-    afiliasiNGO: [
-      "YLBHI",
-      "LBH Jakarta",
-      "ELSAM",
-      "Kesatuan Aksi Serikat Buruh Indonesia (KASBI)",
-      "BEM Seluruh Indonesia (BEM SI) Kerakyatan",
-      "KontraS",
-      "Imparsial",
-      "Public Virtue Indonesia",
-      "Puskapol UI",
-      "KoDE Inisiatif",
-      "Perludem",
-      "Transparency International Indonesia (TII)",
-      "Seknas Fitra",
-      "Yayasan TIFA",
-      "USAID",
-      "GIZ Jerman",
-      "HIVOS",
-      "UNODC",
-      "Cakra Wikara Indonesia",
-      "Extinction Rebellion",
-      "INDEF",
-      "Visi Law Office",
-      "WALHI",
-      "Aliansi Masyarakat Adat Nasional",
-      "Pusat Studi Hukum Kebijakan Indonesia",
-      "Narasi Newsroom",
-      "PUKAT UGM",
-      "STHI Jentera",
-      "LBH APIK",
-      "Publish What You Pay Indonesia",
-      "Tempo Majalah",
-      "Greenpeace",
-    ],
-    visi: "Menguatnya posisi tawar rakyat untuk mengontrol negara...",
-    misi: [
-      "Memperjuangkan terwujudnya sistem politik, hukum, ekonomi, dan birokrasi yang bersih dari korupsi...",
-      "Memperkuat partisipasi rakyat dalam proses pengambilan dan pengawasan kebijakan publik...",
-    ],
-    tingkatPengaruh:
-      "Memiliki pengaruh yang besar di kalangan aktivis anti korupsi, aktivis pembela HAM, dan mahasiswa...",
-    sumberDana: ["Sumbangan masyarakat", "Sponsor"],
-    pendiri: [
-      {
-        nama: "Teten Masduki",
-        profil: "Teten berasal dari Garut, Jawa Barat, 6 Mei 1963...",
-      },
-      {
-        nama: "Todung Mulya Lubis",
-        profil: "Lahir di Tapanuli Selatan pada tanggal 4 Juli 1949...",
-      },
-      {
-        nama: "Faisal Basri",
-        profil:
-          "Faisal Basri lebih dikenal sebagai seorang ekonom dan politisi...",
-      },
-      {
-        nama: "Ani Soetjipto",
-        profil:
-          "Ani Soetjipto adalah pengajar senior di Departemen Hubungan Internasional Universitas Indonesia...",
-      },
-    ],
-    pengurus: {
-      dewanEtik: [
-        { koordinator: "Dadang Trisasongko" },
-        { anggota: "dra. Ani Soetjipto, MA" },
-        { anggota: "Ny. Kamala Chandrakirana" },
-      ],
-      badanPengurus: [{ koordinator: "Adnan Topan Husodo" }],
-    },
-  },
-];
+import { getWithAuth } from "@/services/api";
+import Cookies from "universal-cookie";
 
 export default function DetailPage({
   params,
@@ -116,17 +22,45 @@ export default function DetailPage({
   const [data, setData] = useState<any | null>(null); // Data for the page
   const [loading, setLoading] = useState(true);
   const { id } = React.use(params);
+  const cookies = new Cookies();
+  const token = cookies.get("token");
+
+  const platformIcons: {
+    [key in "facebook" | "instagram" | "x" | "youtube" | "podcast"]: IconType;
+  } = {
+    facebook: FaFacebook,
+    instagram: RiInstagramFill,
+    x: FaSquareXTwitter,
+    youtube: FaYoutube,
+    podcast: SiApplepodcasts,
+  };
 
   useEffect(() => {
-    const institutionData = getInstitutionDataByID(id);
-    setData(institutionData);
-    setLoading(false); // Mark as loaded
+    const fetchData = async () => {
+      try {
+        const userData = await getDataById(id);
+        setData(userData);
+        console.log(userData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [id]);
 
-  function getInstitutionDataByID(id: string) {
-    const institution = DataLembaga.find((lembaga) => lembaga.idLembaga === id);
-    return institution || null;
-  }
+  // Fungsi untuk mencari data berdasarkan ID
+  const getDataById = async (id: string) => {
+    try {
+      const response = await getWithAuth(token, `entry-lembaga/${id}`);
+      const apiData = response.data.data; // Ambil data dari response
+      return apiData; // Pastikan data sesuai dengan kebutuhan
+    } catch (error) {
+      console.error(`Error fetching data for ID ${id}:`, error);
+      return null; // Kembalikan nilai null jika terjadi kesalahan
+    }
+  };
 
   if (loading) {
     return <p>Loading...</p>; // Display loading state until data is fetched
@@ -165,7 +99,7 @@ export default function DetailPage({
                       Nama Lembaga
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.namaLembaga}
+                      {data.namaLembaga || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -173,7 +107,7 @@ export default function DetailPage({
                       Alamat
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.alamat}
+                      {data.alamat || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -181,7 +115,7 @@ export default function DetailPage({
                       Email
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.email}
+                      {data.email || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -189,7 +123,7 @@ export default function DetailPage({
                       Nomor Kontak
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.nomorKontak}
+                      {data.no_kontak || "-"}
                     </p>
                   </div>
                   <div className="mb-4">
@@ -197,7 +131,7 @@ export default function DetailPage({
                       Link Website
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.linkWebsite || "-"}
+                      {data.link_web_lembaga || "-"}
                     </p>
                   </div>
                 </div>
@@ -205,56 +139,85 @@ export default function DetailPage({
                 {/* Tengah */}
                 <div>
                   <div className="mb-4 flex flex-col md:flex-row gap-4 md:gap-32">
+                    {/* Social Media Accounts */}
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
                         Akun Media Sosial
                       </h3>
-                      <div className="text-sm text-[#000000] font-semibold">
-                        {data.mediaSosial &&
-                          Object.entries(data.mediaSosial).map(
-                            ([key, value], index) => {
-                              let Icon: IconType | undefined;
+                      <div className="text-sm text-[#000000] font-normal">
+                        {[
+                          "facebook",
+                          "instagram",
+                          "x",
+                          "youtube",
+                          "podcast",
+                        ].map((platform, index) => {
+                          const Icon =
+                            platformIcons[
+                              platform as
+                                | "facebook"
+                                | "instagram"
+                                | "x"
+                                | "youtube"
+                                | "podcast"
+                            ];
+                          const handle = data[platform];
 
-                              if (key === "instagram") {
-                                Icon = FaInstagram;
-                              } else if (key === "facebook") {
-                                Icon = FaFacebook;
-                              } else if (key === "linkedin") {
-                                Icon = FaLinkedin;
-                              } else if (key === "Youtube") {
-                                Icon = FaYoutube;
-                              } else if (key === "x") {
-                                Icon = FaTwitter;
-                              }
+                          if (!handle) return null;
 
-                              return (
-                                <div
-                                  key={index}
-                                  className="flex items-center gap-2 mb-6"
-                                >
-                                  {Icon && <Icon className="text-xl" />}
-                                  <p>{value as string}</p>
-                                </div>
-                              );
-                            }
-                          )}
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-center gap-2 mb-4"
+                            >
+                              {Icon && <Icon className="text-xl" />}
+                              <p>{handle || "-"}</p>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
+
+                    {/* Follower Count */}
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
                         Jumlah Pengikut
                       </h3>
-                      <p className="text-sm text-[#000000] font-semibold">
-                        {data.tempatLahir}
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="text-xs text-[#414651] font-medium mb-2">
-                        Akun E-commerce
-                      </h3>
-                      <p className="text-sm text-[#000000] font-semibold">
-                        {data.tempatLahir}
-                      </p>
+                      <div className="text-sm text-[#000000] font-normal">
+                        {[
+                          "facebook",
+                          "instagram",
+                          "x",
+                          "youtube",
+                          "podcast",
+                        ].map((platform, index) => {
+                          const Icon =
+                            platformIcons[
+                              platform as
+                                | "facebook"
+                                | "instagram"
+                                | "x"
+                                | "youtube"
+                                | "podcast"
+                            ];
+                          const handle = data[platform];
+
+                          if (!handle) return null;
+                          const followers = data[`${platform}_follow`];
+
+                          if (followers === undefined) return null;
+
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-center gap-2 mb-4"
+                            >
+                              {Icon && <Icon className="text-xl" />}
+                              {followers ? `${followers} followers` : "-"}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>
