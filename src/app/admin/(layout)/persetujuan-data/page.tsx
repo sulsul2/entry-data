@@ -1,18 +1,15 @@
 "use client";
 import Table from "@/components/table";
 import Link from "next/link";
-import { JSXElementConstructor, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FaCheck } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
 import TextField from "@/components/textfield";
 import ModalApprove from "@/components/modal-approval";
-import {
-  getWithAuth,
-  patchWithAuthJson,
-  putWithAuthJson,
-} from "@/services/api";
+import { getWithAuth, putWithAuthJson } from "@/services/api";
 import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
 
 export default function PersetujuanData() {
   const searchParams = useSearchParams();
@@ -28,6 +25,9 @@ export default function PersetujuanData() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const cookies = new Cookies();
+
+  const token = cookies.get("token");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +56,7 @@ export default function PersetujuanData() {
           "Details",
           "Action",
         ]);
-        const institutionData = getInstitutionData();
+        const institutionData = await getInstitutionData();
         setData(institutionData);
         setFilteredData(institutionData);
       }
@@ -90,10 +90,7 @@ export default function PersetujuanData() {
   const getUserData = async () => {
     try {
       setIsLoading(true);
-      const response = await getWithAuth(
-        "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120",
-        `entry-user?page=${current}`
-      );
+      const response = await getWithAuth(token, `entry-user?page=${current}`);
       console.log(response);
       setTotalPages(response.data.data?.pagination.last_page);
       const apiData = response.data.data?.data || [];
@@ -137,34 +134,53 @@ export default function PersetujuanData() {
   };
 
   // Fungsi untuk transformasi data Lembaga
-  const getInstitutionData = () => {
-    return data.map((lembaga) => ({
-      IdLembaga: lembaga.idLembaga,
-      NamaInstansi: lembaga.namaInstansi,
-      Alamat: lembaga.alamat || "-",
-      NoTelpon: lembaga.noTelpon || "-",
-      Status: (
-        <div
-          className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center ${
-            lembaga.status === "Menunggu Persetujuan"
-              ? "bg-[#FFFAEB] text-[#B54708]"
-              : lembaga.status === "Disetujui"
-              ? "bg-[#ECFDF3] text-[#027A48]"
-              : "bg-[#FEF3F2] text-[#B42318]"
-          }`}
-        >
-          {lembaga.status}
-        </div>
-      ),
-      Detail: (
-        <Link href={`/lihat-data/${lembaga.idLembaga}/lembaga`}>
-          <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
-            Lihat Detail
+  const getInstitutionData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getWithAuth(
+        token,
+        `entry-lembaga?page=${current}`
+      );
+      console.log(response);
+      setTotalPages(response.data.data?.pagination.last_page);
+      const apiData = response.data.data?.data || [];
+      console.log("Fetched Lembaga Data:", apiData);
+
+      const transformedData = apiData.map((lembaga: any, index: number) => ({
+        IdLembaga: lembaga.idLembaga,
+        NamaInstansi: lembaga.namaInstansi,
+        Alamat: lembaga.alamat || "-",
+        NoTelpon: lembaga.noTelpon || "-",
+        Status: (
+          <div
+            className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center ${
+              lembaga.status === "Menunggu Persetujuan"
+                ? "bg-[#FFFAEB] text-[#B54708]"
+                : lembaga.status === "Disetujui"
+                ? "bg-[#ECFDF3] text-[#027A48]"
+                : "bg-[#FEF3F2] text-[#B42318]"
+            }`}
+          >
+            {lembaga.status}
           </div>
-        </Link>
-      ),
-      Action: getActionButtons(lembaga.status, lembaga.idLembaga),
-    }));
+        ),
+        Detail: (
+          <Link href={`/lihat-data/${lembaga.idLembaga}/lembaga`}>
+            <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
+              Lihat Detail
+            </div>
+          </Link>
+        ),
+        Action: getActionButtons(lembaga.status, lembaga.idLembaga),
+      }));
+
+      setIsLoading(false); // Stop loading state
+      return transformedData;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setIsLoading(false); // Stop loading state even on error
+      return [];
+    }
   };
 
   // Fungsi untuk menentukan tombol berdasarkan status
@@ -214,7 +230,7 @@ export default function PersetujuanData() {
           {
             status: "accepted",
           },
-          "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120"
+          token
         );
         console.log(`User dengan ID ${id} berhasil diedit.`);
         setShowApproveModal(false);
@@ -234,19 +250,21 @@ export default function PersetujuanData() {
   const handleReject = async (id: string | null, type: string | null) => {
     if (type === "data-pengguna") {
       try {
-        await patchWithAuthJson(
+        setShowRejectModal(false);
+        setIsLoading(true);
+        await putWithAuthJson(
           `entry-user/status/${id}`,
           {
             status: "rejected",
           },
-          "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120"
+          token
         );
-        console.log(`User dengan ID ${id} berhasil diedit.`);
         setShowRejectModal(false);
         const newData = await getUserData();
         setData(newData);
+        toast.success("User successfully rejected.");
       } catch (error) {
-        console.error("Error editing user:", error);
+        toast.error("Failed to reject user ");
       }
     } else if (type === "data-lembaga") {
       console.log(`Lembaga dengan ID ${id} ditolak.`);

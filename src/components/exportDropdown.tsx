@@ -5,116 +5,7 @@ import { useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { getWithAuth } from "@/services/api";
-
-// Data untuk type 'data-pengguna'
-const dataPengguna = [
-  {
-    idUser: "1",
-    namaPengguna: "Andi Lane",
-    jenisKelamin: "Pria",
-    email: "andi@example.com",
-    noIdentitas: "176984332667845",
-    alamat: "Jl. Ganesha 10, Coblong",
-    noTelpon: "081356565930",
-    status: "Menunggu Persetujuan",
-  },
-  {
-    idUser: "2",
-    namaPengguna: "Maria Dewi",
-    jenisKelamin: "Wanita",
-    email: "maria.dewi@example.com",
-    noIdentitas: "176984332667846",
-    alamat: "Jl. Merdeka 5, Jakarta",
-    noTelpon: "081256565931",
-    status: "Disetujui",
-  },
-  {
-    idUser: "3",
-    namaPengguna: "Joko Widodo",
-    jenisKelamin: "Pria",
-    email: "joko.widodo@example.com",
-    noIdentitas: "176984332667847",
-    alamat: "Jl. Sudirman 15, Bandung",
-    noTelpon: "081356565932",
-    status: "Ditolak",
-  },
-  {
-    idUser: "4",
-    namaPengguna: "Siti Aminah",
-    jenisKelamin: "Wanita",
-    email: "siti.aminah@example.com",
-    noIdentitas: "176984332667848",
-    alamat: "Jl. Pahlawan 8, Yogyakarta",
-    noTelpon: "081356565933",
-    status: "Menunggu Persetujuan",
-  },
-  {
-    idUser: "5",
-    namaPengguna: "Budi Santoso",
-    jenisKelamin: "Pria",
-    email: "budi.santoso@example.com",
-    noIdentitas: "176984332667849",
-    alamat: "Jl. Raya No. 9, Surabaya",
-    noTelpon: "081356565934",
-    status: "Menunggu Persetujuan",
-  },
-  {
-    idUser: "6",
-    namaPengguna: "Budi Santoso",
-    jenisKelamin: "Pria",
-    email: "budi.santoso@example.com",
-    noIdentitas: "176984332667849",
-    alamat: "Jl. Raya No. 9, Surabaya",
-    noTelpon: "081356565934",
-    status: "Disetujui",
-  },
-];
-
-// Data untuk type 'data-lembaga'
-const dataLembaga = [
-  {
-    idLembaga: "1",
-    namaInstansi: "Instansi Pendidikan A",
-    alamat: "Jl. Raya Pendidikan No. 1",
-    noTelpon: "021-567890",
-    status: "Menunggu Persetujuan",
-  },
-  {
-    idLembaga: "2",
-    namaInstansi: "Sekolah Dasar B",
-    alamat: "Jl. Merdeka No. 10",
-    noTelpon: "021-567891",
-    status: "Disetujui",
-  },
-  {
-    idLembaga: "3",
-    namaInstansi: "Universitas C",
-    alamat: "Jl. Pendidikan No. 20",
-    noTelpon: "021-567892",
-    status: "Ditolak",
-  },
-  {
-    idLembaga: "4",
-    namaInstansi: "Sekolah Menengah Pertama D",
-    alamat: "Jl. Raya No. 5",
-    noTelpon: "021-567893",
-    status: "Menunggu Persetujuan",
-  },
-  {
-    idLembaga: "5",
-    namaInstansi: "Perguruan Tinggi E",
-    alamat: "Jl. Raya No. 15, Malang",
-    noTelpon: "021-567894",
-    status: "Menunggu Persetujuan",
-  },
-  {
-    idLembaga: "6",
-    namaInstansi: "Perguruan Tinggi E",
-    alamat: "Jl. Raya No. 15, Malang",
-    noTelpon: "021-567894",
-    status: "Disetujui",
-  },
-];
+import Cookies from "universal-cookie";
 
 export default function DropdownButton({
   id,
@@ -125,67 +16,83 @@ export default function DropdownButton({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen((prev) => !prev);
+  const cookies = new Cookies();
+  const token = cookies.get("token");
 
-  // Fungsi untuk mencari data berdasarkan ID
+  // Fungsi untuk ekspor CSV
+  const handleExportCSV = async (id: string) => {
+    try {
+      setIsOpen(false);
+      const rowData = await getDataById(id); // Tunggu data selesai diambil
+      if (!rowData) {
+        console.error("No data found to export for CSV");
+        return;
+      }
+
+      const csvRows = [
+        Object.keys(rowData).join(","), // Header
+        Object.values(rowData).join(","), // Data row
+      ];
+
+      const csvContent = csvRows.join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, `${type || "data"}_${id}.csv`);
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error exporting CSV:", error);
+    }
+  };
+
+  // Fungsi untuk ekspor XLSX
+  const handleExportXLSX = async (id: string) => {
+    try {
+      setIsOpen(false);
+      const rowData = await getDataById(id); // Tunggu data selesai diambil
+      if (!rowData) {
+        console.error("No data found to export for XLSX");
+        return;
+      }
+
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Sheet 1");
+
+      // Tambahkan header dan data row
+      worksheet.addRow(Object.keys(rowData));
+      worksheet.addRow(Object.values(rowData));
+
+      // Ekspor ke file
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, `${type || "data"}_${id}.xlsx`);
+    } catch (error) {
+      console.error("Error exporting XLSX:", error);
+    }
+  };
+
+  // Fungsi untuk mendapatkan data berdasarkan ID
   const getDataById = async (id: string) => {
     try {
       let endpoint = "";
       if (type === "data-pengguna") {
         endpoint = `entry-user/${id}`;
       } else if (type === "data-lembaga") {
-        endpoint = `entry-lembaga/${id}`; // Sesuaikan endpoint untuk data lembaga
+        endpoint = `entry-lembaga/${id}`;
       } else {
         throw new Error("Type tidak valid");
       }
 
-      const response = await getWithAuth(
-        "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120",
-        endpoint
-      );
+      const response = await getWithAuth(token, endpoint);
+      const apiData = response.data.data; // Ambil data dari response
 
-      console.log(`Fetched data for ID ${id}:`, response.data);
+      console.log(`Fetched data for ID ${id}:`, apiData);
 
-      return response.data; // Pastikan data sesuai dengan kebutuhan
+      return apiData; // Pastikan data sesuai dengan kebutuhan
     } catch (error) {
       console.error(`Error fetching data for ID ${id}:`, error);
       return null; // Kembalikan nilai null jika terjadi kesalahan
     }
-  };
-
-  // Fungsi untuk ekspor CSV
-  const handleExportCSV = (id: string) => {
-    const rowData = getDataById(id);
-    if (!rowData) return; // Jika data tidak ditemukan, keluar dari fungsi
-
-    const csvRows = [
-      Object.keys(rowData).join(","), // Header
-      Object.values(rowData).join(","), // Data row
-    ];
-    const csvContent = csvRows.join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, `${type || "data"}_${id}.csv`);
-    setIsOpen(false);
-  };
-
-  // Fungsi untuk ekspor XLSX
-  const handleExportXLSX = async (id: string) => {
-    const rowData = getDataById(id);
-    if (!rowData) return; // Jika data tidak ditemukan, keluar dari fungsi
-
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Sheet 1");
-
-    // Tambahkan header dan data row
-    worksheet.addRow(Object.keys(rowData));
-    worksheet.addRow(Object.values(rowData));
-
-    // Ekspor ke file
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    saveAs(blob, `${type || "data"}_${id}.xlsx`);
-    setIsOpen(false);
   };
 
   return (

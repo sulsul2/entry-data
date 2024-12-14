@@ -25,7 +25,7 @@ export default function Login() {
     if (token && role) {
       switch (role) {
         case "manager":
-          router.push("/admin/persetujuan-data");
+          router.push("/admin/persetujuan-data?type=data-pengguna");
           break;
         case "data_entry":
           router.push("/data-entry");
@@ -36,7 +36,7 @@ export default function Login() {
       }
     }
   }, [cookies, router]);
-  
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const data = {
@@ -55,7 +55,7 @@ export default function Login() {
         cookies.set("role", role);
         cookies.set("user_id", id);
         if (role == "manager") {
-          router.push("/admin/persetujuan-data");
+          router.push("/admin/persetujuan-data?type=data-pengguna");
         } else if (role == "data_entry") {
           router.push("/data-entry");
         } else {

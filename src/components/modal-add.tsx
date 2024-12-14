@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import TextField from "./textfield";
 
 export default function ModalAdd({
@@ -29,6 +29,16 @@ export default function ModalAdd({
   button1TextColor?: string;
   button2TextColor?: string;
 }) {
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const validatePassword = (password: string) => {
+    if (password.length <= 8) {
+      setPasswordError("Password must be at least 8 characters long.");
+    } else {
+      setPasswordError(null);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-72 md:w-96 p-6 text-center">
@@ -59,16 +69,25 @@ export default function ModalAdd({
             label={"Password"}
             type="password"
             value={formData.password || ""}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, password: e.target.value }))
-            }
+            onChange={(e) => {
+              const password = e.target.value;
+              setFormData((prev) => ({ ...prev, password }));
+              validatePassword(password);
+            }}
           />
+          {passwordError && (
+            <p className="text-red-500 text-sm mb-4">{passwordError}</p>
+          )}
           <TextField
             name={"Role"}
             placeholder={"Select role"}
             label={"Role"}
             type="dropdown"
-            options={["manager", "admin", "data_entry"]}
+            options={[
+              { label: "Manager", value: "manager" },
+              { label: "Kementrian", value: "user_kementerian" },
+              { label: "Data Entry", value: "data_entry" },
+            ]}
             value={formData.role || ""}
             onChangeDropdown={(e) =>
               setFormData((prev) => ({ ...prev, role: e.target.value }))

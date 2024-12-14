@@ -14,20 +14,38 @@ import {
   getWithAuth,
   patchWithAuthJson,
   deleteWithAuthJson,
+  postWithAuth,
 } from "@/services/api";
 import { toast, ToastContainer } from "react-toastify";
+import Cookies from "universal-cookie";
+import * as yup from "yup";
+
 // import { cookies } from "next/headers";
 
 export default function manajemenAkun() {
   const [data, setData] = useState<any[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [filteredData, setFilteredData] = useState<any[]>([]); // Data setelah difilter
   const [search, setSearch] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const cookies = new Cookies();
+
+  const token = cookies.get("token");
+
+  const validationSchema = yup.object({
+    username: yup.string().required("Username is required"),
+    password: yup.lazy((value) => {
+      // Check if the `selectedId` is null
+      if (selectedId === null) {
+        return yup.string().min(8, "Password must be at least 8 characters");
+      }
+      return yup.string().notRequired();
+    }),
+  });
 
   const [formData, setFormData] = useState({
     username: "",
@@ -40,10 +58,7 @@ export default function manajemenAkun() {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await getWithAuth(
-        "44|VZCpIetN36UXZtjUFNx8ir1AbnTVbJNFWhW927pxaacbb508",
-        `users?page=${current}`
-      );
+      const response = await getWithAuth(token, `users?page=${current}`);
       setTotalPages(response.data.data?.pagination.last_page);
       console.log("API Response:", response.data); // Debug log
       const apiData = response.data.data?.data || []; // Correct nested path
@@ -129,12 +144,16 @@ export default function manajemenAkun() {
   // Fungsi untuk menangani tombol edit
   const handleOpenEditButton = (user: any) => {
     setFormData({
-      username: user.namaPengguna,
-      password: "",
+      username: user.username,
+      password: user.password,
       role: user.role,
     });
+
+    setSelectedId(user.id);
     setShowAddModal(true);
-    setSelectedId(user.idUser);
+
+    console.log("Selected user:", user);
+    console.log("Selected user ID:", user.id);
   };
 
   const handleOpenAddButton = () => {
@@ -147,39 +166,15 @@ export default function manajemenAkun() {
     setSelectedId(null);
   };
 
-  const handleEdit = async (idUser: number) => {
+  const handleDelete = async (idUser: string | null) => {
     try {
-      await patchWithAuthJson(
-        `users/${idUser}`,
-        {
-          username: formData.username,
-          password: formData.password,
-          role: formData.role,
-        },
-        "44|VZCpIetN36UXZtjUFNx8ir1AbnTVbJNFWhW927pxaacbb508"
-      );
-      console.log(`User dengan ID ${idUser} berhasil diedit.`);
-      setShowAddModal(false);
+      setShowDeleteModal(false);
+      setIsLoading(true);
+      await deleteWithAuthJson(`users/${idUser}`, token);
+
       const newData = await getData();
       setData(newData);
-    } catch (error) {
-      console.error("Error editing user:", error);
-    }
-  };
 
-  const handleDelete = async (idUser: number | null) => {
-    try {
-      if (idUser) {
-        setShowDeleteModal(false);
-        setIsLoading(true);
-        await deleteWithAuthJson(
-          `users/${idUser}`,
-          "44|VZCpIetN36UXZtjUFNx8ir1AbnTVbJNFWhW927pxaacbb508"
-        );
-        console.log(`User dengan ID ${idUser} berhasil dihapus.`);
-        const newData = await getData();
-        setData(newData);
-      }
       toast.success("User successfully deleted.");
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -188,17 +183,53 @@ export default function manajemenAkun() {
 
   const handleAdd = async () => {
     try {
-      const response = await post(`users`, {
-        username: formData.username,
-        password: formData.password,
-        role: formData.role,
-      });
-      console.log("User berhasil ditambahkan:", response.data);
-      setShowAddModal(false);
+      await validationSchema.validate(formData, { abortEarly: false });
+      handleModalClose();
+      const response = await postWithAuth(
+        "users",
+        {
+          username: formData.username,
+          password: formData.password,
+          role: formData.role,
+        },
+        token
+      );
       const newData = await getData();
       setData(newData);
-    } catch (error) {
-      console.error("Error adding user:", error);
+      toast.success("Success to add user.");
+    } catch (error: any) {
+      if (error.name === "ValidationError") {
+        error.errors.forEach((err: any) => toast.error(err)); // Display validation errors
+      } else {
+        console.error("Error adding user:", error);
+        toast.error("Failed to add user.");
+      }
+    }
+  };
+
+  const handleEdit = async (idUser: string) => {
+    try {
+      await validationSchema.validate(formData, { abortEarly: false }); // Validate all fields
+      handleModalClose();
+      await patchWithAuthJson(
+        `users/${idUser}`,
+        {
+          username: formData.username,
+          password: formData.password,
+          role: formData.role,
+        },
+        token
+      );
+      const newData = await getData();
+      setData(newData);
+      toast.success("User successfully edited.");
+    } catch (error: any) {
+      if (error.name === "ValidationError") {
+        error.errors.forEach((err: any) => toast.error(err)); // Display validation errors
+      } else {
+        console.error("Error editing user:", error);
+        toast.error("Failed to edit user.");
+      }
     }
   };
 
@@ -236,7 +267,7 @@ export default function manajemenAkun() {
             formData={formData}
             setFormData={setFormData}
             button1Text="Batalkan"
-            button2Text={selectedId ? "Tambah" : "Simpan"}
+            button2Text={selectedId ? "Simpan" : "Tambah"}
             onButton1Click={handleModalClose}
             onButton2Click={() =>
               selectedId ? handleEdit(selectedId) : handleAdd()
