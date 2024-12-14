@@ -9,19 +9,19 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (
-    request.nextUrl.pathname.startsWith("/data-entry") &&
-    role !== "data_entry"
-  ) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  //   if (
+  //     request.nextUrl.pathname.startsWith("/data-entry") &&
+  //     role !== "data_entry"
+  //   ) {
+  //     return NextResponse.redirect(new URL("/login", request.url));
+  //   }
 
-  if (
-    request.nextUrl.pathname.startsWith("/user") &&
-    role !== "user_kementrian"
-  ) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  //   if (
+  //     request.nextUrl.pathname.startsWith("/user") &&
+  //     role !== "user_kementrian"
+  //   ) {
+  //     return NextResponse.redirect(new URL("/login", request.url));
+  //   }
 
   return NextResponse.next();
 }

@@ -4,6 +4,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { getWithAuth } from "@/services/api";
 
 // Data untuk type 'data-pengguna'
 const dataPengguna = [
@@ -126,11 +127,28 @@ export default function DropdownButton({
   const toggleDropdown = () => setIsOpen((prev) => !prev);
 
   // Fungsi untuk mencari data berdasarkan ID
-  const getDataById = (id: string) => {
-    if (type == "data-pengguna") {
-      return dataPengguna.find((item) => item.idUser === id); // Sesuaikan dengan struktur data Anda
-    } else if (type == "data-lembaga") {
-      return dataLembaga.find((item) => item.idLembaga === id); // Sesuaikan dengan struktur data Anda
+  const getDataById = async (id: string) => {
+    try {
+      let endpoint = "";
+      if (type === "data-pengguna") {
+        endpoint = `entry-user/${id}`;
+      } else if (type === "data-lembaga") {
+        endpoint = `entry-lembaga/${id}`; // Sesuaikan endpoint untuk data lembaga
+      } else {
+        throw new Error("Type tidak valid");
+      }
+
+      const response = await getWithAuth(
+        "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120",
+        endpoint
+      );
+
+      console.log(`Fetched data for ID ${id}:`, response.data);
+
+      return response.data; // Pastikan data sesuai dengan kebutuhan
+    } catch (error) {
+      console.error(`Error fetching data for ID ${id}:`, error);
+      return null; // Kembalikan nilai null jika terjadi kesalahan
     }
   };
 

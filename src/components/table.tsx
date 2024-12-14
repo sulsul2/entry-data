@@ -8,14 +8,32 @@ function Table({
   addedItems,
   isLoading,
   totalPages = 1,
+  current,
 }: {
   data: any[];
   header: any[];
   addedItems?: ReactNode;
   isLoading: boolean;
   totalPages?: number;
+  current: (x: number) => void | undefined;
 }) {
-  const [current, setCurrent] = useState(1);
+  const Load = () => {
+    const dummy = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    return dummy.map((idx: number) => (
+      <tr key={idx}>
+        {header.map((idx: number) => {
+          return (
+            <td
+              key={idx}
+              className="h-auto w-auto border-collapse px-2 py-1 text-[14px] md:text-[16px] text-center lg:px-4"
+            >
+              <div className="h-4 w-full animate-pulse bg-gray-600 bg-opacity-10"></div>
+            </td>
+          );
+        })}
+      </tr>
+    ));
+  };
 
   const renderCell = (cell: any) => {
     if (Array.isArray(cell)) {
@@ -51,7 +69,9 @@ function Table({
 
           {/* Table Body */}
           <tbody>
-            {data.length > 0 ? (
+            {isLoading ? (
+              <Load />
+            ) : data.length > 0 ? (
               data.map((obj, idx) => (
                 <tr key={idx} className="hover:bg-gray-50">
                   {Object.values(obj).map((cell, idx) => (
@@ -80,10 +100,7 @@ function Table({
 
       {/* Fixed Pagination */}
       <div className="p-2 justify-center sticky w-full bg-white rounded-lg">
-        <Pagination
-          totalPages={totalPages}
-          current={(page) => setCurrent(page)}
-        />
+        <Pagination totalPages={totalPages} current={current} />
       </div>
     </div>
   );

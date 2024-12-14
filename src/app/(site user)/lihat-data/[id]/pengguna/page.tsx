@@ -7,72 +7,7 @@ import Button from "@/components/button";
 import { IoMdArrowBack } from "react-icons/io";
 import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { IconType } from "react-icons";
-
-const DataPengguna = [
-  {
-    idUser: "1",
-    nama: "Shinta W. Kamdani",
-    alamat: "Jl. Ganesha 10, Tamansari, Coblong, Dago, Kota Bandung",
-    jenisKelamin: "Perempuan",
-    tempatLahir: "Jakarta",
-    tanggalLahir: "8 Februari 1967",
-    kontak: "+6287817XXXX",
-    email: "shintakamdani@gmail.com",
-    mbti: "",
-    keluarga: {
-      suami: "Irwan Kamdani",
-      anak: [
-        "Syailendra Kamdani",
-        "Irela Katya Kamdani",
-        "Abaya Kamdani",
-        "Latissa Kamdani",
-      ],
-    },
-    mediaSosial: {
-      instagram: "@shintawidjakamdani",
-      facebook: "Shinta W. Kamdani",
-      linkedin: "Shinta Kamdani",
-    },
-    riwayat: {
-      parlemen: [
-        "Special Advisor Wakil Preside Jusuf Kalla, Kantor Staf Presiden Republik Indonesia (2015 – 2020)",
-        "Special Advisor Kementerian Koordinator Bidang Perekonomian (2020 – Present)",
-        "Coordinating Vice Chairwoman for Maritime, Investment and Foreign Affairs, KADIN (2001 – Present)",
-      ],
-      pekerjaan: [
-        "Board Member, PT. Tira Austenite Tbk (1998 – Present)",
-        "Board Member, PT. Tigaraksa Satria, Tbk (1998 – Present)",
-        "Commissioner, PT. Blue Gas Indonesia (2005 – Present)",
-        "Founder, IBCSD (2011 – Present)",
-        "Founder IBCWE (2016 – Present)",
-        "Regional Coordinator Asia - Pacific, International Chamber of Commerce (2021 – Present)",
-        "Chief Executive Officer, Sintesa Group (1999 – Present)",
-        "Chairman, APINDO (2023 – Present)",
-        "Member, GISD Alliance",
-        "Member, APEC Business Advisory Council",
-        "Pendiri, Angel Investment Network Indonesia (ANGIN)",
-      ],
-      organisasi: [
-        "Member, GISD Alliance",
-        "Member, APEC Business Advisory Council",
-        "Pendiri, Indonesia Business Council for Sustainable Develop",
-        "Pendiri, Koalisi Bisnis Indonesia untuk Pemberdayaan Perem",
-        "Ketua Umum, ASOSIASI PENGUSAHA INDONESIA (APINDO)",
-        "Wakil Koordinator III, Kamar Dagang dan Industri Indonesia (KADIN)",
-        "Pendiri, Angel Investment Network Indonesia (ANGIN)",
-      ],
-      kelompok_media: [
-        "Special Advisor Wakil Preside Jusuf Kalla, Kantor Staf Presiden Republik Indonesia (2015 – 2020)",
-        "Special Advisor Kementerian Koordinator Bidang Perekonomian (2020 – Present)",
-        "Coordinating Vice Chairwoman for Maritime, Investment and Foreign Affairs, KADIN (2001 – Present)",
-      ],
-    },
-    pendidikan: [
-      "S1, Barnard College of Columbia University New York (1989 – xxx)",
-      "S2, Harvard Business School (2002 – xxx)",
-    ],
-  },
-];
+import { getWithAuth } from "@/services/api";
 
 export default function DetailPage({
   params,
@@ -85,15 +20,27 @@ export default function DetailPage({
   const { id } = React.use(params);
 
   useEffect(() => {
-    const userData = getUserDataByID(id);
+    const userData = getDataById(id);
     setData(userData);
     setLoading(false); // Mark as loaded
   }, [id]);
 
-  function getUserDataByID(id: string) {
-    const user = DataPengguna.find((user) => user.idUser === id);
-    return user || null;
-  }
+  // Fungsi untuk mencari data berdasarkan ID
+  const getDataById = async (id: string) => {
+    try {
+      const response = await getWithAuth(
+        "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120",
+        `entry-user/${id}`
+      );
+
+      console.log(`Fetched data for ID ${id}:`, response.data);
+
+      return response.data; // Pastikan data sesuai dengan kebutuhan
+    } catch (error) {
+      console.error(`Error fetching data for ID ${id}:`, error);
+      return null; // Kembalikan nilai null jika terjadi kesalahan
+    }
+  };
 
   if (loading) {
     return <p>Loading...</p>; // Display loading state until data is fetched
@@ -204,10 +151,10 @@ export default function DetailPage({
                       Data Keluarga Inti
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.keluarga.suami}
+                      {data.keluarga}
                     </p>
                   </div>
-                  <div className="mb-4">
+                  {/* <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Anak
                     </h3>
@@ -219,13 +166,13 @@ export default function DetailPage({
                         </span>
                       ))}
                     </p>
-                  </div>
+                  </div> */}
                   <div className="mb-4 flex flex-col md:flex-row gap-4 md:gap-20">
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
                         Akun Media Sosial
                       </h3>
-                      <div className="text-sm text-[#000000] font-semibold">
+                      {/* <div className="text-sm text-[#000000] font-semibold">
                         {data.mediaSosial &&
                           Object.entries(data.mediaSosial).map(
                             ([key, value], index) => {
@@ -250,7 +197,7 @@ export default function DetailPage({
                               );
                             }
                           )}
-                      </div>
+                      </div> */}
                     </div>
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
@@ -278,26 +225,26 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Parlemen
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.parlemen.map(
                         (parlemen: string, index: number) => (
                           <li key={index}>{parlemen}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
 
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Pekerjaan
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.pekerjaan.map(
                         (pekerjaan: string, index: number) => (
                           <li key={index}>{pekerjaan}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
 
@@ -307,26 +254,26 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jabatan di Kelompok Media
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.kelompok_media.map(
                         (kelompok_media: string, index: number) => (
                           <li key={index}>{kelompok_media}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
 
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jabatan di Organisasi
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.organisasi.map(
                         (organisasi: string, index: number) => (
                           <li key={index}>{organisasi}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>
@@ -345,13 +292,13 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Pemberitaan/Isu yang sering diangkat terkait Kemenkeu{" "}
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.parlemen.map(
                         (parlemen: string, index: number) => (
                           <li key={index}>{parlemen}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
 
@@ -361,13 +308,13 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jabatan di Kelompok Media
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.kelompok_media.map(
                         (kelompok_media: string, index: number) => (
                           <li key={index}>{kelompok_media}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>
@@ -386,37 +333,37 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Pemberitaan/Isu yang sering diangkat terkait Kemenkeu{" "}
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.parlemen.map(
                         (parlemen: string, index: number) => (
                           <li key={index}>{parlemen}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                   <div className="mb-6">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Sikap ke Kemenkeu
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.parlemen.map(
                         (parlemen: string, index: number) => (
                           <li key={index}>{parlemen}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                   <div className="mb-6">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Hukum
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.parlemen.map(
                         (parlemen: string, index: number) => (
                           <li key={index}>{parlemen}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
 
@@ -426,25 +373,25 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Rekomendasi Pendekatan
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.kelompok_media.map(
                         (kelompok_media: string, index: number) => (
                           <li key={index}>{kelompok_media}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                   <div className="mb-6">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Tingkat Pengaruh Di Masyarakat
                     </h3>
-                    <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
+                    {/* <ul className="list-disc list-inside text-sm text-[#000000] font-semibold">
                       {data.riwayat.kelompok_media.map(
                         (kelompok_media: string, index: number) => (
                           <li key={index}>{kelompok_media}</li>
                         )
                       )}
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>

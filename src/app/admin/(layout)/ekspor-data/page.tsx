@@ -5,29 +5,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import TextField from "@/components/textfield";
 import DropdownButton from "@/components/exportDropdown";
-
-interface DataUser {
-  IdUser: string;
-  NamaPengguna: string;
-  JenisKelamin: string;
-  Email: string;
-  NoIdentitas?: string;
-  Alamat: string;
-  NoTelpon?: string;
-  Status: JSX.Element;
-  Detail?: JSX.Element;
-  Action: JSX.Element;
-}
-
-interface DataLembaga {
-  IdLembaga: string;
-  NamaInstansi: string;
-  Alamat: string;
-  NoTelpon: string;
-  Status: JSX.Element;
-  Detail: JSX.Element;
-  Action: JSX.Element;
-}
+import { getWithAuth } from "@/services/api";
 
 export default function EksporData() {
   const searchParams = useSearchParams();
@@ -37,36 +15,42 @@ export default function EksporData() {
   const [title, setTitle] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [current, setCurrent] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (type === "data-pengguna") {
-      setTitle("Data Pengguna");
-      setHeader([
-        "Id User",
-        "Nama Pengguna",
-        "Jenis Kelamin",
-        "Email",
-        "Status",
-        "Action",
-      ]);
-      const userData = getUserData(dataPengguna);
-      setData(userData);
-      setFilteredData(userData);
-    } else if (type === "data-lembaga") {
-      setTitle("Data Lembaga");
-      setHeader([
-        "Id",
-        "Nama Instansi",
-        "Alamat",
-        "Kontak",
-        "Status",
-        "Action",
-      ]);
-      const institutionData = getInstitutionData(dataLembaga);
-      setData(institutionData);
-      setFilteredData(institutionData);
-    }
-  }, [type]);
+    const fetchData = async () => {
+      if (type === "data-pengguna") {
+        setTitle("Data Pengguna");
+        setHeader([
+          "Id User",
+          "Nama Pengguna",
+          "Jenis Kelamin",
+          "Email",
+          "Status",
+          "Action",
+        ]);
+        const userData = await getUserData();
+        setData(userData);
+        setFilteredData(userData);
+      } else if (type === "data-lembaga") {
+        setTitle("Data Lembaga");
+        setHeader([
+          "Id",
+          "Nama Instansi",
+          "Alamat",
+          "Kontak",
+          "Status",
+          "Action",
+        ]);
+        const institutionData = getInstitutionData(dataLembaga);
+        setData(institutionData);
+        setFilteredData(institutionData);
+      }
+    };
+    fetchData();
+  }, [type, current]);
 
   useEffect(() => {
     if (search) {
@@ -88,70 +72,6 @@ export default function EksporData() {
       setFilteredData(data); // Reset ke data asli jika pencarian kosong
     }
   }, [search, data]);
-
-  // Data untuk type 'data-pengguna'
-  const dataPengguna = [
-    {
-      idUser: "1",
-      namaPengguna: "Andi Lane",
-      jenisKelamin: "Pria",
-      email: "andi@example.com",
-      noIdentitas: "176984332667845",
-      alamat: "Jl. Ganesha 10, Coblong",
-      noTelpon: "081356565930",
-      status: "Menunggu Persetujuan",
-    },
-    {
-      idUser: "2",
-      namaPengguna: "Maria Dewi",
-      jenisKelamin: "Wanita",
-      email: "maria.dewi@example.com",
-      noIdentitas: "176984332667846",
-      alamat: "Jl. Merdeka 5, Jakarta",
-      noTelpon: "081256565931",
-      status: "Disetujui",
-    },
-    {
-      idUser: "3",
-      namaPengguna: "Joko Widodo",
-      jenisKelamin: "Pria",
-      email: "joko.widodo@example.com",
-      noIdentitas: "176984332667847",
-      alamat: "Jl. Sudirman 15, Bandung",
-      noTelpon: "081356565932",
-      status: "Ditolak",
-    },
-    {
-      idUser: "4",
-      namaPengguna: "Siti Aminah",
-      jenisKelamin: "Wanita",
-      email: "siti.aminah@example.com",
-      noIdentitas: "176984332667848",
-      alamat: "Jl. Pahlawan 8, Yogyakarta",
-      noTelpon: "081356565933",
-      status: "Menunggu Persetujuan",
-    },
-    {
-      idUser: "5",
-      namaPengguna: "Budi Santoso",
-      jenisKelamin: "Pria",
-      email: "budi.santoso@example.com",
-      noIdentitas: "176984332667849",
-      alamat: "Jl. Raya No. 9, Surabaya",
-      noTelpon: "081356565934",
-      status: "Menunggu Persetujuan",
-    },
-    {
-      idUser: "6",
-      namaPengguna: "Budi Santoso",
-      jenisKelamin: "Pria",
-      email: "budi.santoso@example.com",
-      noIdentitas: "176984332667849",
-      alamat: "Jl. Raya No. 9, Surabaya",
-      noTelpon: "081356565934",
-      status: "Disetujui",
-    },
-  ];
 
   // Data untuk type 'data-lembaga'
   const dataLembaga = [
@@ -200,23 +120,48 @@ export default function EksporData() {
   ];
 
   // Fungsi untuk transformasi data Pengguna
-  const getUserData = (data: any[]) => {
-    return data
-      .filter((user) => user.status === "Disetujui")
-      .map((user) => ({
-        IdUser: user.idUser,
-        NamaPengguna: user.namaPengguna,
-        JenisKelamin: user.jenisKelamin || "-",
-        Email: user.email || "-",
-        Status: (
-          <div
-            className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-smfont-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
-          >
-            {user.status}
-          </div>
-        ),
-        Action: <DropdownButton id={user.idUser} type={type} />,
-      }));
+  const getUserData = async () => {
+    try {
+      setIsLoading(true); // Set loading state
+      const response = await getWithAuth(
+        "45|tfRZfRI8R3j7FN6l1KF5kIYybNV6uNoYDsFjzMVSabe8c120",
+        `entry-user?page=${current}`
+      );
+
+      console.log(response);
+
+      // Update total halaman dari response
+      setTotalPages(response.data.data?.pagination.last_page);
+
+      // Ambil data dari response dan filter pengguna dengan status "Disetujui"
+      const apiData = response.data.data?.data || [];
+      console.log("Fetched User Data:", apiData);
+
+      // Transformasi data untuk digunakan di tabel
+      const data = apiData
+        .filter((user: any) => user.status === "accepted")
+        .map((user: any, index: number) => ({
+          IdUser: index + 1,
+          NamaPengguna: user.nama || "-",
+          JenisKelamin: user.jenis_kelamin || "-",
+          Email: user.email || "-",
+          Status: (
+            <div
+              className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
+            >
+              {user.status}
+            </div>
+          ), // Status dengan styling
+          Action: <DropdownButton id={user.id} type="data-pengguna" />, // Tombol aksi
+        }));
+
+      setIsLoading(false);
+      return data;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setIsLoading(false);
+      return [];
+    }
   };
 
   // Fungsi untuk transformasi data Lembaga
@@ -264,7 +209,13 @@ export default function EksporData() {
         </div>
       </div>
 
-      <Table data={filteredData} header={header} isLoading={false} />
+      <Table
+        data={filteredData}
+        header={header}
+        isLoading={isLoading}
+        totalPages={totalPages}
+        current={(curr) => setCurrent(curr)}
+      />
     </div>
   );
 }
