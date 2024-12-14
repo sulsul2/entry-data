@@ -24,7 +24,7 @@ export default function TextField({
   label: string;
   icon?: React.ReactNode;
   width?: number;
-  options?: string[];
+  options?: { label: string; value: string }[];
   onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
   onChangeDropdown?: React.ChangeEventHandler<HTMLSelectElement> | undefined;
   onChangeArea?: React.ChangeEventHandler<HTMLTextAreaElement> | undefined;
@@ -146,8 +146,8 @@ export default function TextField({
             className="grow focus:outline-none w-full bg-white text-[#1A0048] text-[14px] border-none appearance-none"
           >
             {options.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
+              <option key={index} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>

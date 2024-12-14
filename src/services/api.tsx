@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-const url = "https://communal-supposedly-macaque.ngrok-free.app/api/";
+const url = "https://entry-data-api.fly.dev/api/";
 
 export const post = async (
   api: string,
