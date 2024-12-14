@@ -50,8 +50,10 @@ export default function Login() {
       if (response.status === 200) {
         const token = response.data.data.token;
         const role = response.data.data.user.role;
+        const id = response.data.data.user.id;
         cookies.set("token", token);
         cookies.set("role", role);
+        cookies.set("user_id", id);
         if (role == "manager") {
           router.push("/admin/persetujuan-data");
         } else if (role == "data_entry") {
