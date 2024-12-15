@@ -22,6 +22,7 @@ export default function DetailPage({
   const { id } = React.use(params);
   const cookies = new Cookies();
   const token = cookies.get("token");
+  const role = cookies.get("role");
 
   const platformIcons: {
     [key in "facebook" | "instagram" | "linkedin"]: IconType;
@@ -36,7 +37,6 @@ export default function DetailPage({
       try {
         const userData = await getDataById(id);
         setData(userData);
-        console.log(userData);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -49,11 +49,21 @@ export default function DetailPage({
   // Fungsi untuk mencari data berdasarkan ID
   const getDataById = async (id: string) => {
     try {
-      const response = await getWithAuth(token, `entry-user/${id}`);
+      // Tentukan endpoint berdasarkan role
+      let endpoint = "";
+      if (role === "user_kementerian") {
+        endpoint = `user-kementerian/${id}`; // API untuk manager
+      } else if (role === "data_entry") {
+        endpoint = `data_entry/${id}`; // API untuk data_entry
+      } else {
+        throw new Error("Role tidak dikenali");
+      }
+
+      const response = await getWithAuth(token, endpoint);
       const apiData = response.data.data;
       return apiData;
     } catch (error) {
-      return null; 
+      return null;
     }
   };
 

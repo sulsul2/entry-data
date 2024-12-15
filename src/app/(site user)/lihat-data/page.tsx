@@ -29,39 +29,34 @@ export default function persetujuan() {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await getWithAuth(token, `entry-user?page=${current}`);
+      const response = await getWithAuth(token, `data-entry/accepted`);
 
+      setCurrent(response.data.data?.pagination.current_page);
       setTotalPages(response.data.data?.pagination.last_page);
       const itemsPerPage = response.data.data?.pagination.per_page;
 
       const apiData = response.data.data?.data || [];
 
-      const data = apiData
-        .map((user: any, index: number) => ({
-          ...user,
-          originalIndex: (current - 1) * itemsPerPage + index + 1,
-        }))
-        .filter((user: any) => user.status === "accepted")
-        .map((user: any, index: number) => ({
-          IdUser: user.originalIndexs,
-          username: user.nama || "-",
-          JenisKelamin: user.jenis_kelamin || "-",
-          Email: user.email || "-",
-          Status: (
-            <div
-              className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
-            >
-              {user.status}
+      const data = apiData.map((user: any, index: number) => ({
+        IdUser: (current - 1) * itemsPerPage + index + 1,
+        username: user.nama || "-",
+        JenisKelamin: user.jenis_kelamin || "-",
+        Email: user.email || "-",
+        Status: (
+          <div
+            className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
+          >
+            {user.status}
+          </div>
+        ),
+        Action: (
+          <Link href={`/lihat-data/${user.id}/pengguna`}>
+            <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
+              Lihat Detail
             </div>
-          ),
-          Action: (
-            <Link href={`/lihat-data/${user.id}/pengguna`}>
-              <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
-                Lihat Detail
-              </div>
-            </Link>
-          ),
-        }));
+          </Link>
+        ),
+      }));
 
       setIsLoading(false);
       return data;
