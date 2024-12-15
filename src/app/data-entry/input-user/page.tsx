@@ -1,12 +1,16 @@
 "use client";
 import Button from "@/components/button";
+import { CustomTextEditor } from "@/components/texteditor";
 import TextField from "@/components/textfield";
 import { postWithAuthJson } from "@/services/api";
+import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaFacebookSquare, FaLinkedin } from "react-icons/fa";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { PiInstagramLogoFill } from "react-icons/pi";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 
 export default function DataEntryInput() {
@@ -14,7 +18,6 @@ export default function DataEntryInput() {
   const router = useRouter();
   const userId = cookies.get("user_id");
   const [loading, setLoading] = useState<boolean>(false);
-  const [temp, setTemp] = useState("");
   const [formData, setFormData] = useState({
     nama: "",
     jenis_kelamin: "",
@@ -44,15 +47,7 @@ export default function DataEntryInput() {
     riwayat_hukum: "",
     user_id: userId,
   });
-
-  // const handleChange = (name: string,
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  // ) => {
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     name: e.target.value,
-  //   }));
-  // };
+  const customization = useSelector((state: RootState) => state.customization);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,8 +62,10 @@ export default function DataEntryInput() {
       );
       console.log(response);
       router.push("/data-entry");
+      toast.success("Berhasil menambahkan data user.");
     } catch (error) {
       console.error(error);
+      toast.error("Gagal menambahkan data user.");
     } finally {
       setLoading(false);
     }
@@ -78,7 +75,10 @@ export default function DataEntryInput() {
     <>
       <div className="w-screen h-screen bg-white py-12">
         <div className="flex items-center justify-start px-5 md:px-14 gap-[14px] mb-3 md:mb-6">
-          <div className="p-[6px] md:p-[10px] text-white bg-primary-900 flex justify-center items-center rounded-lg cursor-pointer">
+          <div
+            className={`p-[6px] md:p-[10px] text-white bg-${customization.color} flex justify-center items-center rounded-lg cursor-pointer`}
+            onClick={() => router.back()}
+          >
             <IoArrowBackOutline className="w-3 md:w-[20px] h-3 md:h-[20px]" />
           </div>
           <p className="text-[#2A3D4A] font-semibold text-[16px] md:text-[24px]">
@@ -206,7 +206,7 @@ export default function DataEntryInput() {
                 }
               />
             </div>
-            <div className="w-full flex flex-col-reverse col-span-2">
+            <div className="w-full flex flex-col-reverse col-span-2 gap-4">
               <div className="w-full flex flex-col md:grid md:grid-cols-3 gap-x-[14px]">
                 <div className="col-span-2">
                   <TextField
@@ -301,7 +301,7 @@ export default function DataEntryInput() {
                   }
                 />
               </div>
-              <TextField
+              {/* <TextField
                 name={"data_keluarga"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Data Keluarga Inti"}
@@ -313,187 +313,313 @@ export default function DataEntryInput() {
                     data_keluarga: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.data_keluarga}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    data_keluarga: e,
+                  }))
+                }
+                label={"Data Keluarga Inti"}
               />
             </div>
           </div>
         </section>
         <section
           id="B"
-          className="w-full flex flex-col justify-start px-5 md:px-14 pb-5 md:pb-6 gap-3 md:gap-4"
+          className="w-full flex flex-col justify-start px-5 md:px-14 pb-5 md:pb-6"
         >
           <p className="text-[14px] md:text-[20px] font-semibold text-[#2A3D4A]">
             B. Riwayat Pekerjaan dan Organisasi
           </p>
           <div className="w-full flex flex-col md:flex-row items-start justify-start md:justify-between md:gap-16">
             <div className="w-full flex flex-col">
-              <TextField
+              {/* <TextField
                 name={"riwayat_parlemen"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Riwayat Parlemen"}
                 type="area"
                 value={formData.riwayat_parlemen}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     riwayat_parlemen: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.riwayat_parlemen}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    riwayat_parlemen: e,
+                  }))
+                }
+                label={"Riwayat Parlemen"}
               />
-              <TextField
+              {/* <TextField
                 name={"riwayat_kerja"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Riwayat Pekerjaan"}
                 type="area"
                 value={formData.riwayat_kerja}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     riwayat_kerja: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.riwayat_kerja}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    riwayat_kerja: e,
+                  }))
+                }
+                label={"Riwayat Kerja"}
               />
             </div>
             <div className="w-full flex flex-col">
-              <TextField
+              {/* <TextField
                 name={"jabatan_kelompok"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Jabatan di Kelompok Media"}
                 type="area"
                 value={formData.jabatan_kelompok}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     jabatan_kelompok: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.jabatan_kelompok}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    jabatan_kelompok: e,
+                  }))
+                }
+                label={"Jabatan di Kelompok Media"}
               />
-              <TextField
+              {/* <TextField
                 name={"jabatan_organisasi"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Jabatan di Organisasi"}
                 type="area"
                 value={formData.jabatan_organisasi}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     jabatan_organisasi: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.jabatan_organisasi}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    jabatan_organisasi: e,
+                  }))
+                }
+                label={"Jabatan di Organisasi"}
               />
             </div>
           </div>
         </section>
         <section
           id="C"
-          className="w-full flex flex-col justify-start px-5 md:px-14 pb-5 md:pb-6 gap-3 md:gap-4"
+          className="w-full flex flex-col justify-start px-5 md:px-14 pb-5 md:pb-6"
         >
           <p className="text-[14px] md:text-[20px] font-semibold text-[#2A3D4A]">
             C. Pendidikan dan Penghargaan
           </p>
           <div className="w-full flex flex-col md:flex-row items-start justify-start md:justify-between md:gap-16">
-            <TextField
+            {/* <TextField
               name={"riwayat_pendidikan"}
               placeholder={"Masukkan deskripsi"}
               label={"Riwayat Pendidikan"}
               type="area"
               value={formData.riwayat_pendidikan}
-              onChange={(e) =>
+              onChangeArea={(e) =>
                 setFormData((prevData) => ({
                   ...prevData,
                   riwayat_pendidikan: e.target.value,
                 }))
               }
+            /> */}
+            <div className="w-full">
+
+            <CustomTextEditor
+              initialValue={formData.riwayat_pendidikan}
+              onChange={(e) =>
+                setFormData((prevData) => ({
+                  ...prevData,
+                  riwayat_pendidikan: e,
+                }))
+              }
+              label={"Riwayat Pendidikan"}
             />
-            <TextField
+            </div>
+            {/* <TextField
               name={"riwayat_penghargaan"}
               placeholder={"Masukkan deskripsi"}
               label={"Riwayat Penghargaan"}
               type="area"
               value={formData.riwayat_penghargaan}
-              onChange={(e) =>
+              onChangeArea={(e) =>
                 setFormData((prevData) => ({
                   ...prevData,
                   riwayat_penghargaan: e.target.value,
                 }))
               }
+            /> */}
+            <div className="w-full">
+
+            <CustomTextEditor
+              initialValue={formData.riwayat_penghargaan}
+              onChange={(e) =>
+                setFormData((prevData) => ({
+                  ...prevData,
+                  riwayat_penghargaan: e,
+                }))
+              }
+              label={"Riwayat Penghargaan"}
             />
+            </div>
           </div>
         </section>
         <section
           id="D"
-          className="w-full flex flex-col justify-start px-5 md:px-14 pb-5 md:pb-6 gap-3 md:gap-4"
+          className="w-full flex flex-col justify-start px-5 md:px-14 pb-5 md:pb-6"
         >
           <p className="text-[14px] md:text-[20px] font-semibold text-[#2A3D4A]">
             D. Data Lainnya
           </p>
           <div className="w-full flex flex-col md:flex-row items-start justify-start md:justify-between md:gap-16">
             <div className="w-full flex flex-col">
-              <TextField
+              {/* <TextField
                 name={"isu_kemenkeu"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Pemberitaan/Isu yang sering diangkat terkait Kemenkeu"}
                 type="area"
                 value={formData.isu_kemenkeu}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     isu_kemenkeu: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.isu_kemenkeu}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    isu_kemenkeu: e,
+                  }))
+                }
+                label={"Pemberitaan/Isu yang sering diangkat terkait Kemenkeu"}
               />
-              <TextField
+              {/* <TextField
                 name={"sikap_kemenkeu"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Sikap ke Kemenkeu"}
                 type="area"
                 value={formData.sikap_kemenkeu}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     sikap_kemenkeu: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.sikap_kemenkeu}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    sikap_kemenkeu: e,
+                  }))
+                }
+                label={"Sikap ke Kemenkeu"}
               />
-              <TextField
+              {/* <TextField
                 name={"riwayat_hukum"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Riwayat Hukum"}
                 type="area"
                 value={formData.riwayat_hukum}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     riwayat_hukum: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.riwayat_hukum}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    riwayat_hukum: e,
+                  }))
+                }
+                label={"Riwayat Hukum"}
               />
             </div>
             <div className="w-full flex flex-col">
-              <TextField
+              {/* <TextField
                 name={"rekomen_pendekatan"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Rekomendasi Pendekatan"}
                 type="area"
                 value={formData.rekomen_pendekatan}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     rekomen_pendekatan: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.rekomen_pendekatan}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    rekomen_pendekatan: e,
+                  }))
+                }
+                label={"Rekomendasi Pendekatan"}
               />
-              <TextField
+              {/* <TextField
                 name={"tingkat_pengaruh"}
                 placeholder={"Masukkan deskripsi"}
                 label={"Tingkat Pengaruh Di Masyarakat"}
                 type="area"
                 value={formData.tingkat_pengaruh}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     tingkat_pengaruh: e.target.value,
                   }))
                 }
+              /> */}
+              <CustomTextEditor
+                initialValue={formData.tingkat_pengaruh}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    tingkat_pengaruh: e,
+                  }))
+                }
+                label={"Tingkat Pengaruh Di Masyarakat"}
               />
             </div>
           </div>
@@ -502,7 +628,7 @@ export default function DataEntryInput() {
           <Button
             text={"Simpan"}
             type={"button"}
-            color="primary"
+            color={customization.color}
             width={350}
             onClick={handleSubmit}
             isLoading={loading}

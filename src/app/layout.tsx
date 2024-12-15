@@ -4,6 +4,9 @@ import "./globals.css";
 import { Provider } from "react-redux";
 import { persistor, store } from "@/store/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,11 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            {children}
-          </PersistGate>
-        </Provider>
+        <AppRouterCacheProvider>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <ToastContainer />
+              {children}
+            </PersistGate>
+          </Provider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

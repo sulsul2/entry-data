@@ -29,7 +29,7 @@ export default function Pagination({
     pageNumbers.push(
       <div
         key={i}
-        className={`cursor-pointer px-[16.5px] py-[10px] rounded-lg font-medium flex items-center justify-center text-[14px] bg-transparent ${
+        className={`cursor-pointer px-[16.5px] py-[10px] rounded-lg font-medium flex items-center justify-center text-[14px] ${
           currentPage === i
             ? "bg-[#F9F5FF] text-[#7F56D9]"
             : "hover:bg-[#F9F5FF] hover:text-[#7F56D9]"

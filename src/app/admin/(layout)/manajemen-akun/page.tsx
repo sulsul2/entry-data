@@ -16,6 +16,8 @@ import {
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import * as yup from "yup";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 // import { cookies } from "next/headers";
 
@@ -30,7 +32,7 @@ export default function manajemenAkun() {
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cookies = new Cookies();
-
+  const customization = useSelector((state: RootState) => state.customization);
   const token = cookies.get("token");
 
   const validationSchema = yup.object({
@@ -277,7 +279,7 @@ export default function manajemenAkun() {
           />
         )}
 
-        <h1 className="font-semibold text-[#605BFF] text-[16px] md:text-[24px] mb-2 md:mb-6">
+        <h1 className={`font-semibold text-${customization.color} text-[16px] md:text-[24px] mb-2 md:mb-6`}>
           Management Account
         </h1>
 
@@ -298,6 +300,7 @@ export default function manajemenAkun() {
               width={170}
               icon={<MdAddCircleOutline className="text-sm md:text-lg" />}
               onClick={handleOpenAddButton}
+              color={customization.color}
             />
           </div>
         </div>

@@ -2,21 +2,48 @@
 import Button from "@/components/button";
 import TextField from "@/components/textfield";
 import Toast from "@/components/toast";
-import { post } from "@/services/api";
+import { get, post } from "@/services/api";
+import { setCustomization } from "@/store/slices/customizationSlice";
 import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 
 export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const cookies = new Cookies();
   const router = useRouter();
   const customization = useSelector((state: RootState) => state.customization);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await get("customization/current");
+        const data = response.data.data;
+
+        dispatch(
+          setCustomization({
+            color: data.active_color,
+            logo: data.logo,
+            favicon: data.favicon,
+          })
+        );
+      } catch (error) {
+        console.error("Error fetching customization data:", error);
+      } finally {
+        setIsPageLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   useEffect(() => {
     const token = cookies.get("token");
@@ -35,7 +62,7 @@ export default function Login() {
           break;
       }
     }
-  }, [cookies, router]);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,19 +88,26 @@ export default function Login() {
         } else {
           router.push("/lihat-data");
         }
+        toast.success("Login Berhasil.");
       } else {
         setIsError(true);
       }
     } catch (error) {
       setIsError(true);
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <div className="w-screen h-screen bg-[url('/assets/background.png')] bg-cover flex flex-col justify-center items-center gap-6">
+      {isPageLoading && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-white text-sm font-medium">Loading...</p>
+          </div>
+        </div>
+      )}
       <div className={`${isError ? "block" : "hidden"}`}>
         <Toast
           type={"error"}

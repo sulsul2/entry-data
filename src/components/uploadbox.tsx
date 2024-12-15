@@ -6,12 +6,14 @@ import Button from "./button";
 
 export default function UploadBox({
   type,
+  file,
   setFile,
 }: {
   type: string;
+  file?: string;
   setFile: (file: File | null) => void;
 }) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(file || null);
 
   const [isDragging, setIsDragging] = useState(false);
 

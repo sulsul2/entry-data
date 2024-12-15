@@ -36,6 +36,10 @@ export default function Button({
           ? "bg-primary-900"
           : color == "red"
           ? "bg-error-600"
+          : color == "secondary"
+          ? "bg-light-900"
+          : color == "tersier"
+          ? "bg-navy-900"
           : "bg-white border-[1px] border-[#D5D7DA]"
       }`}
     >

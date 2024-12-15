@@ -6,6 +6,8 @@ import TextField from "@/components/textfield";
 import DropdownButton from "@/components/exportDropdown";
 import { getWithAuth } from "@/services/api";
 import Cookies from "universal-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 export default function EksporData() {
   const searchParams = useSearchParams();
@@ -19,6 +21,7 @@ export default function EksporData() {
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cookies = new Cookies();
+  const customization = useSelector((state: RootState) => state.customization);
 
   const token = cookies.get("token");
 
@@ -164,7 +167,7 @@ export default function EksporData() {
   return (
     <div className="px-6 py-2">
       <div className="hidden md:flex items-center gap-2 text-xs font-inter font-medium mb-2">
-        <p className="text-[#605BFF] cursor-pointer">{title}</p>
+        <p className={`text-${customization.color} cursor-pointer`}>{title}</p>
         <p className="text-[#2A3D4A]"> / </p>
         <p className="text-[#2A3D4A]">Ekspor Data</p>
       </div>

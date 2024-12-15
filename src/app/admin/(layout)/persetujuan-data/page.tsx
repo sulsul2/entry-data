@@ -10,6 +10,8 @@ import ModalApprove from "@/components/modal-approval";
 import { getWithAuth, putWithAuthJson } from "@/services/api";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 export default function PersetujuanData() {
   const searchParams = useSearchParams();
@@ -26,6 +28,7 @@ export default function PersetujuanData() {
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cookies = new Cookies();
+  const customization = useSelector((state: RootState) => state.customization);
 
   const token = cookies.get("token");
 
@@ -347,7 +350,7 @@ export default function PersetujuanData() {
       )}
 
       <div className="hidden md:flex items-center gap-2 text-xs font-inter font-medium mb-2">
-        <p className="text-[#605BFF] cursor-pointer">{title}</p>
+        <p className={`text-${customization.color} cursor-pointer`}>{title}</p>
         <p className="text-[#2A3D4A]"> / </p>
         <p className="text-[#2A3D4A]">Persetujuan Data</p>
       </div>
