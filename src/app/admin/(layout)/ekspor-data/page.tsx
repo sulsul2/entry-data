@@ -72,27 +72,29 @@ export default function EksporData() {
       });
       setFilteredData(filtered);
     } else {
-      setFilteredData(data); // Reset ke data asli jika pencarian kosong
+      setFilteredData(data);
     }
   }, [search, data]);
 
   // Fungsi untuk transformasi data Pengguna
   const getUserData = async () => {
     try {
-      setIsLoading(true); // Set loading state
+      setIsLoading(true);
       const response = await getWithAuth(token, `entry-user?page=${current}`);
 
-      // Update total halaman dari response
       setTotalPages(response.data.data?.pagination.last_page);
-
-      // Ambil data dari response dan filter pengguna dengan status "Disetujui"
       const apiData = response.data.data?.data || [];
+      const itemsPerPage = response.data.data?.pagination.per_page;
 
       // Transformasi data untuk digunakan di tabel
       const data = apiData
+        .map((user: any, index: number) => ({
+          ...user,
+          originalIndex: (current - 1) * itemsPerPage + index + 1,
+        }))
         .filter((user: any) => user.status === "accepted")
         .map((user: any, index: number) => ({
-          IdUser: index + 1,
+          IdUser: user.originalIndex,
           NamaPengguna: user.nama || "-",
           JenisKelamin: user.jenis_kelamin || "-",
           Email: user.email || "-",
@@ -102,8 +104,8 @@ export default function EksporData() {
             >
               {user.status}
             </div>
-          ), // Status dengan styling
-          Action: <DropdownButton id={user.id} type="data-pengguna" />, // Tombol aksi
+          ),
+          Action: <DropdownButton id={user.id} type="data-pengguna" />,
         }));
 
       setIsLoading(false);
@@ -115,7 +117,6 @@ export default function EksporData() {
     }
   };
 
-  // Fungsi untuk transformasi data Lembaga
   const getInstitutionData = async () => {
     try {
       setIsLoading(true);
@@ -124,25 +125,26 @@ export default function EksporData() {
         `entry-lembaga?page=${current}`
       );
 
-      console.log(response);
-
-      // Update total halaman dari response
+      // Update total halaman dan item per halaman dari response
       setTotalPages(response.data.data?.pagination.last_page);
-
-      // Ambil data dari response dan filter pengguna dengan status "Disetujui"
       const apiData = response.data.data?.data || [];
+      const itemsPerPage = response.data.data?.pagination.per_page;
 
       // Transformasi data untuk digunakan di tabel
       const data = apiData
-        .filter((lembaga: any) => lembaga.status === "accepted")
         .map((lembaga: any, index: number) => ({
-          IdLembaga: index + 1,
-          NamaInstansi: lembaga.namaInstansi,
+          ...lembaga,
+          originalIndex: (current - 1) * itemsPerPage + index + 1,
+        }))
+        .filter((lembaga: any) => lembaga.status === "accepted")
+        .map((lembaga: any) => ({
+          IdLembaga: lembaga.originalIndex,
+          NamaInstansi: lembaga.nama,
           Alamat: lembaga.alamat || "-",
           NoTelpon: lembaga.no_kontak || "-",
           Status: (
             <div
-              className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-smfont-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
+              className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center bg-[#ECFDF3] text-[#027A48]`}
             >
               {lembaga.status}
             </div>

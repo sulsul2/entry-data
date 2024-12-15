@@ -91,13 +91,13 @@ export default function PersetujuanData() {
     try {
       setIsLoading(true);
       const response = await getWithAuth(token, `entry-user?page=${current}`);
-      console.log(response);
+
       setTotalPages(response.data.data?.pagination.last_page);
       const apiData = response.data.data?.data || [];
-      console.log("Fetched User Data:", apiData);
+      const itemsPerPage = response.data.data?.pagination.per_page;
 
       const transformedData = apiData.map((user: any, index: number) => ({
-        IdUser: index + 1,
+        IdUser: (current - 1) * itemsPerPage + index + 1,
         NamaPengguna: user.nama,
         JenisKelamin: user.jenis_kelamin || "-",
         Email: user.email || "-",
@@ -141,14 +141,13 @@ export default function PersetujuanData() {
         token,
         `entry-lembaga?page=${current}`
       );
-      console.log(response);
       setTotalPages(response.data.data?.pagination.last_page);
       const apiData = response.data.data?.data || [];
-      console.log("Fetched Lembaga Data:", apiData);
+      const itemsPerPage = response.data.data?.pagination.per_page;
 
       const transformedData = apiData.map((lembaga: any, index: number) => ({
-        IdLembaga: index + 1,
-        NamaInstansi: lembaga.namaInstansi,
+        IdLembaga: (current - 1) * itemsPerPage + index + 1,
+        NamaInstansi: lembaga.nama,
         Alamat: lembaga.alamat || "-",
         NoTelpon: lembaga.no_kontak || "-",
         Status: (

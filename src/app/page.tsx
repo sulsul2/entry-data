@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setCustomization } from '@/store/slices/customizationSlice';
-import { useRouter } from 'next/navigation';
-import { get } from '@/services/api';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setCustomization } from "@/store/slices/customizationSlice";
+import { useRouter } from "next/navigation";
+import { get } from "@/services/api";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -13,7 +13,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await get('customization/current');
+        const response = await get("customization/current");
         const data = response.data.data;
 
         dispatch(
@@ -24,14 +24,19 @@ export default function Home() {
           })
         );
 
-        router.push('/login');
+        router.push("/login");
       } catch (error) {
-        console.error('Error fetching customization data:', error);
+        console.error("Error fetching customization data:", error);
       }
     };
 
     fetchData();
   }, [dispatch, router]);
 
-  return <div>Loading...</div>;
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#414651] border-solid"></div>
+      <p className="mt-4 text-gray-500">Loading...</p>
+    </div>
+  );
 }

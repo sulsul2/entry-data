@@ -15,7 +15,6 @@ export default function persetujuan() {
   const [search, setSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const cookies = new Cookies();
-
   const token = cookies.get("token");
 
   const header = [
@@ -29,23 +28,22 @@ export default function persetujuan() {
 
   const getData = async () => {
     try {
-      setIsLoading(true); // Set loading state
+      setIsLoading(true);
       const response = await getWithAuth(token, `entry-user?page=${current}`);
 
-      console.log(response);
-
-      // Update total halaman dari response
       setTotalPages(response.data.data?.pagination.last_page);
+      const itemsPerPage = response.data.data?.pagination.per_page;
 
-      // Ambil data dari response dan filter pengguna dengan status "Disetujui"
       const apiData = response.data.data?.data || [];
-      console.log("Fetched User Data:", apiData);
 
-      // Transformasi data untuk digunakan di tabel
       const data = apiData
+        .map((user: any, index: number) => ({
+          ...user,
+          originalIndex: (current - 1) * itemsPerPage + index + 1,
+        }))
         .filter((user: any) => user.status === "accepted")
         .map((user: any, index: number) => ({
-          IdUser: index + 1,
+          IdUser: user.originalIndexs,
           username: user.nama || "-",
           JenisKelamin: user.jenis_kelamin || "-",
           Email: user.email || "-",
@@ -55,7 +53,7 @@ export default function persetujuan() {
             >
               {user.status}
             </div>
-          ), // Status dengan styling
+          ),
           Action: (
             <Link href={`/lihat-data/${user.id}/pengguna`}>
               <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
@@ -84,7 +82,6 @@ export default function persetujuan() {
     fetchData();
   }, []);
 
-  // Fungsi untuk filter data berdasarkan pencarian
   useEffect(() => {
     if (search) {
       const filtered = data.filter((item) => {
@@ -102,7 +99,7 @@ export default function persetujuan() {
       });
       setFilteredData(filtered);
     } else {
-      setFilteredData(data); // Reset ke data asli jika pencarian kosong
+      setFilteredData(data);
     }
   }, [search, data]);
 

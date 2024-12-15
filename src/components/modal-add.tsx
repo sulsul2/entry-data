@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import TextField from "./textfield";
+import { getWithAuth } from "@/services/api";
+import Cookies from "universal-cookie";
 
 export default function ModalAdd({
   title,
@@ -30,12 +32,44 @@ export default function ModalAdd({
   button2TextColor?: string;
 }) {
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const cookies = new Cookies();
+  const token = cookies.get("token");
 
   const validatePassword = (password: string) => {
-    if (password.length <= 8) {
+    if (password.length < 8) {
       setPasswordError("Password must be at least 8 characters long.");
     } else {
       setPasswordError(null);
+    }
+  };
+
+  const validateUsername = async (username: string) => {
+    // Check if the input field is empty or contains only spaces
+    if (username.length == 0) {
+      setUsernameError("You must fill this field.");
+      return;
+    } else {
+      setUsernameError(null);
+    }
+
+    try {
+      // Call the API with the provided username
+      const response = await getWithAuth(
+        token,
+        `/users?username=${username}` // Encode username to handle special characters
+      );
+
+      const data = response.data.data?.data || [];
+
+      // Assuming `data.exists` is true if the username exists
+      if (data.exists) {
+        setUsernameError("Username is already taken.");
+      } else {
+        setUsernameError(null); // Clear the error if the username is available
+      }
+    } catch (error) {
+      console.error("Error checking username:", error);
     }
   };
 
@@ -59,10 +93,16 @@ export default function ModalAdd({
             label={"Username"}
             type="field"
             value={formData.username || ""}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, username: e.target.value }))
-            }
+            onChange={async (e) => {
+              const username = e.target.value;
+              setFormData((prev) => ({ ...prev, username }));
+              await validateUsername(username);
+            }}
           />
+          {usernameError && (
+            <p className="text-red-500 text-sm mb-4">{usernameError}</p>
+          )}
+
           <TextField
             name={"Password"}
             placeholder={"Enter password"}

@@ -1,6 +1,5 @@
 "use client";
 import Table from "@/components/table";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
 import ModalApprove from "@/components/modal-approval";
@@ -9,14 +8,12 @@ import TextField from "@/components/textfield";
 import Button from "@/components/button";
 import { MdAddCircleOutline } from "react-icons/md";
 import {
-  get,
-  post,
   getWithAuth,
   patchWithAuthJson,
   deleteWithAuthJson,
   postWithAuth,
 } from "@/services/api";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import * as yup from "yup";
 
@@ -59,12 +56,13 @@ export default function manajemenAkun() {
     try {
       setIsLoading(true);
       const response = await getWithAuth(token, `users?page=${current}`);
-      setTotalPages(response.data.data?.pagination.last_page);
-      console.log("API Response:", response.data); // Debug log
       const apiData = response.data.data?.data || []; // Correct nested path
-      console.log("User Data Array:", apiData); // Debug log
+
+      setTotalPages(response.data.data?.pagination.last_page);
+      const itemsPerPage = response.data.data?.pagination.per_page;
+
       const transformedData = apiData.map((user: any, index: number) => ({
-        No: index + 1,
+        No: (current - 1) * itemsPerPage + index + 1,
         Username: user.username,
         Role: user.role,
         Status: (
@@ -183,6 +181,7 @@ export default function manajemenAkun() {
 
   const handleAdd = async () => {
     try {
+      setIsLoading(true);
       await validationSchema.validate(formData, { abortEarly: false });
       handleModalClose();
       const response = await postWithAuth(
@@ -197,6 +196,7 @@ export default function manajemenAkun() {
       const newData = await getData();
       setData(newData);
       toast.success("Success to add user.");
+      setIsLoading(false);
     } catch (error: any) {
       if (error.name === "ValidationError") {
         error.errors.forEach((err: any) => toast.error(err)); // Display validation errors
@@ -209,6 +209,7 @@ export default function manajemenAkun() {
 
   const handleEdit = async (idUser: string) => {
     try {
+      setIsLoading(true);
       await validationSchema.validate(formData, { abortEarly: false }); // Validate all fields
       handleModalClose();
       await patchWithAuthJson(
@@ -223,6 +224,7 @@ export default function manajemenAkun() {
       const newData = await getData();
       setData(newData);
       toast.success("User successfully edited.");
+      setIsLoading(false);
     } catch (error: any) {
       if (error.name === "ValidationError") {
         error.errors.forEach((err: any) => toast.error(err)); // Display validation errors

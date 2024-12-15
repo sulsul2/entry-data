@@ -50,16 +50,20 @@ export default function DetailPage({
   const getDataById = async (id: string) => {
     try {
       const response = await getWithAuth(token, `entry-user/${id}`);
-      const apiData = response.data.data; // Ambil data dari response
-      return apiData; // Pastikan data sesuai dengan kebutuhan
+      const apiData = response.data.data;
+      return apiData;
     } catch (error) {
-      console.error(`Error fetching data for ID ${id}:`, error);
-      return null; // Kembalikan nilai null jika terjadi kesalahan
+      return null; 
     }
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Display loading state until data is fetched
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#414651] border-solid"></div>
+        <p className="mt-4 text-gray-500">Loading...</p>
+      </div>
+    );
   }
 
   return (
