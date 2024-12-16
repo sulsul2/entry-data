@@ -17,12 +17,12 @@ const HeaderUser: React.FC = () => {
     const token = cookies.get("token");
     setIsLoading(true);
 
-    cookies.remove("token", { path: "/", sameSite: "lax", secure: true });
-    cookies.remove("user_id", { path: "/", sameSite: "lax", secure: true });
-    cookies.remove("role", { path: "/", sameSite: "lax", secure: true });
     try {
       await postWithAuth("logout", {}, token);
-
+      cookies.remove("token", { path: "/", sameSite: "lax", secure: true });
+      cookies.remove("user_id", { path: "/", sameSite: "lax", secure: true });
+      cookies.remove("role", { path: "/", sameSite: "lax", secure: true });
+      
       router.push("/login");
       window.location.reload();
     } catch (error) {

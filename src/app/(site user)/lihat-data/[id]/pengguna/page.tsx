@@ -39,6 +39,7 @@ export default function DetailPage({
     const fetchData = async () => {
       try {
         const userData = await getDataById(id);
+        console.log(userData);
         setData(userData);
         setLoading(false);
       } catch (error) {
@@ -55,14 +56,15 @@ export default function DetailPage({
       // Tentukan endpoint berdasarkan role
       let endpoint = "";
       if (role === "user_kementerian") {
-        endpoint = `user-kementerian/${id}`; // API untuk manager
-      } else if (role === "data_entry") {
-        endpoint = `data_entry/${id}`; // API untuk data_entry
+        endpoint = `user-kementerian/${id}`;
+      } else if (role === "manager") {
+        endpoint = `entry-user/${id}`;
       } else {
         throw new Error("Role tidak dikenali");
       }
 
       const response = await getWithAuth(token, endpoint);
+      console.log(response);
       const apiData = response.data.data;
       return apiData;
     } catch (error) {
