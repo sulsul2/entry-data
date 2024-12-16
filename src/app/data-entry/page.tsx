@@ -1,18 +1,55 @@
-"use client"
+"use client";
 import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
+import { get } from "@/services/api";
+import { setCustomization } from "@/store/slices/customizationSlice";
 import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { GoPersonAdd } from "react-icons/go";
 import { HiOutlineBuildingLibrary } from "react-icons/hi2";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function DataEntry() {
   const router = useRouter();
   const customization = useSelector((state: RootState) => state.customization);
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await get("customization/current");
+        const data = response.data.data;
+
+        dispatch(
+          setCustomization({
+            color: data.active_color,
+            logo: data.logo,
+            favicon: data.favicon,
+          })
+        );
+      } catch (error) {
+        console.error("Error fetching customization data:", error);
+      } finally {
+        setIsPageLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
+
   return (
     <>
       <div className="flex h-screen bg-white">
+        {isPageLoading && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-white text-sm font-medium">Loading...</p>
+            </div>
+          </div>
+        )}
         <Sidebar />
         <div className="flex-1 flex flex-col">
           <Header />

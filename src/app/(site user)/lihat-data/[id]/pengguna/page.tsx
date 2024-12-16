@@ -10,6 +10,8 @@ import { RiInstagramFill } from "react-icons/ri";
 import { IconType } from "react-icons";
 import { getWithAuth } from "@/services/api";
 import Cookies from "universal-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 export default function DetailPage({
   params,
@@ -23,6 +25,7 @@ export default function DetailPage({
   const cookies = new Cookies();
   const token = cookies.get("token");
   const role = cookies.get("role");
+  const customization = useSelector((state: RootState) => state.customization);
 
   const platformIcons: {
     [key in "facebook" | "instagram" | "linkedin"]: IconType;
@@ -85,6 +88,7 @@ export default function DetailPage({
             type={"button"}
             icon={<IoMdArrowBack className="text-lg md:text-2xl" />}
             onClick={() => router.back()}
+            color={customization.color}
           />
         </div>
         <h1 className="text-2xl md:text-3xl text-[#2A3D4A] font-semibold">
@@ -180,9 +184,11 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Data Keluarga
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.data_keluarga || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.data_keluarga || "-",
+                      }}
+                    />
                   </div>
                   {/* <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
@@ -282,18 +288,22 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Parlemen
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.riwayat_parlemen || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.riwayat_parlemen || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Pekerjaan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.riwayat_kerja || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.riwayat_kerja || "-",
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -303,18 +313,22 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jabatan di Kelompok Media
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.jabatan_kelompok || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.jabatan_kelompok || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jabatan di Organisasi
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.jabatan_organisasi || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.jabatan_organisasi || "-",
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -333,9 +347,11 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Pendidikan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.riwayat_pendidikan || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.riwayat_pendidikan || "-",
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -345,9 +361,11 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Penghargaan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.riwayat_penghargaan || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.riwayat_penghargaan || "-",
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -366,25 +384,31 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Pemberitaan/Isu yang sering diangkat terkait Kemenkeu
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.isu_kemenkeu || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.isu_kemenkeu || "-",
+                      }}
+                    />
                   </div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Sikap ke Kemenkeu
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.sikap_kemenkeu || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.sikap_kemenkeu || "-",
+                      }}
+                    />
                   </div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Riwayat Hukum
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.riwayat_hukum || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.riwayat_hukum || "-",
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -394,17 +418,21 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Rekomendasi Pendekatan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.rekomen_pendekatan || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.rekomen_pendekatan || "-",
+                      }}
+                    />
                   </div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Tingkat Pengaruh Di Masyarakat
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.tingkat_pengaruh || "-"}
-                    </p>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.tingkat_pengaruh || "-",
+                      }}
+                    />
                   </div>
                 </div>
               </div>

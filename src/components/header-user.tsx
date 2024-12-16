@@ -3,12 +3,31 @@
 import React, { useState } from "react";
 import { LuLogOut } from "react-icons/lu";
 import ModalApprove from "./modal-approval";
+import { postWithAuth } from "@/services/api";
+import Cookies from "universal-cookie";
+import { useRouter } from "next/navigation";
 
 const HeaderUser: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
+  const cookies = new Cookies();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleLogOut = () => {
-    setShowModal(false);
+  const handleLogOut = async () => {
+    const token = cookies.get("token");
+    setIsLoading(true);
+
+    cookies.remove("token", { path: "/", sameSite: "lax", secure: true });
+    cookies.remove("user_id", { path: "/", sameSite: "lax", secure: true });
+    cookies.remove("role", { path: "/", sameSite: "lax", secure: true });
+    try {
+      await postWithAuth("logout", {}, token);
+
+      router.push("/login");
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -26,6 +45,7 @@ const HeaderUser: React.FC = () => {
           button2TextColor="text-[#FFFFFF]"
           onButton1Click={() => setShowModal(false)}
           onButton2Click={() => handleLogOut()}
+          loading={isLoading}
         />
       )}
 

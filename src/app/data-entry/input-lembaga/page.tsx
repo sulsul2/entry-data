@@ -20,6 +20,7 @@ export default function DataEntryLembaga() {
   const cookies = new Cookies();
   const userId = cookies.get("user_id");
   const customization = useSelector((state: RootState) => state.customization);
+  console.log(customization.color);
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     nama: "",

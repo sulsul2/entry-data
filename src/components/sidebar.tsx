@@ -61,14 +61,17 @@ const Sidebar = () => {
   const handleLogOut = async () => {
     const token = cookies.get("token");
     setIsLoading(true);
-    cookies.remove("token");
-    cookies.remove("user_id");
-    cookies.remove("role");
+
     try {
-      const response = await postWithAuth("logout", {}, token);
+      await postWithAuth("logout", {}, token);
+      cookies.remove("token", { path: "/", sameSite: "lax", secure: true });
+      cookies.remove("user_id", { path: "/", sameSite: "lax", secure: true });
+      cookies.remove("role", { path: "/", sameSite: "lax", secure: true });
+
       router.push("/login");
+      window.location.reload();
     } catch (error) {
-      console.error(error);
+      console.error("Logout error:", error);
     }
   };
 

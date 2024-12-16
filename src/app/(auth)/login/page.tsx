@@ -116,7 +116,7 @@ export default function Login() {
         />
       </div>
       <div className="w-auto h-auto flex flex-col items-center bg-white rounded-[20px] drop-shadow-2xl shadow-[#0A0D1224] p-5 md:p-6">
-        <img src={customization.logo} alt="" className="w-12 h-12" />
+        <img src={customization.logo ?? null} alt="" className="w-12 h-12" />
         <p className="text-[#181D27] text-[24px] md:text-[30px] font-semibold mt-6">
           Login
         </p>
