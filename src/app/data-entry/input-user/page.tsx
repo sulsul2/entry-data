@@ -20,7 +20,7 @@ export default function DataEntryInput() {
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     nama: "",
-    jenis_kelamin: "",
+    jenis_kelamin: "L",
     tempat_lahir: "",
     tanggal_lahir: "",
     alamat: "",
@@ -455,17 +455,16 @@ export default function DataEntryInput() {
               }
             /> */}
             <div className="w-full">
-
-            <CustomTextEditor
-              initialValue={formData.riwayat_pendidikan}
-              onChange={(e) =>
-                setFormData((prevData) => ({
-                  ...prevData,
-                  riwayat_pendidikan: e,
-                }))
-              }
-              label={"Riwayat Pendidikan"}
-            />
+              <CustomTextEditor
+                initialValue={formData.riwayat_pendidikan}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    riwayat_pendidikan: e,
+                  }))
+                }
+                label={"Riwayat Pendidikan"}
+              />
             </div>
             {/* <TextField
               name={"riwayat_penghargaan"}
@@ -481,17 +480,16 @@ export default function DataEntryInput() {
               }
             /> */}
             <div className="w-full">
-
-            <CustomTextEditor
-              initialValue={formData.riwayat_penghargaan}
-              onChange={(e) =>
-                setFormData((prevData) => ({
-                  ...prevData,
-                  riwayat_penghargaan: e,
-                }))
-              }
-              label={"Riwayat Penghargaan"}
-            />
+              <CustomTextEditor
+                initialValue={formData.riwayat_penghargaan}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    riwayat_penghargaan: e,
+                  }))
+                }
+                label={"Riwayat Penghargaan"}
+              />
             </div>
           </div>
         </section>
