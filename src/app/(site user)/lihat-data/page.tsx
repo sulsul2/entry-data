@@ -125,6 +125,7 @@ export default function ViewData() {
           isLoading={isLoading}
           totalPages={totalPages}
           current={(curr) => setCurrent(curr)}
+          active={current}
         />
       </div>
     </div>

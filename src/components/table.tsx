@@ -9,6 +9,7 @@ function Table({
   isLoading,
   totalPages = 1,
   current,
+  active,
 }: {
   data: any[];
   header: any[];
@@ -16,6 +17,7 @@ function Table({
   isLoading: boolean;
   totalPages?: number;
   current: (x: number) => void | undefined;
+  active: number;
 }) {
   const Load = () => {
     const dummy = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -100,7 +102,7 @@ function Table({
 
       {/* Fixed Pagination */}
       <div className="p-2 justify-center sticky w-full bg-white rounded-lg">
-        <Pagination totalPages={totalPages} current={current} />
+        <Pagination totalPages={totalPages} current={current} active={active} />
       </div>
     </div>
   );

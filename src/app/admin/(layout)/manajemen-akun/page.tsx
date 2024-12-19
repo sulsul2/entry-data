@@ -31,6 +31,7 @@ export default function manajemenAkun() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [nama, setNama] = useState("");
   const cookies = new Cookies();
   const customization = useSelector((state: RootState) => state.customization);
   const token = cookies.get("token");
@@ -58,7 +59,10 @@ export default function manajemenAkun() {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await getWithAuth(token, `users?page=${current}`);
+      const response = await getWithAuth(
+        token,
+        `users?page=${current}&nama=${nama}`
+      );
       const apiData = response.data.data?.data || []; // Correct nested path
 
       setTotalPages(response.data.data?.pagination.last_page);
@@ -115,10 +119,11 @@ export default function manajemenAkun() {
     const fetchData = async () => {
       const UserData = await getData();
       setData(UserData);
+      setFilteredData(UserData);
     };
 
     fetchData();
-  }, [current]);
+  }, [current, nama]);
 
   // Fungsi untuk filter data berdasarkan pencarian
   useEffect(() => {
@@ -298,7 +303,10 @@ export default function manajemenAkun() {
               type="search"
               placeholder={"Search"}
               label={""}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setNama(e.target.value); // Update search keyword
+                setCurrent(1); // Reset to first page
+              }}
             />
           </div>
           <div className="flex">
@@ -319,6 +327,7 @@ export default function manajemenAkun() {
           isLoading={isLoading}
           totalPages={totalPages}
           current={(curr) => setCurrent(curr)}
+          active={current}
         />
       </div>
     </>

@@ -1,26 +1,25 @@
 "use client";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import Button from "./button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Pagination({
   totalPages,
   current,
+  active,
 }: {
   totalPages: number;
   current: (x: number) => void | undefined;
+  active: number;
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(active);
 
   const handlePageChange = (page: number) => {
     if (page == 0) {
-      setCurrentPage(1);
       current(1);
     } else if (page == totalPages + 1) {
-      setCurrentPage(totalPages);
       current(totalPages);
     } else {
-      setCurrentPage(page);
       current(page);
     }
   };
@@ -30,7 +29,7 @@ export default function Pagination({
       <div
         key={i}
         className={`cursor-pointer px-[16.5px] py-[10px] rounded-lg font-medium flex items-center justify-center text-[14px] ${
-          currentPage === i
+          active === i
             ? "bg-[#F9F5FF] text-[#7F56D9]"
             : "hover:bg-[#F9F5FF] hover:text-[#7F56D9]"
         }`}
@@ -47,13 +46,13 @@ export default function Pagination({
       if (totalPages < 5) {
         pushPage(pageNumbers, i);
       } else {
-        if (currentPage < totalPages - 3) {
+        if (active < totalPages - 3) {
           if (
-            (i < currentPage + 3 && i >= currentPage - 1) ||
+            (i < active + 3 && i >= active - 1) ||
             i == totalPages
           ) {
             pushPage(pageNumbers, i);
-          } else if (i == currentPage + 3) {
+          } else if (i == active + 3) {
             pageNumbers.push(
               <div
                 key={`ellipsis-${i}`}
@@ -64,7 +63,7 @@ export default function Pagination({
             );
           }
         } else {
-          if (i >= totalPages - 3 || i <= totalPages - currentPage + 1) {
+          if (i >= totalPages - 3 || i <= totalPages - active + 1) {
             pushPage(pageNumbers, i);
           } else if (i == totalPages - 4) {
             pageNumbers.push(
@@ -82,6 +81,11 @@ export default function Pagination({
     return pageNumbers;
   };
 
+  useEffect(()=> {
+    console.log("active"+active)
+    console.log("curr"+currentPage)
+  },[active])
+
   return (
     <div className="w-full flex justify-between items-center bg-transparent">
       <Button
@@ -90,8 +94,8 @@ export default function Pagination({
         type={"button"}
         icon={<GrLinkPrevious />}
         width={115}
-        onClick={() => handlePageChange(currentPage - 1)}
-        disable={currentPage == 1}
+        onClick={() => handlePageChange(active - 1)}
+        disable={active == 1}
       />
       <div className="flex">{renderPage()}</div>
       <Button
@@ -100,8 +104,8 @@ export default function Pagination({
         type={"button"}
         icon={<GrLinkNext />}
         width={88}
-        onClick={() => handlePageChange(currentPage + 1)}
-        disable={currentPage == totalPages}
+        onClick={() => handlePageChange(active + 1)}
+        disable={active == totalPages}
       />
     </div>
   );
