@@ -10,12 +10,15 @@ import { CiFilter } from "react-icons/ci";
 import Cookies from "universal-cookie";
 
 export default function HistoryEntry() {
-  const [search, setSearch] = useState<String>("");
+  const [search, setSearch] = useState<string>("");
   const [current, setCurrent] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [data, setData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [status, setStatus] = useState<string>("");
+  const [nama, setNama] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const header = ["No", "Nama", "Email", "Status", "Lihat Detail"];
 
   const cookies = new Cookies();
@@ -29,14 +32,43 @@ export default function HistoryEntry() {
       setFilteredData(userData);
     };
     fetchData();
-  }, [current]);
+  }, [status, current, nama]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn); // Bersihkan timeout saat `search` berubah
+  }, [search]);
+
+  // Fungsi untuk filter data berdasarkan pencarian
+  useEffect(() => {
+    if (debouncedSearch) {
+      const filtered = data.filter((item) => {
+        const stringValues = Object.entries(item)
+          .filter(
+            ([key, value]) =>
+              typeof value === "string" || typeof value === "number"
+          )
+          .map(([key, value]) => String(value).toLowerCase());
+
+        return stringValues.some((value) =>
+          value.includes(debouncedSearch.toLowerCase())
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(data);
+    }
+  }, [debouncedSearch, data]);
 
   const getUserData = async () => {
     try {
       setIsLoading(true);
       const response = await getWithAuth(
         token,
-        `entry-user/user/${user_id}?page=${current}`
+        `entry-user/user/${user_id}?page=${current}&status=${status}&nama=${nama}`
       );
 
       setTotalPages(response.data.data?.pagination.last_page);
@@ -69,18 +101,18 @@ export default function HistoryEntry() {
         ),
       }));
 
-      setIsLoading(false); // Stop loading state
+      setIsLoading(false);
       return transformedData;
     } catch (error) {
       console.error("Error fetching user data:", error);
-      setIsLoading(false); // Stop loading state even on error
+      setIsLoading(false);
       return [];
     }
   };
   return (
     <div className="flex h-screen bg-white">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-y-auto">
         <Header />
         <div className="flex flex-col mb-3 md:mb-6 px-6 py-2">
           <div className="flex justify-end items-center gap-4">
@@ -90,10 +122,16 @@ export default function HistoryEntry() {
               label={""}
               type={"dropdown"}
               options={[
+                { label: "Semua", value: "" },
                 { label: "Disetujui", value: "accepted" },
                 { label: "Ditolak", value: "rejected" },
                 { label: "Menunggu", value: "waiting" },
               ]}
+              value={status}
+              onChangeDropdown={(e) => {
+                setStatus(e.target.value);
+                setCurrent(1);
+              }}
               width={180}
               icon={<CiFilter />}
             />
@@ -102,7 +140,11 @@ export default function HistoryEntry() {
               type="search"
               placeholder={"Search"}
               label={""}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setNama(e.target.value);
+                setSearch(e.target.value);
+                setCurrent(1); // Reset to first page
+              }}
               width={320}
             />
           </div>
@@ -112,6 +154,7 @@ export default function HistoryEntry() {
             isLoading={isLoading}
             totalPages={totalPages}
             current={(curr) => setCurrent(curr)}
+            active={current}
           />
         </div>
       </div>
