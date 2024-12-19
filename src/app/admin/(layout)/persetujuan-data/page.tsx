@@ -35,7 +35,7 @@ export default function PersetujuanData() {
   useEffect(() => {
     const fetchData = async () => {
       if (type === "data-pengguna") {
-        setTitle("Data Pengguna");
+        setTitle("Data Personal");
         setHeader([
           "Id User",
           "Nama Pengguna",
@@ -314,8 +314,10 @@ export default function PersetujuanData() {
       {showApproveModal && (
         <ModalApprove
           image="/modal/approve-icon.svg"
-          title="Akun Disetujui"
-          subtitle="Apakah kamu yakin ingin menyetujui akun ini?"
+          title={`${type === "data-pengguna" ? "User" : "Lembaga"} Disetujui`}
+          subtitle={`Apakah kamu yakin ingin menyetujui ${
+            type === "data-pengguna" ? "user" : "lembaga"
+          } ini?`}
           button1Text="Cancel"
           button2Text="Konfirmasi"
           button1Color="bg-[#FFFFFF]"
@@ -333,8 +335,10 @@ export default function PersetujuanData() {
       {showRejectModal && (
         <ModalApprove
           image="/modal/reject-icon.svg"
-          title="Akun Ditolak"
-          subtitle="Apakah kamu yakin ingin menolak akun ini?"
+          title={`${type === "data-pengguna" ? "User" : "Lembaga"} Ditolak`}
+          subtitle={`Apakah kamu yakin ingin menolak ${
+            type === "data-pengguna" ? "user" : "lembaga"
+          } ini?`}
           button1Text="Cancel"
           button2Text="Tolak"
           button1Color="bg-[#FFFFFF]"

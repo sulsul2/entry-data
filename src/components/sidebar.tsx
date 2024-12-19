@@ -121,7 +121,7 @@ const Sidebar = () => {
                 src={customization.logo}
                 className={`w-10 justify-center items-center transition-transform duration-300 `}
               />
-              <div className="hidden lg:block">
+              <div className="my-auto hidden lg:block">
                 <h1 className="text-[15px] font-bold text-black">
                   Lorem Ipsum
                 </h1>
@@ -153,7 +153,7 @@ const Sidebar = () => {
                         navOpen || isMobileOpen ? "block" : "hidden"
                       } lg:flex`}
                     >
-                      <span>Data Pengguna</span>
+                      <span>Data Personal</span>
                       {isUserDataOpen ? (
                         <FaChevronUp className="text-gray-700" />
                       ) : (
@@ -304,7 +304,7 @@ const Sidebar = () => {
                       navOpen || isMobileOpen ? "block" : "hidden"
                     } lg:block ml-3`}
                   >
-                    Manajemen User
+                    Manajemen Akun
                   </span>
                 </Link>
               </li>

@@ -5,8 +5,9 @@ import { useState, useEffect } from "react";
 import React from "react";
 import Button from "@/components/button";
 import { IoMdArrowBack } from "react-icons/io";
-import { FaFacebook, FaLinkedin } from "react-icons/fa";
+import { FaFacebook, FaLinkedin, FaTiktok, FaYoutube } from "react-icons/fa";
 import { RiInstagramFill } from "react-icons/ri";
+import { FaSquareXTwitter } from "react-icons/fa6";
 import { IconType } from "react-icons";
 import { getWithAuth } from "@/services/api";
 import Cookies from "universal-cookie";
@@ -28,11 +29,20 @@ export default function DetailPage({
   const customization = useSelector((state: RootState) => state.customization);
 
   const platformIcons: {
-    [key in "facebook" | "instagram" | "linkedin"]: IconType;
+    [key in
+      | "facebook"
+      | "instagram"
+      | "linkedin"
+      | "tiktok"
+      | "x"
+      | "youtube"]: IconType;
   } = {
     facebook: FaFacebook,
     instagram: RiInstagramFill,
     linkedin: FaLinkedin,
+    tiktok: FaTiktok,
+    x: FaSquareXTwitter,
+    youtube: FaYoutube,
   };
 
   useEffect(() => {
@@ -110,6 +120,15 @@ export default function DetailPage({
               <div className="flex flex-col md:flex-row justify-between gap-4">
                 {/* Kiri */}
                 <div>
+                  <div className="mb-8">
+                    <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
+                      Foto
+                    </h2>
+                    <img
+                      src={data.foto}
+                      className="w-28 md:w-52 border-2 border-gray-300 rounded-xl p-4"
+                    />
+                  </div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Nama
@@ -126,6 +145,10 @@ export default function DetailPage({
                       {data.jenis_kelamin || "-"}
                     </p>
                   </div>
+                </div>
+
+                {/* Tengah */}
+                <div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Tempat Lahir
@@ -144,26 +167,6 @@ export default function DetailPage({
                   </div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      MBTI
-                    </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.mbti || "-"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Tengah */}
-                <div>
-                  <div className="mb-4">
-                    <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Alamat
-                    </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.alamat || "-"}
-                    </p>
-                  </div>
-                  <div className="mb-4">
-                    <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Email
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
@@ -177,6 +180,16 @@ export default function DetailPage({
                     <p className="text-sm text-[#000000] font-semibold">
                       {data.no_telp || "-"}
                     </p>
+                  </div>
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-1">
+                      Alamat
+                    </h3>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.alamat || "-",
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -192,19 +205,6 @@ export default function DetailPage({
                       }}
                     />
                   </div>
-                  {/* <div className="mb-4">
-                    <h3 className="text-xs text-[#414651] font-medium mb-1">
-                      Anak
-                    </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.keluarga.anak.map((anak: string, index: number) => (
-                        <span key={index}>
-                          {index + 1}. {anak}
-                          <br />
-                        </span>
-                      ))}
-                    </p>
-                  </div> */}
                   <div className="mb-4 flex flex-col md:flex-row gap-4 md:gap-20">
                     <div>
                       <h3 className="text-xs text-[#414651] font-medium mb-2">
@@ -219,6 +219,9 @@ export default function DetailPage({
                                   | "facebook"
                                   | "instagram"
                                   | "linkedin"
+                                  | "tiktok"
+                                  | "x"
+                                  | "youtube"
                               ];
                             const handle = data[platform];
 
@@ -252,6 +255,9 @@ export default function DetailPage({
                                   | "facebook"
                                   | "instagram"
                                   | "linkedin"
+                                  | "tiktok"
+                                  | "x"
+                                  | "youtube"
                               ];
                             const handle = data[platform];
 
@@ -433,6 +439,16 @@ export default function DetailPage({
                     <div
                       dangerouslySetInnerHTML={{
                         __html: data.tingkat_pengaruh || "-",
+                      }}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <h3 className="text-xs text-[#414651] font-medium mb-2">
+                      MBTI
+                    </h3>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: data.mbti || "-",
                       }}
                     />
                   </div>

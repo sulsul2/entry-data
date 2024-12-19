@@ -50,6 +50,7 @@ export default function manajemenAkun() {
     username: "",
     password: "",
     role: "",
+    status: "",
   });
 
   const header1 = ["No", "Username", "Role", "Status", "Action"];
@@ -147,6 +148,7 @@ export default function manajemenAkun() {
       username: user.username,
       password: user.password,
       role: user.role,
+      status: user.status,
     });
 
     setSelectedId(user.id);
@@ -161,6 +163,7 @@ export default function manajemenAkun() {
       username: "",
       password: "",
       role: "",
+      status: "active",
     });
     setShowAddModal(true);
     setSelectedId(null);
@@ -192,6 +195,7 @@ export default function manajemenAkun() {
           username: formData.username,
           password: formData.password,
           role: formData.role,
+          status: formData.status,
         },
         token
       );
@@ -220,6 +224,7 @@ export default function manajemenAkun() {
           username: formData.username,
           password: formData.password,
           role: formData.role,
+          status: formData.status,
         },
         token
       );
@@ -276,11 +281,14 @@ export default function manajemenAkun() {
             onButton2Click={() =>
               selectedId ? handleEdit(selectedId) : handleAdd()
             }
+            isEdit={selectedId ? true : false}
           />
         )}
 
-        <h1 className={`font-semibold text-${customization.color} text-[16px] md:text-[24px] mb-2 md:mb-6`}>
-          Management Account
+        <h1
+          className={`font-semibold text-${customization.color} text-[16px] md:text-[24px] mb-2 md:mb-6`}
+        >
+          Manajemen Akun
         </h1>
 
         <div className="flex flex-col md:flex-row items-end md:items-baseline md:justify-end mb-4 md:mb-6 gap-0 md:gap-4">

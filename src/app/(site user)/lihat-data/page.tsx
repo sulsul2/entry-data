@@ -7,13 +7,14 @@ import { getWithAuth } from "@/services/api";
 import TextField from "@/components/textfield";
 import Cookies from "universal-cookie";
 
-export default function persetujuan() {
+export default function ViewData() {
   const [data, setData] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [nama, setNama] = useState("");
   const cookies = new Cookies();
   const token = cookies.get("token");
 
@@ -29,12 +30,13 @@ export default function persetujuan() {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const response = await getWithAuth(token, `data-entry/accepted`);
+      const response = await getWithAuth(
+        token,
+        `data-entry/accepted?page=${current}&nama=${nama}`
+      );
 
-      setCurrent(response.data.data?.pagination.current_page);
       setTotalPages(response.data.data?.pagination.last_page);
       const itemsPerPage = response.data.data?.pagination.per_page;
-
       const apiData = response.data.data?.data || [];
 
       const data = apiData.map((user: any, index: number) => ({
@@ -75,7 +77,7 @@ export default function persetujuan() {
     };
 
     fetchData();
-  }, []);
+  }, [current, nama]);
 
   useEffect(() => {
     if (search) {
@@ -109,7 +111,10 @@ export default function persetujuan() {
               type="search"
               placeholder={"Search"}
               label={""}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setNama(e.target.value); // Update search keyword
+                setCurrent(1); // Reset to first page
+              }}
               width={320}
             />
           </div>

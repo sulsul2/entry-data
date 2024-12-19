@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import TextField from "./textfield";
 import { getWithAuth } from "@/services/api";
 import Cookies from "universal-cookie";
+import { boolean } from "yup";
 
 export default function ModalAdd({
   title,
@@ -16,11 +17,22 @@ export default function ModalAdd({
   button2Color,
   button1TextColor,
   button2TextColor,
+  isEdit = false,
 }: {
   title: string;
-  formData: { username: string; password: string; role: string };
+  formData: {
+    username: string;
+    password: string;
+    role: string;
+    status: string;
+  };
   setFormData: React.Dispatch<
-    React.SetStateAction<{ username: string; password: string; role: string }>
+    React.SetStateAction<{
+      username: string;
+      password: string;
+      role: string;
+      status: string;
+    }>
   >;
   button1Text: string;
   button2Text: string;
@@ -30,6 +42,7 @@ export default function ModalAdd({
   button2Color?: string;
   button1TextColor?: string;
   button2TextColor?: string;
+  isEdit?: boolean;
 }) {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -53,24 +66,24 @@ export default function ModalAdd({
       setUsernameError(null);
     }
 
-    try {
-      // Call the API with the provided username
-      const response = await getWithAuth(
-        token,
-        `/users?username=${username}` // Encode username to handle special characters
-      );
+    // try {
+    //   // Call the API with the provided username
+    //   const response = await getWithAuth(
+    //     token,
+    //     `/users?username=${username}` // Encode username to handle special characters
+    //   );
 
-      const data = response.data.data?.data || [];
+    //   const data = response.data.data?.data || [];
 
-      // Assuming `data.exists` is true if the username exists
-      if (data.exists) {
-        setUsernameError("Username is already taken.");
-      } else {
-        setUsernameError(null); // Clear the error if the username is available
-      }
-    } catch (error) {
-      console.error("Error checking username:", error);
-    }
+    //   // Assuming `data.exists` is true if the username exists
+    //   if (data.exists) {
+    //     setUsernameError("Username is already taken.");
+    //   } else {
+    //     setUsernameError(null); // Clear the error if the username is available
+    //   }
+    // } catch (error) {
+    //   console.error("Error checking username:", error);
+    // }
   };
 
   return (
@@ -133,6 +146,24 @@ export default function ModalAdd({
               setFormData((prev) => ({ ...prev, role: e.target.value }))
             }
           />
+
+          {/* Conditional Field for Edit Mode */}
+          {isEdit && (
+            <TextField
+              name={"Status"}
+              placeholder={"Change Status"}
+              label={"Status"}
+              type="dropdown"
+              options={[
+                { label: "Active", value: "active" },
+                { label: "Inactive", value: "inactive" },
+              ]}
+              value={formData.status || ""}
+              onChangeDropdown={(e) =>
+                setFormData((prev) => ({ ...prev, status: e.target.value }))
+              }
+            />
+          )}
         </div>
 
         {/* Action Buttons */}
