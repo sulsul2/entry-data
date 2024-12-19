@@ -29,7 +29,7 @@ export default function TextField({
   onChangeDropdown?: React.ChangeEventHandler<HTMLSelectElement> | undefined;
   onChangeArea?: React.ChangeEventHandler<HTMLTextAreaElement> | undefined;
 }) {
-  const useLabel = (type != "search") || label == "";
+  const useLabel = type != "search" || label == "";
   const [showPassword, setShowPassword] = useState("password");
   const [eyeIcon, setEyeIcon] = useState(<LuEyeOff></LuEyeOff>);
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -48,7 +48,6 @@ export default function TextField({
       dateInputRef.current.showPicker();
     }
   };
-
 
   const inputWidth = width ? width : "100%";
   return (
@@ -139,6 +138,11 @@ export default function TextField({
       )}
       {type === "dropdown" && options && (
         <div className="mt-2 mb-4 gap-[8px] flex items-center px-[14px] py-[10px] text-[14px] text-[#1A0048] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group">
+          {icon && (
+            <div className="text-[16px] w-fit text-[#717680] group-focus-within:text-primary-900">
+              {icon}
+            </div>
+          )}
           <select
             id={name}
             value={value}
@@ -157,12 +161,15 @@ export default function TextField({
         </div>
       )}
       {type === "date" && (
-        <div className="mt-2 mb-4 gap-[8px] flex items-center px-[14px] py-[10px] text-[14px] text-[#717680] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group" onClick={handleDateIconClick}>
+        <div
+          className="mt-2 mb-4 gap-[8px] flex items-center px-[14px] py-[10px] text-[14px] text-[#717680] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group"
+          onClick={handleDateIconClick}
+        >
           <div className="text-[16px] w-fit text-[#717680] group-focus-within:text-primary-900">
             <FaCalendarAlt />
           </div>
           <input
-          ref={dateInputRef}
+            ref={dateInputRef}
             id={name}
             type="date"
             placeholder={placeholder}

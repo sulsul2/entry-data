@@ -381,8 +381,7 @@ export default function PersetujuanData() {
         header={header}
         isLoading={isLoading}
         totalPages={totalPages}
-        current={(curr) => setCurrent(curr)}
-      />
+        current={(curr) => setCurrent(curr)} active={current}      />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaBars, FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { MdFolderShared } from "react-icons/md";
+import { MdFolderShared, MdHistory } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { BsGrid3X3GapFill } from "react-icons/bs";
@@ -53,6 +53,8 @@ const Sidebar = () => {
       setActive(4);
     } else if (pathname === "/data-entry") {
       setActive(5);
+    }else if (pathname === "/data-entry/history") {
+      setActive(6);
     } else {
       setActive(-1);
     }
@@ -349,6 +351,24 @@ const Sidebar = () => {
                   } lg:block ml-3`}
                 >
                   Menu
+                </span>
+              </Link>
+              <Link
+                href="/data-entry/history"
+                className={`flex items-center p-2 rounded-lg ${
+                  active === 6
+                    ? `text-${customization.color} font-semibold border border-[#E6E7EC]`
+                    : `text-gray-700 hover:text-${customization.color}`
+                }`}
+                // onClick={() => setIsMobileOpen(false)}
+              >
+                <MdHistory className="w-6 h-6" />
+                <span
+                  className={`${
+                    navOpen || isMobileOpen ? "block" : "hidden"
+                  } lg:block ml-3`}
+                >
+                  History
                 </span>
               </Link>
             </ul>
