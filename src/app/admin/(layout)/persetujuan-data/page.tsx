@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { CiFilter } from "react-icons/ci";
 
 export default function PersetujuanData() {
   const searchParams = useSearchParams();
@@ -20,12 +21,14 @@ export default function PersetujuanData() {
   const [filteredData, setFilteredData] = useState<any[]>([]); // Data setelah difilter
   const [header, setHeader] = useState<string[]>([]);
   const [title, setTitle] = useState("");
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>(""); // Input dari pengguna
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(""); // Nilai setelah debounce
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
+  const [nama, setNama] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cookies = new Cookies();
   const customization = useSelector((state: RootState) => state.customization);
@@ -65,13 +68,20 @@ export default function PersetujuanData() {
       }
     };
     fetchData();
-  }, [type, current]);
+  }, [type, current, nama]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn); // Bersihkan timeout saat `search` berubah
+  }, [search]);
 
   // Fungsi untuk filter data berdasarkan pencarian
   useEffect(() => {
-    if (search) {
+    if (debouncedSearch) {
       const filtered = data.filter((item) => {
-        // Ambil semua nilai properti kecuali elemen JSX
         const stringValues = Object.entries(item)
           .filter(
             ([key, value]) =>
@@ -80,20 +90,23 @@ export default function PersetujuanData() {
           .map(([key, value]) => String(value).toLowerCase());
 
         return stringValues.some((value) =>
-          value.includes(search.toLowerCase())
+          value.includes(debouncedSearch.toLowerCase())
         );
       });
       setFilteredData(filtered);
     } else {
-      setFilteredData(data); // Reset ke data asli jika pencarian kosong
+      setFilteredData(data);
     }
-  }, [search, data]);
+  }, [debouncedSearch, data]);
 
   // Fungsi untuk transformasi data Pengguna
   const getUserData = async () => {
     try {
       setIsLoading(true);
-      const response = await getWithAuth(token, `entry-user?page=${current}`);
+      const response = await getWithAuth(
+        token,
+        `entry-user?page=${current}&nama=${nama}`
+      );
 
       setTotalPages(response.data.data?.pagination.last_page);
       const apiData = response.data.data?.data || [];
@@ -142,7 +155,7 @@ export default function PersetujuanData() {
       setIsLoading(true);
       const response = await getWithAuth(
         token,
-        `entry-lembaga?page=${current}`
+        `entry-lembaga?page=${current}&nama=${nama}`
       );
       setTotalPages(response.data.data?.pagination.last_page);
       const apiData = response.data.data?.data || [];
@@ -364,13 +377,30 @@ export default function PersetujuanData() {
       </h1>
 
       <div className="flex flex-col mb-3 md:mb-6">
-        <div className="flex justify-end">
+        <div className="flex justify-end items-center gap-4">
+          <TextField
+            name={"status"}
+            placeholder={"Status"}
+            label={""}
+            type={"dropdown"}
+            options={[
+              { label: "Disetujui", value: "accepted" },
+              { label: "Ditolak", value: "rejected" },
+              { label: "Menunggu", value: "waiting" },
+            ]}
+            width={180}
+            icon={<CiFilter />}
+          />
           <TextField
             name={"Search"}
             type="search"
             placeholder={"Search"}
             label={""}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setNama(e.target.value);
+              setSearch(e.target.value);
+              setCurrent(1); // Reset to first page
+            }}
             width={320}
           />
         </div>
@@ -381,7 +411,9 @@ export default function PersetujuanData() {
         header={header}
         isLoading={isLoading}
         totalPages={totalPages}
-        current={(curr) => setCurrent(curr)} active={current}      />
+        current={(curr) => setCurrent(curr)}
+        active={current}
+      />
     </div>
   );
 }

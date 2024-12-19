@@ -19,6 +19,7 @@ export default function EksporData() {
   const [search, setSearch] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
+  const [nama, setNama] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cookies = new Cookies();
   const customization = useSelector((state: RootState) => state.customization);
@@ -56,7 +57,7 @@ export default function EksporData() {
       }
     };
     fetchData();
-  }, [type, current]);
+  }, [type, current, nama]);
 
   useEffect(() => {
     if (search) {
@@ -83,7 +84,10 @@ export default function EksporData() {
   const getUserData = async () => {
     try {
       setIsLoading(true);
-      const response = await getWithAuth(token, `entry-user?page=${current}`);
+      const response = await getWithAuth(
+        token,
+        `entry-user?page=${current}&nama=${nama}`
+      );
 
       setTotalPages(response.data.data?.pagination.last_page);
       const apiData = response.data.data?.data || [];
@@ -125,7 +129,7 @@ export default function EksporData() {
       setIsLoading(true);
       const response = await getWithAuth(
         token,
-        `entry-lembaga?page=${current}`
+        `entry-lembaga?page=${current}&nama=${nama}`
       );
 
       // Update total halaman dan item per halaman dari response
@@ -183,7 +187,10 @@ export default function EksporData() {
             type="search"
             placeholder={"Search"}
             label={""}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setNama(e.target.value); // Update search keyword
+              setCurrent(1); // Reset to first page
+            }}
             width={320}
           />
         </div>
@@ -195,6 +202,7 @@ export default function EksporData() {
         isLoading={isLoading}
         totalPages={totalPages}
         current={(curr) => setCurrent(curr)}
+        active={current}
       />
     </div>
   );

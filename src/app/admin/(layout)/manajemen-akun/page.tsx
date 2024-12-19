@@ -61,7 +61,7 @@ export default function manajemenAkun() {
       setIsLoading(true);
       const response = await getWithAuth(
         token,
-        `users?page=${current}&nama=${nama}`
+        `users?page=${current}&username=${nama}`
       );
       const apiData = response.data.data?.data || []; // Correct nested path
 
