@@ -29,6 +29,7 @@ export default function PersetujuanData() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
   const [nama, setNama] = useState("");
+  const [status, setStatus] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const cookies = new Cookies();
   const customization = useSelector((state: RootState) => state.customization);
@@ -68,7 +69,7 @@ export default function PersetujuanData() {
       }
     };
     fetchData();
-  }, [type, current, nama]);
+  }, [type, current, nama, status]);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -105,7 +106,7 @@ export default function PersetujuanData() {
       setIsLoading(true);
       const response = await getWithAuth(
         token,
-        `entry-user?page=${current}&nama=${nama}`
+        `entry-user?page=${current}&nama=${nama}&status=${status}`
       );
 
       setTotalPages(response.data.data?.pagination.last_page);
@@ -155,7 +156,7 @@ export default function PersetujuanData() {
       setIsLoading(true);
       const response = await getWithAuth(
         token,
-        `entry-lembaga?page=${current}&nama=${nama}`
+        `entry-lembaga?page=${current}&nama=${nama}&status=${status}`
       );
       setTotalPages(response.data.data?.pagination.last_page);
       const apiData = response.data.data?.data || [];
@@ -384,10 +385,16 @@ export default function PersetujuanData() {
             label={""}
             type={"dropdown"}
             options={[
+              { label: "Semua", value: "" },
               { label: "Disetujui", value: "accepted" },
               { label: "Ditolak", value: "rejected" },
               { label: "Menunggu", value: "waiting" },
             ]}
+            value={status}
+            onChangeDropdown={(e) => {
+              setStatus(e.target.value);
+              setCurrent(1);
+            }}
             width={180}
             icon={<CiFilter />}
           />

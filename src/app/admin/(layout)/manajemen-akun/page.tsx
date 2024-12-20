@@ -52,6 +52,7 @@ export default function manajemenAkun() {
     password: "",
     role: "",
     status: "",
+    email: "",
   });
 
   const header1 = ["No", "Username", "Role", "Status", "Action"];
@@ -154,6 +155,7 @@ export default function manajemenAkun() {
       password: user.password,
       role: user.role,
       status: user.status,
+      email: user
     });
 
     setSelectedId(user.id);
@@ -169,6 +171,7 @@ export default function manajemenAkun() {
       password: "",
       role: "",
       status: "active",
+      email: ""
     });
     setShowAddModal(true);
     setSelectedId(null);
