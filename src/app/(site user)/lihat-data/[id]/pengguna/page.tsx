@@ -13,6 +13,40 @@ import { getWithAuth } from "@/services/api";
 import Cookies from "universal-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import Image from "next/image";
+
+interface UserData {
+  id: string;
+  nama: string;
+  jenis_kelamin: string;
+  tempat_lahir: string;
+  tanggal_lahir: string;
+  foto: string;
+  alamat: string;
+  email: string | null;
+  no_telp: string | null;
+  mbti: string;
+  data_keluarga: string;
+  instagram: string;
+  instagram_follow: number;
+  facebook: string;
+  facebook_follow: number;
+  linkedin: string;
+  linkedin_follow: number;
+  riwayat_parlemen: string;
+  riwayat_kerja: string;
+  jabatan_kelompok: string;
+  jabatan_organisasi: string;
+  riwayat_pendidikan: string;
+  riwayat_penghargaan: string | null;
+  isu_kemenkeu: string | null;
+  rekomen_pendekatan: string | null;
+  sikap_kemenkeu: string | null;
+  tingkat_pengaruh: string | null;
+  riwayat_hukum: string | null;
+  status: string;
+  user_id: string;
+}
 
 export default function DetailPage({
   params,
@@ -20,7 +54,7 @@ export default function DetailPage({
   params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
-  const [data, setData] = useState<any | null>(null); // Data for the page
+  const [data, setData] = useState<UserData | null>(null); // Data for the page
   const [loading, setLoading] = useState(true);
   const { id } = React.use(params);
   const cookies = new Cookies();
@@ -44,6 +78,12 @@ export default function DetailPage({
     x: FaSquareXTwitter,
     youtube: FaYoutube,
   };
+
+  const platforms: Array<"facebook" | "instagram" | "linkedin"> = [
+    "facebook",
+    "instagram",
+    "linkedin",
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +118,7 @@ export default function DetailPage({
       const apiData = response.data.data;
       return apiData;
     } catch (error) {
+      console.error(error);
       return null;
     }
   };
@@ -124,8 +165,9 @@ export default function DetailPage({
                     <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
                       Foto
                     </h2>
-                    <img
+                    <Image
                       src={data.foto}
+                      alt=""
                       className="w-28 md:w-52 border-2 border-gray-300 rounded-xl p-4"
                     />
                   </div>
@@ -211,33 +253,31 @@ export default function DetailPage({
                         Akun Media Sosial
                       </h3>
                       <div className="text-sm text-[#000000] font-normal">
-                        {["facebook", "instagram", "linkedin"].map(
-                          (platform, index) => {
-                            const Icon =
-                              platformIcons[
-                                platform as
-                                  | "facebook"
-                                  | "instagram"
-                                  | "linkedin"
-                                  | "tiktok"
-                                  | "x"
-                                  | "youtube"
-                              ];
-                            const handle = data[platform];
+                        {platforms.map((platform, index) => {
+                          const Icon =
+                            platformIcons[
+                              platform as
+                                | "facebook"
+                                | "instagram"
+                                | "linkedin"
+                                | "tiktok"
+                                | "x"
+                                | "youtube"
+                            ];
+                          const handle = data[platform];
 
-                            if (!handle) return null;
+                          if (!handle) return null;
 
-                            return (
-                              <div
-                                key={index}
-                                className="flex items-center gap-2 mb-4"
-                              >
-                                {Icon && <Icon className="text-xl" />}
-                                <p>{handle || "-"}</p>
-                              </div>
-                            );
-                          }
-                        )}
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-center gap-2 mb-4"
+                            >
+                              {Icon && <Icon className="text-xl" />}
+                              <p>{handle || "-"}</p>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                     <div>
@@ -246,36 +286,34 @@ export default function DetailPage({
                       </h3>
                       <div className="text-sm text-[#000000] font-normal">
                         {/* Display follower counts from all platforms */}
-                        {["facebook", "instagram", "linkedin"].map(
-                          (platform, index) => {
-                            const followers = data[`${platform}_follow`];
-                            const Icon =
-                              platformIcons[
-                                platform as
-                                  | "facebook"
-                                  | "instagram"
-                                  | "linkedin"
-                                  | "tiktok"
-                                  | "x"
-                                  | "youtube"
-                              ];
-                            const handle = data[platform];
+                        {platforms.map((platform, index) => {
+                          const followers = data[`${platform}_follow`];
+                          const Icon =
+                            platformIcons[
+                              platform as
+                                | "facebook"
+                                | "instagram"
+                                | "linkedin"
+                                | "tiktok"
+                                | "x"
+                                | "youtube"
+                            ];
+                          const handle = data[platform];
 
-                            if (!handle) return null;
+                          if (!handle) return null;
 
-                            if (followers === undefined) return null;
+                          if (followers === undefined) return null;
 
-                            return (
-                              <div
-                                key={index}
-                                className="flex items-center gap-2 mb-4"
-                              >
-                                {Icon && <Icon className="text-xl" />}
-                                {`${followers} followers` || "-"}
-                              </div>
-                            );
-                          }
-                        )}
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-center gap-2 mb-4"
+                            >
+                              {Icon && <Icon className="text-xl" />}
+                              {`${followers} followers` || "-"}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>

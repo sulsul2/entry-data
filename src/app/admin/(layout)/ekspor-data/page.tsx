@@ -9,13 +9,55 @@ import Cookies from "universal-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
+interface ProcessedUser {
+  IdUser: number;
+  NamaPengguna: string;
+  JenisKelamin: string;
+  Email: string;
+  Status: JSX.Element; // JSX element untuk status yang merupakan komponen div
+  Action: JSX.Element; // JSX element untuk Action yang berisi komponen DropdownButton
+}
+
+interface User {
+  id: string;
+  nama: string;
+  jenis_kelamin: string;
+  email: string | null;
+  status: string;
+  originalIndex: number;
+  // Anda bisa menambahkan lebih banyak field jika diperlukan
+}
+
+interface Lembaga {
+  id: string;
+  nama: string;
+  alamat: string;
+  no_kontak: string;
+  status: string;
+  originalIndex: number;
+}
+
+// Tipe untuk data yang diproses
+interface ProcessedLembaga {
+  IdLembaga: number; // ID yang dihitung berdasarkan halaman dan index
+  NamaInstansi: string; // Nama lembaga
+  Alamat: string; // Alamat lembaga, default "-" jika kosong
+  NoTelpon: string; // Nomor telepon, default "-" jika kosong
+  Status: JSX.Element; // JSX element untuk status yang berisi div
+  Action: JSX.Element; // JSX element untuk action yang berisi DropdownButton
+}
+
 export default function EksporData() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type"); // Ambil parameter type dari URL
-  const [data, setData] = useState<any[]>([]); // We now use `any[]` to handle both user and institution data
+  const [data, setData] = useState<ProcessedUser[]>([]); // We now use `any[]` to handle both user and institution data
+  const [lembagaData, setLembagaData] = useState<ProcessedLembaga[]>([]); // We now use `any[]` to handle both user and institution data
   const [header, setHeader] = useState<string[]>([]);
   const [title, setTitle] = useState("");
-  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<ProcessedUser[]>([]);
+  const [filteredLembagaData, setFilteredLembagaData] = useState<
+    ProcessedLembaga[]
+  >([]);
   const [search, setSearch] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
@@ -52,31 +94,52 @@ export default function EksporData() {
           "Action",
         ]);
         const institutionData = await getInstitutionData();
-        setData(institutionData);
-        setFilteredData(institutionData);
+        setLembagaData(institutionData);
+        setFilteredLembagaData(institutionData);
       }
     };
     fetchData();
   }, [type, current, nama]);
 
   useEffect(() => {
-    if (search) {
-      const filtered = data.filter((item) => {
-        // Ambil semua nilai properti kecuali elemen JSX
-        const stringValues = Object.entries(item)
-          .filter(
-            ([key, value]) =>
-              typeof value === "string" || typeof value === "number"
-          )
-          .map(([key, value]) => String(value).toLowerCase());
+    if (type == "data-pengguna") {
+      if (search) {
+        const filtered = data.filter((item) => {
+          // Ambil semua nilai properti kecuali elemen JSX
+          const stringValues = Object.entries(item)
+            .filter(
+              ([value]) =>
+                typeof value === "string" || typeof value === "number"
+            )
+            .map(([value]) => String(value).toLowerCase());
 
-        return stringValues.some((value) =>
-          value.includes(search.toLowerCase())
-        );
-      });
-      setFilteredData(filtered);
+          return stringValues.some((value) =>
+            value.includes(search.toLowerCase())
+          );
+        });
+        setFilteredData(filtered);
+      } else {
+        setFilteredData(data);
+      }
     } else {
-      setFilteredData(data);
+      if (search) {
+        const filtered = lembagaData.filter((item) => {
+          // Ambil semua nilai properti kecuali elemen JSX
+          const stringValues = Object.entries(item)
+            .filter(
+              ([value]) =>
+                typeof value === "string" || typeof value === "number"
+            )
+            .map(([value]) => String(value).toLowerCase());
+
+          return stringValues.some((value) =>
+            value.includes(search.toLowerCase())
+          );
+        });
+        setFilteredLembagaData(filtered);
+      } else {
+        setFilteredLembagaData(lembagaData);
+      }
     }
   }, [search, data]);
 
@@ -95,12 +158,12 @@ export default function EksporData() {
 
       // Transformasi data untuk digunakan di tabel
       const data = apiData
-        .map((user: any, index: number) => ({
+        .map((user: User, index: number) => ({
           ...user,
           originalIndex: (current - 1) * itemsPerPage + index + 1,
         }))
-        .filter((user: any) => user.status === "accepted")
-        .map((user: any, index: number) => ({
+        .filter((user: User) => user.status === "accepted")
+        .map((user: User) => ({
           IdUser: user.originalIndex,
           NamaPengguna: user.nama || "-",
           JenisKelamin: user.jenis_kelamin || "-",
@@ -139,12 +202,12 @@ export default function EksporData() {
 
       // Transformasi data untuk digunakan di tabel
       const data = apiData
-        .map((lembaga: any, index: number) => ({
+        .map((lembaga: Lembaga, index: number) => ({
           ...lembaga,
           originalIndex: (current - 1) * itemsPerPage + index + 1,
         }))
-        .filter((lembaga: any) => lembaga.status === "accepted")
-        .map((lembaga: any) => ({
+        .filter((lembaga: Lembaga) => lembaga.status === "accepted")
+        .map((lembaga: Lembaga) => ({
           IdLembaga: lembaga.originalIndex,
           NamaInstansi: lembaga.nama,
           Alamat: lembaga.alamat || "-",
@@ -189,6 +252,7 @@ export default function EksporData() {
             label={""}
             onChange={(e) => {
               setNama(e.target.value); // Update search keyword
+              setSearch(e.target.value); // Update search keyword
               setCurrent(1); // Reset to first page
             }}
             width={320}
@@ -196,14 +260,25 @@ export default function EksporData() {
         </div>
       </div>
 
-      <Table
-        data={filteredData}
-        header={header}
-        isLoading={isLoading}
-        totalPages={totalPages}
-        current={(curr) => setCurrent(curr)}
-        active={current}
-      />
+      {type == "data-pengguna" ? (
+        <Table
+          data={filteredData}
+          header={header}
+          isLoading={isLoading}
+          totalPages={totalPages}
+          current={(curr) => setCurrent(curr)}
+          active={current}
+        />
+      ) : (
+        <Table
+          data={filteredLembagaData}
+          header={header}
+          isLoading={isLoading}
+          totalPages={totalPages}
+          current={(curr) => setCurrent(curr)}
+          active={current}
+        />
+      )}
     </div>
   );
 }

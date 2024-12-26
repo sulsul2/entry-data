@@ -1,9 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import TextField from "./textfield";
-import { getWithAuth } from "@/services/api";
-import Cookies from "universal-cookie";
-import { boolean } from "yup";
+import Image from "next/image";
 
 export default function ModalAdd({
   title,
@@ -46,8 +44,6 @@ export default function ModalAdd({
 }) {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [usernameError, setUsernameError] = useState<string | null>(null);
-  const cookies = new Cookies();
-  const token = cookies.get("token");
 
   const validatePassword = (password: string) => {
     if (password.length < 8) {
@@ -89,7 +85,7 @@ export default function ModalAdd({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-72 md:w-96 p-6 text-center">
-        <img
+        <Image
           src={"/modal/add-icon.svg"}
           alt="Modal Icon"
           className="w-12 h-12 mx-auto mb-4"

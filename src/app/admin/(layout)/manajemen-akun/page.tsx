@@ -21,12 +21,33 @@ import { RootState } from "@/store/store";
 
 // import { cookies } from "next/headers";
 
-export default function manajemenAkun() {
-  const [data, setData] = useState<any[]>([]);
+type TransformedUser = {
+  No: number; // Nomor urut, selalu berupa angka
+  Username: string; // Username pengguna
+  Role: string; // Role pengguna
+  Status: JSX.Element; // Status dirender sebagai elemen JSX
+  Action: JSX.Element; // Aksi dirender sebagai elemen JSX
+};
+
+type User = {
+  id: string; // ID pengguna, diasumsikan berupa string
+  username: string; // Username pengguna
+  password: string; // Username pengguna
+  role: string; // Role pengguna
+  status: "active" | "inactive"; // Status pengguna, bisa berupa "active" atau "inactive"
+};
+
+type ValidationError = {
+  name: "ValidationError";
+  errors: string[]; // Array berisi pesan kesalahan validasi
+};
+
+export default function ManajemenAkun() {
+  const [data, setData] = useState<TransformedUser[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [filteredData, setFilteredData] = useState<any[]>([]); // Data setelah difilter
+  const [filteredData, setFilteredData] = useState<TransformedUser[]>([]); // Data setelah difilter
   const [search, setSearch] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
@@ -38,7 +59,7 @@ export default function manajemenAkun() {
 
   const validationSchema = yup.object({
     username: yup.string().required("Username is required"),
-    password: yup.lazy((value) => {
+    password: yup.lazy(() => {
       // Check if the `selectedId` is null
       if (selectedId === null) {
         return yup.string().min(8, "Password must be at least 8 characters");
@@ -68,7 +89,7 @@ export default function manajemenAkun() {
       setTotalPages(response.data.data?.pagination.last_page);
       const itemsPerPage = response.data.data?.pagination.per_page;
 
-      const transformedData = apiData.map((user: any, index: number) => ({
+      const transformedData = apiData.map((user: User, index: number) => ({
         No: (current - 1) * itemsPerPage + index + 1,
         Username: user.username,
         Role: user.role,
@@ -132,10 +153,9 @@ export default function manajemenAkun() {
         // Ambil semua nilai properti kecuali elemen JSX
         const stringValues = Object.entries(item)
           .filter(
-            ([key, value]) =>
-              typeof value === "string" || typeof value === "number"
+            ([value]) => typeof value === "string" || typeof value === "number"
           )
-          .map(([key, value]) => String(value).toLowerCase());
+          .map(([value]) => String(value).toLowerCase());
 
         return stringValues.some((value) =>
           value.includes(search.toLowerCase())
@@ -148,7 +168,7 @@ export default function manajemenAkun() {
   }, [search, data]);
 
   // Fungsi untuk menangani tombol edit
-  const handleOpenEditButton = (user: any) => {
+  const handleOpenEditButton = (user: User) => {
     setFormData({
       username: user.username,
       password: user.password,
@@ -194,7 +214,7 @@ export default function manajemenAkun() {
       setIsLoading(true);
       await validationSchema.validate(formData, { abortEarly: false });
       handleModalClose();
-      const response = await postWithAuth(
+      await postWithAuth(
         "users",
         {
           username: formData.username,
@@ -208,12 +228,15 @@ export default function manajemenAkun() {
       setData(newData);
       toast.success("Success to add user.");
       setIsLoading(false);
-    } catch (error: any) {
-      if (error.name === "ValidationError") {
-        error.errors.forEach((err: any) => toast.error(err)); // Display validation errors
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null && "name" in error) {
+        const validationError = error as ValidationError;
+        if (validationError.name === "ValidationError") {
+          validationError.errors.forEach((err: string) => toast.error(err));
+        }
       } else {
-        console.error("Error adding user:", error);
-        toast.error("Failed to add user.");
+        console.error("Error:", (error as Error).message); // Tangani error lainnya
+        toast.error("An unexpected error occurred.");
       }
     }
   };
@@ -237,12 +260,15 @@ export default function manajemenAkun() {
       setData(newData);
       toast.success("User successfully edited.");
       setIsLoading(false);
-    } catch (error: any) {
-      if (error.name === "ValidationError") {
-        error.errors.forEach((err: any) => toast.error(err)); // Display validation errors
+    } catch (error: unknown) {
+      if (typeof error === "object" && error !== null && "name" in error) {
+        const validationError = error as ValidationError;
+        if (validationError.name === "ValidationError") {
+          validationError.errors.forEach((err: string) => toast.error(err));
+        }
       } else {
-        console.error("Error editing user:", error);
-        toast.error("Failed to edit user.");
+        console.error("Error:", (error as Error).message); // Tangani error lainnya
+        toast.error("An unexpected error occurred.");
       }
     }
   };
@@ -269,7 +295,7 @@ export default function manajemenAkun() {
             button2TextColor="text-[#FFFFFF]"
             onButton1Click={handleModalClose}
             onButton2Click={() => {
-              handleModalClose;
+              handleModalClose();
               handleDelete(selectedId);
             }}
           />
@@ -305,6 +331,7 @@ export default function manajemenAkun() {
               label={""}
               onChange={(e) => {
                 setNama(e.target.value); // Update search keyword
+                setSearch(e.target.value);
                 setCurrent(1); // Reset to first page
               }}
             />

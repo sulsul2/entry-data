@@ -13,14 +13,55 @@ import { IconType } from "react-icons";
 import { getWithAuth } from "@/services/api";
 import Cookies from "universal-cookie";
 
+interface LembagaData {
+  id: string;
+  nama: string;
+  alamat: string;
+  email: string;
+  no_kontak: string;
+  link_web_lembaga: string;
+  instagram: string;
+  instagram_follow: number;
+  facebook: string;
+  facebook_follow: number;
+  x: string;
+  x_follow: number;
+  youtube: string;
+  youtube_follow: number;
+  podcast: string;
+  podcast_follow: number;
+  e_commerce: string;
+  latar_belakang: string;
+  visi_misi: string;
+  profil_pendiri: string;
+  profil_pengurus: string;
+  keanggotaan: string;
+  prominent_kol: string;
+  bidang_usaha_gerak: string;
+  isu_diangkat: string;
+  pengamat_rujukan: string;
+  afiliasi_ngo_parpol: string;
+  pengaruh_masyarakat: string;
+  pihak_belakang_ngo: string;
+  sumber_dana: string;
+  jumlah_cabang_anggota: string;
+  segmentasi_dasar: string;
+  sikap_pemerintah: string;
+  rekom_pendekatan_icw: string;
+  analisis_pengaruh: string;
+  kesimpulan: string;
+  status: string;
+  user_id: string | null;
+}
+
 export default function DetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
-  const [data, setData] = useState<any | null>(null); // Data for the page
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<LembagaData | null>(null); // Data for the page
+  const [loading, setLoading] = useState<boolean>(true);
   const { id } = React.use(params);
   const cookies = new Cookies();
   const token = cookies.get("token");
@@ -34,6 +75,10 @@ export default function DetailPage({
     youtube: FaYoutube,
     podcast: SiApplepodcasts,
   };
+
+  const platforms: Array<
+    "facebook" | "instagram" | "x" | "youtube" | "podcast"
+  > = ["facebook", "instagram", "x", "youtube", "podcast"];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -149,32 +194,30 @@ export default function DetailPage({
                       Akun Media Sosial
                     </h3>
                     <div className="text-sm text-[#000000] font-normal">
-                      {["facebook", "instagram", "x", "youtube", "podcast"].map(
-                        (platform, index) => {
-                          const Icon =
-                            platformIcons[
-                              platform as
-                                | "facebook"
-                                | "instagram"
-                                | "x"
-                                | "youtube"
-                                | "podcast"
-                            ];
-                          const handle = data[platform];
+                      {platforms.map((platform, index) => {
+                        const Icon =
+                          platformIcons[
+                            platform as
+                              | "facebook"
+                              | "instagram"
+                              | "x"
+                              | "youtube"
+                              | "podcast"
+                          ];
+                        const handle = data[platform];
 
-                          if (!handle) return null;
+                        if (!handle) return null;
 
-                          return (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2 mb-4"
-                            >
-                              {Icon && <Icon className="text-xl" />}
-                              <p>{handle || "-"}</p>
-                            </div>
-                          );
-                        }
-                      )}
+                        return (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 mb-4"
+                          >
+                            {Icon && <Icon className="text-xl" />}
+                            <p>{handle || "-"}</p>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -184,35 +227,33 @@ export default function DetailPage({
                       Jumlah Pengikut
                     </h3>
                     <div className="text-sm text-[#000000] font-normal">
-                      {["facebook", "instagram", "x", "youtube", "podcast"].map(
-                        (platform, index) => {
-                          const Icon =
-                            platformIcons[
-                              platform as
-                                | "facebook"
-                                | "instagram"
-                                | "x"
-                                | "youtube"
-                                | "podcast"
-                            ];
-                          const handle = data[platform];
+                      {platforms.map((platform, index) => {
+                        const Icon =
+                          platformIcons[
+                            platform as
+                              | "facebook"
+                              | "instagram"
+                              | "x"
+                              | "youtube"
+                              | "podcast"
+                          ];
+                        const handle = data[platform];
 
-                          if (!handle) return null;
-                          const followers = data[`${platform}_follow`];
+                        if (!handle) return null;
+                        const followers = data[`${platform}_follow`];
 
-                          if (followers === undefined) return null;
+                        if (followers === undefined) return null;
 
-                          return (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2 mb-4"
-                            >
-                              {Icon && <Icon className="text-xl" />}
-                              {followers ? `${followers} followers` : "-"}
-                            </div>
-                          );
-                        }
-                      )}
+                        return (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 mb-4"
+                          >
+                            {Icon && <Icon className="text-xl" />}
+                            {followers ? `${followers} followers` : "-"}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 

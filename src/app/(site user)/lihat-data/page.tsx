@@ -7,13 +7,30 @@ import { getWithAuth } from "@/services/api";
 import TextField from "@/components/textfield";
 import Cookies from "universal-cookie";
 
+interface UserData {
+  IdUser: number;
+  username: string;
+  JenisKelamin: string;
+  Email: string;
+  Status: JSX.Element;
+  Action: JSX.Element;
+}
+
+interface User {
+  id: string;
+  nama: string;
+  jenis_kelamin: string;
+  email: string | null;
+  status: string;
+}
+
 export default function ViewData() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<UserData[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<UserData[]>([]);
   const [nama, setNama] = useState("");
   const cookies = new Cookies();
   const token = cookies.get("token");
@@ -39,7 +56,7 @@ export default function ViewData() {
       const itemsPerPage = response.data.data?.pagination.per_page;
       const apiData = response.data.data?.data || [];
 
-      const data = apiData.map((user: any, index: number) => ({
+      const data = apiData.map((user: User, index: number) => ({
         IdUser: (current - 1) * itemsPerPage + index + 1,
         username: user.nama || "-",
         JenisKelamin: user.jenis_kelamin || "-",
@@ -85,10 +102,9 @@ export default function ViewData() {
         // Ambil semua nilai properti kecuali elemen JSX
         const stringValues = Object.entries(item)
           .filter(
-            ([key, value]) =>
-              typeof value === "string" || typeof value === "number"
+            ([value]) => typeof value === "string" || typeof value === "number"
           )
-          .map(([key, value]) => String(value).toLowerCase());
+          .map(([value]) => String(value).toLowerCase());
 
         return stringValues.some((value) =>
           value.includes(search.toLowerCase())
@@ -113,6 +129,7 @@ export default function ViewData() {
               label={""}
               onChange={(e) => {
                 setNama(e.target.value); // Update search keyword
+                setSearch(e.target.value);
                 setCurrent(1); // Reset to first page
               }}
               width={320}

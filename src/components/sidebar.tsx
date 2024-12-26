@@ -7,7 +7,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import { LuLogOut } from "react-icons/lu";
-import { GoSync } from "react-icons/go";
 import ModalApprove from "./modal-approval";
 import { RiBankLine } from "react-icons/ri";
 import { useSearchParams } from "next/navigation";
@@ -15,6 +14,7 @@ import Cookies from "universal-cookie";
 import { postWithAuth } from "@/services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import Image from "next/image";
 
 const Sidebar = () => {
   const cookies = new Cookies();
@@ -33,6 +33,7 @@ const Sidebar = () => {
   const customization = useSelector((state: RootState) => state.customization);
 
   useEffect(() => {
+    setNavOpen(false);
     const type = searchParams.get("type");
 
     if (pathname === "/admin/persetujuan-data") {
@@ -119,8 +120,9 @@ const Sidebar = () => {
           {/* Header */}
           <div className="p-4 border-b border-[#EDEEF3]">
             <div className="p-0 lg:p-4 border-b border-[#EDEEF3] flex rounded-2xl gap-4">
-              <img
+              <Image
                 src={customization.logo}
+                alt={""}
                 className={`w-10 justify-center items-center transition-transform duration-300 `}
               />
               <div className="my-auto hidden lg:block">
@@ -379,7 +381,7 @@ const Sidebar = () => {
             className={`flex justify-center items-center mx-6 lg:mx-auto py-6 border-t border-gray-200`}
           >
             <div className="flex items-center">
-              <img
+              <Image
                 src="https://via.placeholder.com/40"
                 alt="User"
                 className="w-10 h-10 rounded-full object-cover"

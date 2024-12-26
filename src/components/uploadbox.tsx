@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { RiUploadCloud2Line } from "react-icons/ri";
 import Button from "./button";
+import Image from "next/image";
 
 export default function UploadBox({
   type,
@@ -105,7 +106,7 @@ export default function UploadBox({
 
         {imagePreview && (
           <div className="w-full h-auto mt-4">
-            <img
+            <Image
               src={imagePreview}
               alt="Uploaded preview"
               className="w-full h-[180px] object-cover rounded-md"

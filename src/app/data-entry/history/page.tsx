@@ -9,13 +9,29 @@ import { useEffect, useState } from "react";
 import { CiFilter } from "react-icons/ci";
 import Cookies from "universal-cookie";
 
+type User = {
+  nama: string;
+  email?: string | null;
+  status: "waiting" | "accepted" | string;
+  id: string | number;
+};
+
+// Tipe data hasil transformasi
+type TransformedUser = {
+  IdUser: number;
+  NamaPengguna: string;
+  Email: string;
+  Status: JSX.Element;
+  Detail: JSX.Element;
+};
+
 export default function HistoryEntry() {
   const [search, setSearch] = useState<string>("");
   const [current, setCurrent] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [data, setData] = useState<any[]>([]);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [data, setData] = useState<TransformedUser[]>([]);
+  const [filteredData, setFilteredData] = useState<TransformedUser[]>([]);
   const [status, setStatus] = useState<string>("");
   const [nama, setNama] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
@@ -48,10 +64,10 @@ export default function HistoryEntry() {
       const filtered = data.filter((item) => {
         const stringValues = Object.entries(item)
           .filter(
-            ([key, value]) =>
+            ([value]) =>
               typeof value === "string" || typeof value === "number"
           )
-          .map(([key, value]) => String(value).toLowerCase());
+          .map(([value]) => String(value).toLowerCase());
 
         return stringValues.some((value) =>
           value.includes(debouncedSearch.toLowerCase())
@@ -75,7 +91,7 @@ export default function HistoryEntry() {
       const apiData = response.data.data?.data || [];
       const itemsPerPage = response.data.data?.pagination.per_page;
 
-      const transformedData = apiData.map((user: any, index: number) => ({
+      const transformedData = apiData.map((user: User, index: number) => ({
         IdUser: (current - 1) * itemsPerPage + index + 1,
         NamaPengguna: user.nama,
         Email: user.email || "-",

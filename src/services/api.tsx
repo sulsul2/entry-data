@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-const url = "https://entry-data-api.fly.dev/api/";
+const url = process.env.API_URL;
 
 export const post = async (
   api: string,

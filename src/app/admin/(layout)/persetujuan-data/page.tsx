@@ -14,11 +14,53 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { CiFilter } from "react-icons/ci";
 
+interface ProcessedUser {
+  IdUser: number;
+  NamaPengguna: string;
+  JenisKelamin: string;
+  Email: string;
+  Status: JSX.Element; // JSX element untuk status yang merupakan komponen div
+  Action: JSX.Element; // JSX element untuk Action yang berisi komponen DropdownButton
+}
+
+interface User {
+  id: string;
+  nama: string;
+  jenis_kelamin: string;
+  email: string | null;
+  status: string;
+  originalIndex: number;
+  // Anda bisa menambahkan lebih banyak field jika diperlukan
+}
+
+interface Lembaga {
+  id: string;
+  nama: string;
+  alamat: string;
+  no_kontak: string;
+  status: string;
+  originalIndex: number;
+}
+
+// Tipe untuk data yang diproses
+interface ProcessedLembaga {
+  IdLembaga: number; // ID yang dihitung berdasarkan halaman dan index
+  NamaInstansi: string; // Nama lembaga
+  Alamat: string; // Alamat lembaga, default "-" jika kosong
+  NoTelpon: string; // Nomor telepon, default "-" jika kosong
+  Status: JSX.Element; // JSX element untuk status yang berisi div
+  Action: JSX.Element; // JSX element untuk action yang berisi DropdownButton
+}
+
 export default function PersetujuanData() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type"); // Ambil parameter type dari URL
-  const [data, setData] = useState<any[]>([]); // Data asli
-  const [filteredData, setFilteredData] = useState<any[]>([]); // Data setelah difilter
+  const [data, setData] = useState<ProcessedUser[]>([]); // Data asli
+  const [lembagaData, setLembagaData] = useState<ProcessedLembaga[]>([]); // Data asli
+  const [filteredData, setFilteredData] = useState<ProcessedUser[]>([]); // Data setelah difilter
+  const [filteredLembagaData, setFilteredLembagaData] = useState<
+    ProcessedLembaga[]
+  >([]); // Data setelah difilter
   const [header, setHeader] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [search, setSearch] = useState<string>(""); // Input dari pengguna
@@ -63,8 +105,8 @@ export default function PersetujuanData() {
           "Action",
         ]);
         const institutionData = await getInstitutionData();
-        setData(institutionData);
-        setFilteredData(institutionData);
+        setLembagaData(institutionData);
+        setFilteredLembagaData(institutionData);
       }
     };
     fetchData();
@@ -80,22 +122,42 @@ export default function PersetujuanData() {
 
   // Fungsi untuk filter data berdasarkan pencarian
   useEffect(() => {
-    if (debouncedSearch) {
-      const filtered = data.filter((item) => {
-        const stringValues = Object.entries(item)
-          .filter(
-            ([key, value]) =>
-              typeof value === "string" || typeof value === "number"
-          )
-          .map(([key, value]) => String(value).toLowerCase());
+    if (type == "data-pengguna") {
+      if (debouncedSearch) {
+        const filtered = data.filter((item) => {
+          const stringValues = Object.entries(item)
+            .filter(
+              ([value]) =>
+                typeof value === "string" || typeof value === "number"
+            )
+            .map(([value]) => String(value).toLowerCase());
 
-        return stringValues.some((value) =>
-          value.includes(debouncedSearch.toLowerCase())
-        );
-      });
-      setFilteredData(filtered);
+          return stringValues.some((value) =>
+            value.includes(debouncedSearch.toLowerCase())
+          );
+        });
+        setFilteredData(filtered);
+      } else {
+        setFilteredData(data);
+      }
     } else {
-      setFilteredData(data);
+      if (debouncedSearch) {
+        const filtered = lembagaData.filter((item) => {
+          const stringValues = Object.entries(item)
+            .filter(
+              ([value]) =>
+                typeof value === "string" || typeof value === "number"
+            )
+            .map(([value]) => String(value).toLowerCase());
+
+          return stringValues.some((value) =>
+            value.includes(debouncedSearch.toLowerCase())
+          );
+        });
+        setFilteredLembagaData(filtered);
+      } else {
+        setFilteredLembagaData(lembagaData);
+      }
     }
   }, [debouncedSearch, data]);
 
@@ -112,7 +174,7 @@ export default function PersetujuanData() {
       const apiData = response.data.data?.data || [];
       const itemsPerPage = response.data.data?.pagination.per_page;
 
-      const transformedData = apiData.map((user: any, index: number) => ({
+      const transformedData = apiData.map((user: User, index: number) => ({
         IdUser: (current - 1) * itemsPerPage + index + 1,
         NamaPengguna: user.nama,
         JenisKelamin: user.jenis_kelamin || "-",
@@ -161,33 +223,35 @@ export default function PersetujuanData() {
       const apiData = response.data.data?.data || [];
       const itemsPerPage = response.data.data?.pagination.per_page;
 
-      const transformedData = apiData.map((lembaga: any, index: number) => ({
-        IdLembaga: (current - 1) * itemsPerPage + index + 1,
-        NamaInstansi: lembaga.nama,
-        Alamat: lembaga.alamat || "-",
-        NoTelpon: lembaga.no_kontak || "-",
-        Status: (
-          <div
-            className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center ${
-              lembaga.status === "waiting"
-                ? "bg-[#FFFAEB] text-[#B54708]"
-                : lembaga.status === "accepted"
-                ? "bg-[#ECFDF3] text-[#027A48]"
-                : "bg-[#FEF3F2] text-[#B42318]"
-            }`}
-          >
-            {lembaga.status}
-          </div>
-        ),
-        Detail: (
-          <Link href={`/lihat-data/${lembaga.id}/lembaga`}>
-            <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
-              Lihat Detail
+      const transformedData = apiData.map(
+        (lembaga: Lembaga, index: number) => ({
+          IdLembaga: (current - 1) * itemsPerPage + index + 1,
+          NamaInstansi: lembaga.nama,
+          Alamat: lembaga.alamat || "-",
+          NoTelpon: lembaga.no_kontak || "-",
+          Status: (
+            <div
+              className={`w-fit mx-auto px-1 md:px-2 py-1 rounded-lg text-xs md:text-sm font-semibold text-center ${
+                lembaga.status === "waiting"
+                  ? "bg-[#FFFAEB] text-[#B54708]"
+                  : lembaga.status === "accepted"
+                  ? "bg-[#ECFDF3] text-[#027A48]"
+                  : "bg-[#FEF3F2] text-[#B42318]"
+              }`}
+            >
+              {lembaga.status}
             </div>
-          </Link>
-        ),
-        Action: getActionButtons(lembaga.status, lembaga.id),
-      }));
+          ),
+          Detail: (
+            <Link href={`/lihat-data/${lembaga.id}/lembaga`}>
+              <div className="border-2 border-[#D5D7DA] text-xs md:text-sm py-1 md:py-2 rounded-lg">
+                Lihat Detail
+              </div>
+            </Link>
+          ),
+          Action: getActionButtons(lembaga.status, lembaga.id),
+        })
+      );
 
       setIsLoading(false); // Stop loading state
       return transformedData;
@@ -296,6 +360,7 @@ export default function PersetujuanData() {
         setData(newData);
         toast.success("User successfully rejected.");
       } catch (error) {
+        console.error(error);
         toast.error("Failed to reject user ");
         setIsLoading(false);
       }
@@ -315,6 +380,7 @@ export default function PersetujuanData() {
         setData(newData);
         toast.success("Lembaga berhasil ditolak.");
       } catch (error) {
+        console.error(error);
         toast.error("Lembaga gagal ditolak.");
         setIsLoading(false);
       }
@@ -339,7 +405,7 @@ export default function PersetujuanData() {
           button2TextColor="text-[#FFFFFF]"
           onButton1Click={handleModalClose}
           onButton2Click={() => {
-            handleModalClose;
+            handleModalClose();
             handleApprove(selectedId, type);
           }}
         />
@@ -360,7 +426,7 @@ export default function PersetujuanData() {
           button2TextColor="text-[#FFFFFF]"
           onButton1Click={handleModalClose}
           onButton2Click={() => {
-            handleModalClose;
+            handleModalClose();
             handleReject(selectedId, type);
           }}
         />
@@ -406,14 +472,25 @@ export default function PersetujuanData() {
         </div>
       </div>
 
-      <Table
-        data={filteredData}
-        header={header}
-        isLoading={isLoading}
-        totalPages={totalPages}
-        current={(curr) => setCurrent(curr)}
-        active={current}
-      />
+      {type == "data-pengguna" ? (
+        <Table
+          data={filteredData}
+          header={header}
+          isLoading={isLoading}
+          totalPages={totalPages}
+          current={(curr) => setCurrent(curr)}
+          active={current}
+        />
+      ) : (
+        <Table
+          data={filteredLembagaData}
+          header={header}
+          isLoading={isLoading}
+          totalPages={totalPages}
+          current={(curr) => setCurrent(curr)}
+          active={current}
+        />
+      )}
     </div>
   );
 }

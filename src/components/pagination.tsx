@@ -1,7 +1,7 @@
 "use client";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import Button from "./button";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Pagination({
   totalPages,
@@ -12,8 +12,6 @@ export default function Pagination({
   current: (x: number) => void | undefined;
   active: number;
 }) {
-  const [currentPage, setCurrentPage] = useState(active);
-
   const handlePageChange = (page: number) => {
     if (page == 0) {
       current(1);
@@ -47,10 +45,7 @@ export default function Pagination({
         pushPage(pageNumbers, i);
       } else {
         if (active < totalPages - 3) {
-          if (
-            (i < active + 3 && i >= active - 1) ||
-            i == totalPages
-          ) {
+          if ((i < active + 3 && i >= active - 1) || i == totalPages) {
             pushPage(pageNumbers, i);
           } else if (i == active + 3) {
             pageNumbers.push(
@@ -81,10 +76,9 @@ export default function Pagination({
     return pageNumbers;
   };
 
-  useEffect(()=> {
-    console.log("active"+active)
-    console.log("curr"+currentPage)
-  },[active])
+  useEffect(() => {
+    console.log("active" + active);
+  }, [active]);
 
   return (
     <div className="w-full flex justify-between items-center bg-transparent">

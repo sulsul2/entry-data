@@ -1,8 +1,21 @@
 "use client";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import Pagination from "./pagination";
+type PrimitiveCellValue = string | number;
+type ArrayCellValue = string[] | number[];
+type CellValue = PrimitiveCellValue | ArrayCellValue | ReactNode;
 
-function Table({
+interface TableProps<T extends Record<string, any>> {
+  data: T[];
+  header: string[];
+  addedItems?: ReactNode;
+  isLoading: boolean;
+  totalPages?: number;
+  current: (x: number) => void | undefined;
+  active: number;
+}
+
+function Table<T extends Record<string, any>>({
   data,
   header,
   addedItems,
@@ -10,20 +23,12 @@ function Table({
   totalPages = 1,
   current,
   active,
-}: {
-  data: any[];
-  header: any[];
-  addedItems?: ReactNode;
-  isLoading: boolean;
-  totalPages?: number;
-  current: (x: number) => void | undefined;
-  active: number;
-}) {
+}: TableProps<T>) {
   const Load = () => {
     const dummy = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     return dummy.map((idx: number) => (
       <tr key={idx}>
-        {header.map((idx: number) => {
+        {header.map((idx) => {
           return (
             <td
               key={idx}

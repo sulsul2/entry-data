@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React from "react";
 
 export default function ModalApprove({
@@ -35,7 +36,7 @@ export default function ModalApprove({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-80 md:w-96 p-6 text-center">
-        <img src={image} alt="Modal Icon" className="w-12 h-12 mx-auto mb-4" />
+        <Image src={image} alt="Modal Icon" className="w-12 h-12 mx-auto mb-4" />
         <h2 className="text-lg font-semibold text-[#181D27] mb-2">{title}</h2>
         <p className="text-sm font-normal text-[#535862] mb-6">{subtitle}</p>
         <div className="flex justify-between">

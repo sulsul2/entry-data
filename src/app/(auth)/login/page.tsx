@@ -5,6 +5,7 @@ import Toast from "@/components/toast";
 import { get, post } from "@/services/api";
 import { setCustomization } from "@/store/slices/customizationSlice";
 import { RootState } from "@/store/store";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +22,8 @@ export default function Login() {
   const router = useRouter();
   const customization = useSelector((state: RootState) => state.customization);
   const dispatch = useDispatch();
+  const token = cookies.get("token");
+  const role = cookies.get("role");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,9 +49,6 @@ export default function Login() {
   }, [dispatch]);
 
   useEffect(() => {
-    const token = cookies.get("token");
-    const role = cookies.get("role");
-
     if (token && role) {
       switch (role) {
         case "manager":
@@ -62,7 +62,7 @@ export default function Login() {
           break;
       }
     }
-  }, []);
+  }, [role, router, token]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +116,7 @@ export default function Login() {
         />
       </div>
       <div className="w-auto h-auto flex flex-col items-center bg-white rounded-[20px] drop-shadow-2xl shadow-[#0A0D1224] p-5 md:p-6">
-        <img src={customization.logo ?? null} alt="" className="w-12 h-12" />
+        <Image src={customization.logo ?? null} alt={"Logo"} className="w-12 h-12"/>
         <p className="text-[#181D27] text-[24px] md:text-[30px] font-semibold mt-6">
           Login
         </p>

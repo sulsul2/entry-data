@@ -24,13 +24,12 @@ import {
   MenuButton,
   useRichTextEditorContext,
 } from "mui-tiptap";
-import { Box, Stack, SxProps, Tooltip, Typography } from "@mui/material";
+import { Box, SxProps, Typography } from "@mui/material";
 import {
   FormatIndentDecrease,
   FormatIndentIncrease,
   InsertLink,
   LinkOff,
-  Shortcut,
 } from "@mui/icons-material";
 
 // Extend the Editor type to include our custom commands
@@ -50,23 +49,17 @@ const isMac =
 const MenuButtonLink = () => {
   const editor = useRichTextEditorContext() as EditorWithIndent;
 
-  const SetLink = useCallback(() => {
+  const handleSetLink = useCallback(() => {
     const previousUrl = editor?.getAttributes("link").href;
     const url = window.prompt("URL", previousUrl);
 
-    // cancelled
-    if (url === null) {
-      return;
-    }
+    if (url === null) return;
 
-    // empty
     if (url === "") {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
-
       return;
     }
 
-    // Add https:// if no protocol specified
     const urlWithProtocol = url.match(/^https?:\/\//) ? url : `https://${url}`;
 
     editor
@@ -75,15 +68,15 @@ const MenuButtonLink = () => {
       .extendMarkRange("link")
       .setLink({
         href: urlWithProtocol,
-        target: "_blank", // Open links in new tab
+        target: "_blank",
       })
       .run();
   }, [editor]);
 
   return (
     <MenuButton
-      onClick={SetLink}
-      tooltipLabel={`Insert Link`}
+      onClick={handleSetLink}
+      tooltipLabel="Insert Link"
       tooltipShortcutKeys={[`${isMac ? "⌘" : "Ctrl"}`, "K"]}
       IconComponent={InsertLink}
       disabled={!editor?.isEditable}
