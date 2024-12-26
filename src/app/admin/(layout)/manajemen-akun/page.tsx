@@ -34,6 +34,7 @@ type User = {
   username: string; // Username pengguna
   password: string; // Username pengguna
   role: string; // Role pengguna
+  email: string; // Role pengguna
   status: "active" | "inactive"; // Status pengguna, bisa berupa "active" atau "inactive"
 };
 
@@ -175,7 +176,7 @@ export default function ManajemenAkun() {
       password: user.password,
       role: user.role,
       status: user.status,
-      email: user
+      email: user.email
     });
 
     setSelectedId(user.id);
