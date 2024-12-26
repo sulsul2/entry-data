@@ -23,6 +23,7 @@ export default function ModalAdd({
     password: string;
     role: string;
     status: string;
+    email: string;
   };
   setFormData: React.Dispatch<
     React.SetStateAction<{
@@ -30,6 +31,7 @@ export default function ModalAdd({
       password: string;
       role: string;
       status: string;
+      email: string;
     }>
   >;
   button1Text: string;
@@ -96,37 +98,74 @@ export default function ModalAdd({
 
         {/* Form Fields */}
         <div className="flex flex-col justify-start items-start text-left mb-8">
-          <TextField
-            name={"Username"}
-            placeholder={"Enter username"}
-            label={"Username"}
-            type="field"
-            value={formData.username || ""}
-            onChange={async (e) => {
-              const username = e.target.value;
-              setFormData((prev) => ({ ...prev, username }));
-              await validateUsername(username);
-            }}
-          />
-          {usernameError && (
-            <p className="text-red-500 text-sm mb-4">{usernameError}</p>
+          {/* Field yang muncul hanya saat menambahkan */}
+          {!isEdit && (
+            <TextField
+              name={"Email"}
+              placeholder={"Enter Email"}
+              label={"Email"}
+              type="field"
+              value={formData.email || ""}
+              onChange={(e) => {
+                const email = e.target.value;
+                setFormData((prev) => ({ ...prev, email }));
+              }}
+            />
           )}
 
-          <TextField
-            name={"Password"}
-            placeholder={"Enter password"}
-            label={"Password"}
-            type="password"
-            value={formData.password || ""}
-            onChange={(e) => {
-              const password = e.target.value;
-              setFormData((prev) => ({ ...prev, password }));
-              validatePassword(password);
-            }}
-          />
-          {passwordError && (
-            <p className="text-red-500 text-sm mb-4">{passwordError}</p>
+          {/* Field yang muncul hanya saat mengedit */}
+          {isEdit && (
+            <>
+              <TextField
+                name={"Username"}
+                placeholder={"Enter username"}
+                label={"Username"}
+                type="field"
+                value={formData.username || ""}
+                onChange={async (e) => {
+                  const username = e.target.value;
+                  setFormData((prev) => ({ ...prev, username }));
+                  await validateUsername(username);
+                }}
+              />
+              {usernameError && (
+                <p className="text-red-500 text-sm mb-4">{usernameError}</p>
+              )}
+
+              <TextField
+                name={"Password"}
+                placeholder={"Enter password"}
+                label={"Password"}
+                type="password"
+                value={formData.password || ""}
+                onChange={(e) => {
+                  const password = e.target.value;
+                  setFormData((prev) => ({ ...prev, password }));
+                  validatePassword(password);
+                }}
+              />
+              {passwordError && (
+                <p className="text-red-500 text-sm mb-4">{passwordError}</p>
+              )}
+
+              <TextField
+                name={"Status"}
+                placeholder={"Change Status"}
+                label={"Status"}
+                type="dropdown"
+                options={[
+                  { label: "Active", value: "active" },
+                  { label: "Inactive", value: "inactive" },
+                ]}
+                value={formData.status || ""}
+                onChangeDropdown={(e) =>
+                  setFormData((prev) => ({ ...prev, status: e.target.value }))
+                }
+              />
+            </>
           )}
+
+          {/* Field yang muncul pada kedua mode */}
           <TextField
             name={"Role"}
             placeholder={"Select role"}
@@ -142,24 +181,6 @@ export default function ModalAdd({
               setFormData((prev) => ({ ...prev, role: e.target.value }))
             }
           />
-
-          {/* Conditional Field for Edit Mode */}
-          {isEdit && (
-            <TextField
-              name={"Status"}
-              placeholder={"Change Status"}
-              label={"Status"}
-              type="dropdown"
-              options={[
-                { label: "Active", value: "active" },
-                { label: "Inactive", value: "inactive" },
-              ]}
-              value={formData.status || ""}
-              onChangeDropdown={(e) =>
-                setFormData((prev) => ({ ...prev, status: e.target.value }))
-              }
-            />
-          )}
         </div>
 
         {/* Action Buttons */}
