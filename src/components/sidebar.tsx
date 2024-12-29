@@ -19,6 +19,8 @@ import Image from "next/image";
 const Sidebar = () => {
   const cookies = new Cookies();
   const role = cookies.get("role");
+  let username = cookies.get("username");
+  let email = cookies.get("email");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -54,7 +56,7 @@ const Sidebar = () => {
       setActive(4);
     } else if (pathname === "/data-entry") {
       setActive(5);
-    }else if (pathname === "/data-entry/history") {
+    } else if (pathname === "/data-entry/history") {
       setActive(6);
     } else {
       setActive(-1);
@@ -71,6 +73,8 @@ const Sidebar = () => {
       cookies.remove("token", { path: "/", sameSite: "lax", secure: true });
       cookies.remove("user_id", { path: "/", sameSite: "lax", secure: true });
       cookies.remove("role", { path: "/", sameSite: "lax", secure: true });
+      cookies.remove("username", { path: "/", sameSite: "lax", secure: true });
+      cookies.remove("email", { path: "/", sameSite: "lax", secure: true });
 
       router.push("/login");
       window.location.reload();
@@ -381,7 +385,7 @@ const Sidebar = () => {
 
           {/* Footer */}
           <div
-            className={`flex justify-center items-center mx-6 lg:mx-auto py-6 border-t border-gray-200`}
+            className={`w-full flex justify-center items-center mx-6 lg:mx-auto py-6 border-t border-gray-200`}
           >
             <div className="flex items-center">
               <Image
@@ -397,11 +401,9 @@ const Sidebar = () => {
                 } ml-2 lg:block`}
               >
                 <p className="text-[#181D27] text-sm font-semibold">
-                  Admin Bimo
+                  {username}
                 </p>
-                <p className="text-[#535862] text-sm font-normal">
-                  adminbim@gmail.m
-                </p>
+                <p className="text-[#535862] text-sm font-normal">{email}</p>
               </div>
               <button
                 onClick={() => {

@@ -7,6 +7,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FaviconUpdater from "@/components/faviconUpdater";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,6 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>Entry Data Website</title>
+      </head>
       <body className={`${inter.variable} antialiased`}>
         <AppRouterCacheProvider>
           <Provider store={store}>

@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import { IoIosWarning, IoMdCheckmark } from "react-icons/io";
 import { PiWarningCircleFill } from "react-icons/pi";
 import { RxCross2 } from "react-icons/rx";
@@ -6,10 +7,12 @@ export default function Toast({
   type,
   title,
   description,
+  onClick,
 }: {
   type: "error" | "warn" | "success";
   title: string;
   description: string;
+  onClick?: MouseEventHandler<SVGElement> | undefined
 }) {
   return (
     <div
@@ -43,6 +46,7 @@ export default function Toast({
           </p>
         </div>
         <RxCross2 size={20}
+        onClick={onClick}
           className={`cursor-pointer ${
             type == "error"
               ? "text-[#DC4C64]"

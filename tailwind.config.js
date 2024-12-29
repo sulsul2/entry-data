@@ -3,6 +3,20 @@ const { error } = require("console");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  safelist: [
+    "bg-primary",
+    "bg-secondary",
+    "bg-tersier",
+    "hover:bg-primary",
+    "hover:bg-secondary",
+    "hover:bg-tersier",
+    "text-primary",
+    "text-secondary",
+    "text-tersier",
+    "hover:text-primary",
+    "hover:text-secondary",
+    "hover:text-tersier",
+  ],
   theme: {
     extend: {
       colors: {

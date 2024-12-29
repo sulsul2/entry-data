@@ -7,23 +7,25 @@ import { setCustomization } from "@/store/slices/customizationSlice";
 import { RootState } from "@/store/store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import Cookies from "universal-cookie";
 
-export default function Login() {
+export default function Register({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = React.use(params);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
-  const cookies = new Cookies();
   const router = useRouter();
   const customization = useSelector((state: RootState) => state.customization);
   const dispatch = useDispatch();
-  const token = cookies.get("token");
-  const role = cookies.get("role");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,22 +50,6 @@ export default function Login() {
     fetchData();
   }, [dispatch]);
 
-  useEffect(() => {
-    if (token && role) {
-      switch (role) {
-        case "manager":
-          router.push("/admin/persetujuan-data?type=data-pengguna");
-          break;
-        case "data_entry":
-          router.push("/data-entry");
-          break;
-        default:
-          router.push("/lihat-data");
-          break;
-      }
-    }
-  }, [role, router, token]);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const data = {
@@ -75,20 +61,7 @@ export default function Login() {
     try {
       const response = await post("login", data);
       if (response.status === 200) {
-        const token = response.data.data.token;
-        const {role, id, email, username} = response.data.data.user;
-        cookies.set("token", token);
-        cookies.set("role", role);
-        cookies.set("user_id", id);
-        cookies.set("username", username);
-        cookies.set("email", email);
-        if (role == "manager") {
-          router.push("/admin/persetujuan-data?type=data-pengguna");
-        } else if (role == "data_entry") {
-          router.push("/data-entry");
-        } else {
-          router.push("/lihat-data");
-        }
+        router.push("/");
         toast.success("Login Berhasil.");
       } else {
         setIsError(true);
@@ -113,7 +86,7 @@ export default function Login() {
       <div className={`${isError ? "block" : "hidden"}`}>
         <Toast
           type={"error"}
-          title={"Gagal Login"}
+          title={"Gagal Register"}
           description={"Pastikan semua field terisi dengan benar."}
           onClick={() => setIsError(false)}
         />
@@ -127,10 +100,10 @@ export default function Login() {
           height={12}
         />
         <p className="text-[#181D27] text-[24px] md:text-[30px] font-semibold mt-6">
-          Login
+          Register
         </p>
         <p className="text-[#535862] text-[12px] md:text-[16px] font-normal mt-3 mb-6 md:mb-8">
-          Welcome back! Please enter your details.
+          Welcome! Please sign up your account.
         </p>
         <TextField
           name={"username"}
@@ -149,7 +122,7 @@ export default function Login() {
           onChange={(val) => setPassword(val.target.value)}
         />
         <Button
-          text={"Log in"}
+          text={"Register"}
           type={"submit"}
           onClick={handleLogin}
           isLoading={isLoading}
@@ -159,7 +132,7 @@ export default function Login() {
       <div className={`${isError ? "invisible" : "hidden"}`}>
         <Toast
           type={"error"}
-          title={"Gagal Login"}
+          title={"Gagal Register"}
           description={"Pastikan semua field terisi dengan benar."}
         />
       </div>
