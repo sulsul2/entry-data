@@ -25,8 +25,8 @@ interface ProcessedUser {
 
 interface User {
   id: string;
-  nama: string;
-  jenis_kelamin: string;
+  nama: string | null;
+  jenis_kelamin: string | null;
   email: string | null;
   status: string;
   originalIndex: number;
@@ -202,6 +202,8 @@ export default function PersetujuanData() {
         ),
         Action: getActionButtons(user.status, user.id),
       }));
+
+      console.log(transformedData);
 
       setIsLoading(false); // Stop loading state
       return transformedData;

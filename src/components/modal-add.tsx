@@ -91,6 +91,8 @@ export default function ModalAdd({
           src={"/modal/add-icon.svg"}
           alt="Modal Icon"
           className="w-12 h-12 mx-auto mb-4"
+          width={12}
+          height={12}
         />
         <h2 className="text-base md:text-lg font-semibold text-[#181D27] mb-5">
           {title}

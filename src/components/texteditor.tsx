@@ -88,17 +88,16 @@ const MenuButtonLink = () => {
 const MenuUnsetButtonLink = () => {
   const editor = useRichTextEditorContext() as EditorWithIndent;
 
-  const UnsetLink = () => {
-    if (!editor.isActive("link")) {
-      return;
+  const handleUnsetLink = () => {
+    if (editor?.isActive("link")) {
+      editor.chain().focus().unsetLink().run();
     }
 
-    editor.chain().focus().unsetLink().run();
   };
 
   return (
     <MenuButton
-      onClick={UnsetLink}
+      onClick={handleUnsetLink}
       tooltipLabel={`Remove Link`}
       tooltipShortcutKeys={[`${isMac ? "⌘" : "Ctrl"}`, "Shift", "K"]}
       IconComponent={LinkOff}
@@ -162,9 +161,17 @@ export function CustomTextEditor({
     ],
     content: initialValue,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      setContent(html);
-      onChange && onChange(html);
+      try {
+        if (editor) {
+          const html = editor.getHTML();
+          setContent(html);
+          if (onChange) {
+            onChange(html);
+          }
+        }
+      } catch (error) {
+        console.error("Error during editor update:", error);
+      }
     },
     editorProps: {
       handleKeyDown: (_, event) => {

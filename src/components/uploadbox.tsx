@@ -110,6 +110,8 @@ export default function UploadBox({
               src={imagePreview}
               alt="Uploaded preview"
               className="w-full h-[180px] object-cover rounded-md"
+              width={10}
+              height={10}
             />
           </div>
         )}

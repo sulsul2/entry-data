@@ -169,6 +169,8 @@ export default function DetailPage({
                       src={data.foto}
                       alt=""
                       className="w-28 md:w-52 border-2 border-gray-300 rounded-xl p-4"
+                      width={28}
+                      height={28}
                     />
                   </div>
                   <div className="mb-4">

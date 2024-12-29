@@ -64,9 +64,10 @@ const Sidebar = () => {
   const handleLogOut = async () => {
     const token = cookies.get("token");
     setIsLoading(true);
+    const formData = new FormData();
 
     try {
-      await postWithAuth("logout", {}, token);
+      await postWithAuth("logout", formData, token);
       cookies.remove("token", { path: "/", sameSite: "lax", secure: true });
       cookies.remove("user_id", { path: "/", sameSite: "lax", secure: true });
       cookies.remove("role", { path: "/", sameSite: "lax", secure: true });
@@ -124,6 +125,8 @@ const Sidebar = () => {
                 src={customization.logo}
                 alt={""}
                 className={`w-10 justify-center items-center transition-transform duration-300 `}
+                width={10}
+                height={10}
               />
               <div className="my-auto hidden lg:block">
                 <h1 className="text-[15px] font-bold text-black">
@@ -385,6 +388,8 @@ const Sidebar = () => {
                 src="https://via.placeholder.com/40"
                 alt="User"
                 className="w-10 h-10 rounded-full object-cover"
+                width={10}
+                height={10}
               />
               <div
                 className={`${
