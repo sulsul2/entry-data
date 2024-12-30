@@ -29,6 +29,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
+              <FaviconUpdater/>
               <ToastContainer />
               {children}
             </PersistGate>

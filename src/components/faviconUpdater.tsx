@@ -1,34 +1,24 @@
+// components/faviconUpdater.js
 "use client";
+
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 export default function FaviconUpdater() {
-  const favicon = useSelector((state: RootState) => state.customization.favicon);
+  const customization = useSelector((state: RootState) => state.customization);
 
   useEffect(() => {
-    if (!favicon) return;
-
-    // Hapus favicon yang ada terlebih dahulu
-    const existingLink = document.querySelector("link[rel='icon']");
-    if (existingLink) {
-      existingLink.remove();
+    let favicon = document.querySelector("link[rel='icon']") as HTMLLinkElement;
+    if (favicon) {
+      favicon.href = customization.favicon; // Pastikan state Redux memiliki properti `favicon`
+    } else {
+      const link = document.createElement("link");
+      link.rel = "icon";
+      link.href = customization.favicon;
+      document.head.appendChild(link);
     }
+  }, [customization.favicon]);
 
-    // Buat element favicon baru
-    const link = document.createElement('link');
-    link.rel = 'icon';
-    link.href = favicon;
-    link.type = 'image/x-icon';
-
-    // Tambahkan ke head
-    document.head.appendChild(link);
-
-    // Force browser untuk refresh favicon
-    const faviconUrl = favicon + '?v=' + new Date().getTime();
-    link.href = faviconUrl;
-
-  }, [favicon]);
-
-  return null;
+  return null; // Komponen ini tidak merender elemen DOM
 }
