@@ -13,6 +13,7 @@ export default function TextField({
   icon,
   width,
   options,
+  defaultValue,
   onChange,
   onChangeDropdown,
   onChangeArea,
@@ -25,6 +26,7 @@ export default function TextField({
   icon?: React.ReactNode;
   width?: number;
   options?: { label: string; value: string }[];
+  defaultValue?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
   onChangeDropdown?: React.ChangeEventHandler<HTMLSelectElement> | undefined;
   onChangeArea?: React.ChangeEventHandler<HTMLTextAreaElement> | undefined;
@@ -146,6 +148,7 @@ export default function TextField({
           <select
             id={name}
             value={value}
+            defaultValue={defaultValue}
             onChange={onChangeDropdown}
             className="grow focus:outline-none w-full bg-white text-[#1A0048] text-[14px] border-none appearance-none"
           >

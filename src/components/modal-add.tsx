@@ -178,7 +178,7 @@ export default function ModalAdd({
               { label: "Kementrian", value: "user_kementerian" },
               { label: "Data Entry", value: "data_entry" },
             ]}
-            value={formData.role || ""}
+            defaultValue="manager"
             onChangeDropdown={(e) =>
               setFormData((prev) => ({ ...prev, role: e.target.value }))
             }

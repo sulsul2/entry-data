@@ -2,7 +2,7 @@
 import Button from "@/components/button";
 import TextField from "@/components/textfield";
 import Toast from "@/components/toast";
-import { get, post } from "@/services/api";
+import { get, put } from "@/services/api";
 import { setCustomization } from "@/store/slices/customizationSlice";
 import { RootState } from "@/store/store";
 import Image from "next/image";
@@ -59,14 +59,16 @@ export default function Register({
     setIsLoading(true);
 
     try {
-      const response = await post("login", data);
+      const response = await put(`complete-register/${id}`, data);
       if (response.status === 200) {
-        router.push("/");
-        toast.success("Login Berhasil.");
+        router.push("/login");
+        toast.success("Register Berhasil.");
       } else {
         setIsError(true);
+        console.error(response.data);
       }
     } catch (error) {
+      console.error(error);
       setIsError(true);
     } finally {
       setIsLoading(false);

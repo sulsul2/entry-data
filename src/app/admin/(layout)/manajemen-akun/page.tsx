@@ -23,6 +23,7 @@ import { RootState } from "@/store/store";
 
 type TransformedUser = {
   No: number; // Nomor urut, selalu berupa angka
+  Email: string;
   Username: string; // Username pengguna
   Role: string; // Role pengguna
   Status: JSX.Element; // Status dirender sebagai elemen JSX
@@ -59,10 +60,16 @@ export default function ManajemenAkun() {
   const token = cookies.get("token");
 
   const validationSchema = yup.object({
-    username: yup.string().required("Username is required"),
-    password: yup.lazy(() => {
+    email: yup.lazy(() => {
       // Check if the `selectedId` is null
       if (selectedId === null) {
+        return yup.string().required("Email is required");
+      }
+      return yup.string().notRequired();
+    }),
+    password: yup.lazy(() => {
+      // Check if the `selectedId` is null
+      if (selectedId != null) {
         return yup.string().min(8, "Password must be at least 8 characters");
       }
       return yup.string().notRequired();
@@ -72,12 +79,12 @@ export default function ManajemenAkun() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    role: "",
+    role: "manager",
     status: "",
     email: "",
   });
 
-  const header1 = ["No", "Username", "Role", "Status", "Action"];
+  const header1 = ["No", "Email", "Username", "Role", "Status", "Action"];
 
   const getData = async () => {
     try {
@@ -93,8 +100,9 @@ export default function ManajemenAkun() {
 
       const transformedData = apiData.map((user: User, index: number) => ({
         No: (current - 1) * itemsPerPage + index + 1,
-        Username: user.username,
-        Role: user.role,
+        Email: user.email ?? "-",
+        Username: user.username ?? "-",
+        Role: user.role == "manager" ? "Manager" : user.role == "user_kementrian" ? "User" : "Data Entry",
         Status: (
           <div
             className={`w-fit justify-center items-center mx-auto px-2 py-1 rounded-2xl text-xs md:text-sm font-semibold ${
@@ -176,7 +184,7 @@ export default function ManajemenAkun() {
       password: user.password,
       role: user.role,
       status: user.status,
-      email: user.email
+      email: user.email,
     });
 
     setSelectedId(user.id);
@@ -190,9 +198,9 @@ export default function ManajemenAkun() {
     setFormData({
       username: "",
       password: "",
-      role: "",
+      role: "manager",
       status: "active",
-      email: ""
+      email: "",
     });
     setShowAddModal(true);
     setSelectedId(null);
@@ -216,23 +224,27 @@ export default function ManajemenAkun() {
   const handleAdd = async () => {
     try {
       setIsLoading(true);
+      console.log("hai");
+      console.log(formData.email);
+      console.log(formData.role);
       await validationSchema.validate(formData, { abortEarly: false });
       handleModalClose();
-      await postWithAuth(
-        "users",
+     const response = await postWithAuth(
+        "register-user-email",
         {
-          username: formData.username,
-          password: formData.password,
+          email: formData.email,
           role: formData.role,
-          status: formData.status,
         },
         token
       );
+      console.log(response);
       const newData = await getData();
       setData(newData);
       toast.success("Success to add user.");
       setIsLoading(false);
     } catch (error: unknown) {
+      console.error(error);
+      // toast.error("An unexpected error occurred.");
       if (typeof error === "object" && error !== null && "name" in error) {
         const validationError = error as ValidationError;
         if (validationError.name === "ValidationError") {
@@ -242,6 +254,8 @@ export default function ManajemenAkun() {
         console.error("Error:", (error as Error).message); // Tangani error lainnya
         toast.error("An unexpected error occurred.");
       }
+    }finally{
+      setIsLoading(false);
     }
   };
 

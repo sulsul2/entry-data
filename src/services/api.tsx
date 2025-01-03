@@ -13,6 +13,17 @@ export const post = async (
   });
 };
 
+export const put = async (
+  api: string,
+  json: any
+): Promise<AxiosResponse<any, any>> => {
+  return await axios.put(url + api, json, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 export const postWithAuth = async (
   api: string,
   form: any,

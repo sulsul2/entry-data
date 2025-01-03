@@ -76,10 +76,6 @@ export default function Pagination({
     return pageNumbers;
   };
 
-  useEffect(() => {
-    console.log("active" + active);
-  }, [active]);
-
   return (
     <div className="w-full flex justify-between items-center bg-transparent">
       <Button
