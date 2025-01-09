@@ -21,7 +21,7 @@ interface UserData {
   jenis_kelamin: string;
   tempat_lahir: string;
   tanggal_lahir: string;
-  foto: string;
+  foto_profile: string;
   alamat: string;
   email: string | null;
   no_telp: string | null;
@@ -107,7 +107,7 @@ export default function DetailPage({
       let endpoint = "";
       if (role === "user_kementerian") {
         endpoint = `user-kementerian/${id}`;
-      } else if (role === "manager") {
+      } else if (role === "manager" || role == "data_entry") {
         endpoint = `entry-user/${id}`;
       } else {
         throw new Error("Role tidak dikenali");
@@ -165,13 +165,15 @@ export default function DetailPage({
                     <h2 className="text-lg md:text-xl text-[#2A3D4A] font-semibold mb-4">
                       Foto
                     </h2>
-                    <Image
-                      src={data.foto}
-                      alt=""
-                      className="w-28 md:w-52 border-2 border-gray-300 rounded-xl p-4"
-                      width={28}
-                      height={28}
-                    />
+                    {data.foto_profile ? (
+                      <Image
+                        src={data.foto_profile}
+                        alt=""
+                        className="w-28 md:w-52 border-2 border-gray-300 rounded-xl p-4"
+                        width={28}
+                        height={28}
+                      />
+                    ) : null}
                   </div>
                   <div className="mb-4">
                     <h3 className="text-xs text-[#414651] font-medium mb-1">

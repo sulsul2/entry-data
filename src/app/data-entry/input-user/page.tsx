@@ -207,7 +207,7 @@ export default function DataEntryInput() {
                 placeholder={"Masukkan alamat"}
                 label={"Alamat"}
                 value={formData.alamat}
-                onChange={(e) =>
+                onChangeArea={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
                     alamat: e.target.value,
