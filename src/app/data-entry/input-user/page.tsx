@@ -2,11 +2,18 @@
 import Button from "@/components/button";
 import { CustomTextEditor } from "@/components/texteditor";
 import TextField from "@/components/textfield";
-import { postWithAuthJson } from "@/services/api";
+import UploadBox from "@/components/uploadbox";
+import { postWithAuth } from "@/services/api";
 import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaFacebookSquare, FaLinkedin } from "react-icons/fa";
+import {
+  FaFacebookSquare,
+  FaLinkedin,
+  FaTiktok,
+  FaYoutube,
+} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { PiInstagramLogoFill } from "react-icons/pi";
 import { useSelector } from "react-redux";
@@ -18,6 +25,7 @@ export default function DataEntryInput() {
   const router = useRouter();
   const userId = cookies.get("user_id");
   const [loading, setLoading] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     nama: "",
     jenis_kelamin: "L",
@@ -34,6 +42,12 @@ export default function DataEntryInput() {
     facebook_follow: "",
     linkedin: "",
     linkedin_follow: "",
+    tiktok: "",
+    tiktok_follow: "",
+    x: "",
+    x_follow: "",
+    youtube: "",
+    youtube_follow: "",
     riwayat_parlemen: "",
     riwayat_kerja: "",
     jabatan_kelompok: "",
@@ -53,13 +67,20 @@ export default function DataEntryInput() {
     e.preventDefault();
     setLoading(true);
     const token = cookies.get("token");
-    console.log(formData);
-    try {
-      const response = await postWithAuthJson(
-        "entry-user",
-        JSON.stringify(formData),
-        token
+    const formDataToSend = new FormData();
+
+    for (const key in formData) {
+      formDataToSend.append(
+        key,
+        formData[key as keyof typeof formData] as string
       );
+    }
+
+    if (file) {
+      formDataToSend.append("foto_profile", file);
+    }
+    try {
+      const response = await postWithAuth("entry-user", formDataToSend, token);
       console.log(response);
       router.push("/data-entry");
       toast.success("Berhasil menambahkan data user.");
@@ -82,7 +103,7 @@ export default function DataEntryInput() {
             <IoArrowBackOutline className="w-3 md:w-[20px] h-3 md:h-[20px]" />
           </div>
           <p className="text-[#2A3D4A] font-semibold text-[16px] md:text-[24px]">
-            Input Data Pengguna
+            Input Data Personal
           </p>
         </div>
         <hr className="text-[#EDEEF3] mx-3" />
@@ -94,7 +115,8 @@ export default function DataEntryInput() {
             A. Data Pribadi
           </p>
           <div className="w-full flex flex-col md:grid md:grid-cols-4 justify-start md:justify-between md:gap-16">
-            <div className="w-full flex flex-col">
+            <div className="w-full flex flex-col items-center">
+              <UploadBox type={"Foto"} setFile={setFile} />
               <TextField
                 name={"nama"}
                 type={"field"}
@@ -125,6 +147,8 @@ export default function DataEntryInput() {
                   }))
                 }
               />
+            </div>
+            <div className="w-full flex flex-col">
               <TextField
                 name={"tempat_lahir"}
                 type={"field"}
@@ -148,21 +172,6 @@ export default function DataEntryInput() {
                   setFormData((prevData) => ({
                     ...prevData,
                     tanggal_lahir: e.target.value,
-                  }))
-                }
-              />
-            </div>
-            <div className="w-full flex flex-col">
-              <TextField
-                name={"alamat"}
-                type={"field"}
-                placeholder={"Masukkan alamat"}
-                label={"Alamat"}
-                value={formData.alamat}
-                onChange={(e) =>
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    alamat: e.target.value,
                   }))
                 }
               />
@@ -193,20 +202,30 @@ export default function DataEntryInput() {
                 }
               />
               <TextField
-                name={"mbti"}
-                type={"field"}
-                placeholder={"Masukkan MBTI"}
-                label={"MBTI"}
-                value={formData.mbti}
+                name={"alamat"}
+                type={"area"}
+                placeholder={"Masukkan alamat"}
+                label={"Alamat"}
+                value={formData.alamat}
                 onChange={(e) =>
                   setFormData((prevData) => ({
                     ...prevData,
-                    mbti: e.target.value,
+                    alamat: e.target.value,
                   }))
                 }
               />
             </div>
-            <div className="w-full flex flex-col-reverse col-span-2 gap-4">
+            <div className="w-full flex flex-col col-span-2 gap-3">
+              <CustomTextEditor
+                initialValue={formData.data_keluarga}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    data_keluarga: e,
+                  }))
+                }
+                label={"Data Keluarga Inti"}
+              />
               <div className="w-full flex flex-col md:grid md:grid-cols-3 gap-x-[14px]">
                 <div className="col-span-2">
                   <TextField
@@ -256,6 +275,54 @@ export default function DataEntryInput() {
                     }
                   />
                 </div>
+                <div className="row-start-4 col-span-2">
+                  <TextField
+                    name={"tiktok"}
+                    type={"field"}
+                    placeholder={"Masukkan username Tiktok"}
+                    label={""}
+                    icon={<FaTiktok />}
+                    value={formData.tiktok}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        tiktok: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="row-start-5 col-span-2">
+                  <TextField
+                    name={"x"}
+                    type={"field"}
+                    placeholder={"Masukkan username X"}
+                    label={""}
+                    icon={<FaXTwitter />}
+                    value={formData.x}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        x: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="row-start-6 col-span-2">
+                  <TextField
+                    name={"youtube"}
+                    type={"field"}
+                    placeholder={"Masukkan username Youtube"}
+                    label={""}
+                    icon={<FaYoutube />}
+                    value={formData.youtube}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        youtube: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
                 <div className="row-start-1 col-start-3">
                   <TextField
                     name={"instagram_follow"}
@@ -300,30 +367,49 @@ export default function DataEntryInput() {
                     }))
                   }
                 />
+                <TextField
+                  name={"tiktok_follow"}
+                  type={"field"}
+                  placeholder={"1.000 followers"}
+                  label={""}
+                  icon={<FaTiktok />}
+                  value={formData.tiktok_follow}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      tiktok_follow: e.target.value,
+                    }))
+                  }
+                />
+                <TextField
+                  name={"x_follow"}
+                  type={"field"}
+                  placeholder={"1.000 followers"}
+                  label={""}
+                  icon={<FaXTwitter />}
+                  value={formData.x_follow}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      x_follow: e.target.value,
+                    }))
+                  }
+                />
+                <TextField
+                  name={"youtube_follow"}
+                  type={"field"}
+                  placeholder={"1.000 followers"}
+                  label={""}
+                  icon={<FaYoutube />}
+                  value={formData.youtube_follow}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      youtube_follow: e.target.value,
+                    }))
+                  }
+                />
               </div>
-              {/* <TextField
-                name={"data_keluarga"}
-                placeholder={"Masukkan deskripsi"}
-                label={"Data Keluarga Inti"}
-                type="area"
-                value={formData.data_keluarga}
-                onChangeArea={(e) =>
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    data_keluarga: e.target.value,
-                  }))
-                }
-              /> */}
-              <CustomTextEditor
-                initialValue={formData.data_keluarga}
-                onChange={(e) =>
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    data_keluarga: e,
-                  }))
-                }
-                label={"Data Keluarga Inti"}
-              />
             </div>
           </div>
         </section>
@@ -618,6 +704,16 @@ export default function DataEntryInput() {
                   }))
                 }
                 label={"Tingkat Pengaruh Di Masyarakat"}
+              />
+              <CustomTextEditor
+                initialValue={formData.mbti}
+                onChange={(e) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    mbti: e,
+                  }))
+                }
+                label={"MBTI"}
               />
             </div>
           </div>

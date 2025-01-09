@@ -66,7 +66,11 @@ export default function UploadBox({
   };
 
   return (
-    <div className="w-[216px] md:w-[260px] h-auto bg-white p-4 md:p-6 flex flex-col items-start rounded-xl gap-4 md:gap-5 shadow-xl">
+    <div
+      className={`w-[216px] md:w-[260px] h-auto bg-white p-4 md:p-6 flex flex-col items-start rounded-xl gap-4 md:gap-5 mb-3 ${
+        type == "Foto" ? "" : "shadow-xl"
+      }`}
+    >
       <div
         className={`w-full h-[175px] md:h-[200px] p-2 rounded-lg flex flex-col items-center justify-center gap-4 transition-all duration-200 cursor-pointer ${
           imagePreview
@@ -116,7 +120,7 @@ export default function UploadBox({
           </div>
         )}
       </div>
-      <Button text={"Upload " + type} type={"button"} color="neutral" />
+      <Button text={"Upload " + type} type={"button"} color="neutral" onClick={handleClick} />
     </div>
   );
 }

@@ -62,7 +62,7 @@ export default function DataEntry() {
               <p className="text-[12px] md:text-[24px] font-semibold text-center">
                 Input Data
                 <br />
-                Pengguna
+                Personal
               </p>
             </div>
             <div

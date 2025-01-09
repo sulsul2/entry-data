@@ -63,7 +63,7 @@ export default function TextField({
         </label>
       )}
       {type == "field" && (
-        <div className="mt-2 mb-4 gap-[8px] w-full flex items-center px-[14px] py-[10px] text-[14px] text-[#1A0048] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group">
+        <div className="mt-2 mb-2 gap-[8px] w-full flex items-center px-[14px] py-[10px] text-[14px] text-[#1A0048] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group">
           {icon && (
             <div className="text-[16px] w-fit text-[#717680] group-focus-within:text-primary-900">
               {icon}
@@ -117,7 +117,7 @@ export default function TextField({
       )}
       {type == "area" && (
         <div
-          className={`mt-2 mb-4 w-full flex items-center px-[14px] py-[10px] text-[14px] text-[#1A0048] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 focus:outline-primary-900 rounded-[8px] ${
+          className={`mt-2 mb-2 w-full flex items-center px-[14px] py-[10px] text-[14px] text-[#1A0048] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 focus:outline-primary-900 rounded-[8px] ${
             value &&
             "invalid:border-error-600 invalid:focus:outline-error-600 peer"
           }`}
@@ -139,7 +139,7 @@ export default function TextField({
         </div>
       )}
       {type === "dropdown" && options && (
-        <div className="mt-2 mb-4 gap-[8px] flex items-center px-[14px] py-[10px] text-[14px] text-[#1A0048] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group">
+        <div className="mt-2 mb-2 gap-[8px] flex items-center px-[14px] py-[10px] text-[14px] text-[#1A0048] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group">
           {icon && (
             <div className="text-[16px] w-fit text-[#717680] group-focus-within:text-primary-900">
               {icon}
@@ -165,7 +165,7 @@ export default function TextField({
       )}
       {type === "date" && (
         <div
-          className="mt-2 mb-4 gap-[8px] flex items-center px-[14px] py-[10px] text-[14px] text-[#717680] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group"
+          className="mt-2 mb-2 gap-[8px] flex items-center px-[14px] py-[10px] text-[14px] text-[#717680] bg-white border-[1px] border-[#D5D7DA] focus-within:border-primary-900 rounded-[8px] group"
           onClick={handleDateIconClick}
         >
           <div className="text-[16px] w-fit text-[#717680] group-focus-within:text-primary-900">

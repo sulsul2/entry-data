@@ -92,7 +92,6 @@ const MenuUnsetButtonLink = () => {
     if (editor?.isActive("link")) {
       editor.chain().focus().unsetLink().run();
     }
-
   };
 
   return (
@@ -219,7 +218,11 @@ export function CustomTextEditor({
   return (
     <Box sx={sx}>
       {label && (
-        <p className="text-[#414651] font-medium text-[14px] mb-2 mt-4">
+        <p
+          className={`text-[#414651] font-medium text-[14px] mb-2 ${
+            label == "Data Keluarga Inti" ? "" : "mt-4"
+          }`}
+        >
           {label}
         </p>
       )}
