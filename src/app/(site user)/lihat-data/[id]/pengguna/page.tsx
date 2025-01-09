@@ -231,12 +231,9 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-1">
                       Alamat
                     </h3>
-                    <div
-                      className="text-black"
-                      dangerouslySetInnerHTML={{
-                        __html: data.alamat || "-",
-                      }}
-                    />
+                    <p className="text-sm text-[#000000] font-semibold">
+                      {data.no_telp || "-"}
+                    </p>
                   </div>
                 </div>
 
