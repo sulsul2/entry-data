@@ -232,6 +232,7 @@ export default function DetailPage({
                       Alamat
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.alamat || "-",
                       }}
@@ -246,6 +247,7 @@ export default function DetailPage({
                       Data Keluarga
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.data_keluarga || "-",
                       }}
@@ -339,6 +341,7 @@ export default function DetailPage({
                       Riwayat Parlemen
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.riwayat_parlemen || "-",
                       }}
@@ -350,6 +353,7 @@ export default function DetailPage({
                       Riwayat Pekerjaan
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.riwayat_kerja || "-",
                       }}
@@ -364,6 +368,7 @@ export default function DetailPage({
                       Jabatan di Kelompok Media
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.jabatan_kelompok || "-",
                       }}
@@ -375,6 +380,7 @@ export default function DetailPage({
                       Jabatan di Organisasi
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.jabatan_organisasi || "-",
                       }}
@@ -398,6 +404,7 @@ export default function DetailPage({
                       Riwayat Pendidikan
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.riwayat_pendidikan || "-",
                       }}
@@ -412,6 +419,7 @@ export default function DetailPage({
                       Riwayat Penghargaan
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.riwayat_penghargaan || "-",
                       }}
@@ -435,6 +443,7 @@ export default function DetailPage({
                       Pemberitaan/Isu yang sering diangkat terkait Kemenkeu
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.isu_kemenkeu || "-",
                       }}
@@ -445,6 +454,7 @@ export default function DetailPage({
                       Sikap ke Kemenkeu
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.sikap_kemenkeu || "-",
                       }}
@@ -455,6 +465,7 @@ export default function DetailPage({
                       Riwayat Hukum
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.riwayat_hukum || "-",
                       }}
@@ -469,6 +480,7 @@ export default function DetailPage({
                       Rekomendasi Pendekatan
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.rekomen_pendekatan || "-",
                       }}
@@ -479,6 +491,7 @@ export default function DetailPage({
                       Tingkat Pengaruh Di Masyarakat
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.tingkat_pengaruh || "-",
                       }}
@@ -489,6 +502,7 @@ export default function DetailPage({
                       MBTI
                     </h3>
                     <div
+                      className="text-black"
                       dangerouslySetInnerHTML={{
                         __html: data.mbti || "-",
                       }}

@@ -284,81 +284,108 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Deskripsi/Latar Belakang
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.latar_belakang || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.latar_belakang || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Visi dan Misi
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.visi_misi || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.visi_misi || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Profil Pendiri
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.profil_pendiri || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.profil_pendiri || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Profil Pengurus
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.profil_pengurus || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.profil_pengurus || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Keanggotaan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.keanggotaan || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.keanggotaan || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Prominent Kol
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.prominent_kol || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.prominent_kol || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Bidang Usaha Pergerakan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.bidang_usaha_gerak || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.bidang_usaha_gerak || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Isu yang Sering Diangkat
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.isu_diangkat || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.isu_diangkat || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Pengamat Yang Sering Dijadikan Rujukan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.pengamat_rujukan || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.pengamat_rujukan || "-",
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -368,72 +395,96 @@ export default function DetailPage({
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Afiliasi Keterkaitan Dengan NGO/Parpol
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.afiliasi_ngo_parpol || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.afiliasi_ngo_parpol || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Tingkat Pengaruh Di Masyarakat
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.pengaruh_masyarakat || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.pengaruh_masyarakat || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Pihak Dibelakang NGO
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.pihak_belakang_ngo || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.pihak_belakang_ngo || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Sumber Pendanaan
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.sumber_dana || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.sumber_dana || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Jumlah Cabang/Anggota/Pengikut
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.jumlah_cabang_anggota || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.jumlah_cabang_anggota || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Segmentasi Yang Disasar
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.segmentasi_dasar || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.segmentasi_dasar || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Sikap Ke Pemerintah
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.sikap_pemerintah || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.sikap_pemerintah || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
                     <h3 className="text-xs text-[#414651] font-medium mb-2">
                       Rekomendasi Pendekatan Ke ICW
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.rekom_pendekatan_icw || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.rekom_pendekatan_icw || "-",
+                      }}
+                    />
                   </div>
 
                   <div className="mb-6 md:mb-8">
@@ -441,9 +492,12 @@ export default function DetailPage({
                       Analisis Pengaruh Lembaga Dengan Pendekatan Kuantitatif
                       (Asumsi)
                     </h3>
-                    <p className="text-sm text-[#000000] font-semibold">
-                      {data.analisis_pengaruh || "-"}
-                    </p>
+                    <div
+                      className="text-black"
+                      dangerouslySetInnerHTML={{
+                        __html: data.analisis_pengaruh || "-",
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -453,9 +507,12 @@ export default function DetailPage({
               <h3 className="text-xs text-[#414651] font-medium mb-2">
                 Kesimpulan
               </h3>
-              <p className="text-sm text-[#000000] font-semibold">
-                {data.kesimpulan || "-"}
-              </p>
+              <div
+                className="text-black"
+                dangerouslySetInnerHTML={{
+                  __html: data.kesimpulan || "-",
+                }}
+              />
             </div>
           </>
         ) : (
