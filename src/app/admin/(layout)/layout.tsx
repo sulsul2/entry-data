@@ -1,7 +1,6 @@
 import React from "react";
 import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 interface LayoutProps {
@@ -11,8 +10,6 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
-      {/* Toast Container */}
-      <ToastContainer />
       <div className="flex h-screen bg-white">
         <Sidebar />
         <div className="ml-16 lg:ml-0 flex-1 flex flex-col w-screen bg-white overflow-hidden">
