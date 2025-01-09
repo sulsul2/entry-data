@@ -165,13 +165,15 @@ export default function ManajemenAkun() {
   useEffect(() => {
     if (search) {
       const filtered = data.filter((item) => {
-        // Ambil semua nilai properti kecuali elemen JSX
+        // Ambil semua nilai properti yang valid (string atau number)
         const stringValues = Object.entries(item)
           .filter(
-            ([value]) => typeof value === "string" || typeof value === "number"
+            ([, value]) =>
+              typeof value === "string" || typeof value === "number"
           )
-          .map(([value]) => String(value).toLowerCase());
+          .map(([, value]) => String(value).toLowerCase());
 
+        // Periksa apakah salah satu nilai properti mengandung teks pencarian
         return stringValues.some((value) =>
           value.includes(search.toLowerCase())
         );

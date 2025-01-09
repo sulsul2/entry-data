@@ -59,6 +59,7 @@ export default function EksporData() {
     ProcessedLembaga[]
   >([]);
   const [search, setSearch] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(""); // Nilai setelah debounce
   const [totalPages, setTotalPages] = useState<number>(0);
   const [current, setCurrent] = useState<number>(1);
   const [nama, setNama] = useState("");
@@ -102,38 +103,44 @@ export default function EksporData() {
   }, [type, current, nama]);
 
   useEffect(() => {
-    if (type == "data-pengguna") {
-      if (search) {
-        const filtered = data.filter((item) => {
-          // Ambil semua nilai properti kecuali elemen JSX
-          const stringValues = Object.entries(item)
-            .filter(
-              ([value]) =>
-                typeof value === "string" || typeof value === "number"
-            )
-            .map(([value]) => String(value).toLowerCase());
+    const delayDebounceFn = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
 
+    return () => clearTimeout(delayDebounceFn); // Bersihkan timeout saat `search` berubah
+  }, [search]);
+
+  useEffect(() => {
+    if (type === "data-pengguna") {
+      if (debouncedSearch) {
+        const filtered = data.filter((item) => {
+          // Filter hanya berdasarkan string atau angka
+          const stringValues = Object.values(item)
+            .filter(
+              (value) => typeof value === "string" || typeof value === "number"
+            )
+            .map((value) => String(value).toLowerCase());
+
+          // Cek apakah ada nilai yang cocok dengan pencarian
           return stringValues.some((value) =>
-            value.includes(search.toLowerCase())
+            value.includes(debouncedSearch.toLowerCase())
           );
         });
         setFilteredData(filtered);
       } else {
         setFilteredData(data);
       }
-    } else {
-      if (search) {
+    } else if (type === "data-lembaga") {
+      if (debouncedSearch) {
         const filtered = lembagaData.filter((item) => {
-          // Ambil semua nilai properti kecuali elemen JSX
-          const stringValues = Object.entries(item)
+          const stringValues = Object.values(item)
             .filter(
-              ([value]) =>
-                typeof value === "string" || typeof value === "number"
+              (value) => typeof value === "string" || typeof value === "number"
             )
-            .map(([value]) => String(value).toLowerCase());
+            .map((value) => String(value).toLowerCase());
 
           return stringValues.some((value) =>
-            value.includes(search.toLowerCase())
+            value.includes(debouncedSearch.toLowerCase())
           );
         });
         setFilteredLembagaData(filtered);
@@ -141,7 +148,7 @@ export default function EksporData() {
         setFilteredLembagaData(lembagaData);
       }
     }
-  }, [search, data]);
+  }, [debouncedSearch, data, lembagaData, type]);
 
   // Fungsi untuk transformasi data Pengguna
   const getUserData = async () => {

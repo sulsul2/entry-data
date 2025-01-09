@@ -121,18 +121,18 @@ export default function PersetujuanData() {
     return () => clearTimeout(delayDebounceFn); // Bersihkan timeout saat `search` berubah
   }, [search]);
 
-  // Fungsi untuk filter data berdasarkan pencarian
   useEffect(() => {
-    if (type == "data-pengguna") {
+    if (type === "data-pengguna") {
       if (debouncedSearch) {
         const filtered = data.filter((item) => {
-          const stringValues = Object.entries(item)
+          // Filter hanya berdasarkan string atau angka
+          const stringValues = Object.values(item)
             .filter(
-              ([value]) =>
-                typeof value === "string" || typeof value === "number"
+              (value) => typeof value === "string" || typeof value === "number"
             )
-            .map(([value]) => String(value).toLowerCase());
+            .map((value) => String(value).toLowerCase());
 
+          // Cek apakah ada nilai yang cocok dengan pencarian
           return stringValues.some((value) =>
             value.includes(debouncedSearch.toLowerCase())
           );
@@ -141,15 +141,14 @@ export default function PersetujuanData() {
       } else {
         setFilteredData(data);
       }
-    } else {
+    } else if (type === "data-lembaga") {
       if (debouncedSearch) {
         const filtered = lembagaData.filter((item) => {
-          const stringValues = Object.entries(item)
+          const stringValues = Object.values(item)
             .filter(
-              ([value]) =>
-                typeof value === "string" || typeof value === "number"
+              (value) => typeof value === "string" || typeof value === "number"
             )
-            .map(([value]) => String(value).toLowerCase());
+            .map((value) => String(value).toLowerCase());
 
           return stringValues.some((value) =>
             value.includes(debouncedSearch.toLowerCase())
@@ -160,7 +159,7 @@ export default function PersetujuanData() {
         setFilteredLembagaData(lembagaData);
       }
     }
-  }, [debouncedSearch, data]);
+  }, [debouncedSearch, data, lembagaData, type]);
 
   // Fungsi untuk transformasi data Pengguna
   const getUserData = async () => {
