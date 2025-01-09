@@ -232,7 +232,7 @@ export default function DetailPage({
                       Alamat
                     </h3>
                     <p className="text-sm text-[#000000] font-semibold">
-                      {data.no_telp || "-"}
+                      {data.alamat || "-"}
                     </p>
                   </div>
                 </div>
