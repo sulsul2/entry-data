@@ -102,7 +102,12 @@ export default function ManajemenAkun() {
         No: (current - 1) * itemsPerPage + index + 1,
         Email: user.email ?? "-",
         Username: user.username ?? "-",
-        Role: user.role == "manager" ? "Manager" : user.role == "user_kementrian" ? "User" : "Data Entry",
+        Role:
+          user.role == "manager"
+            ? "Manager"
+            : user.role == "user_kementrian"
+            ? "User"
+            : "Data Entry",
         Status: (
           <div
             className={`w-fit justify-center items-center mx-auto px-2 py-1 rounded-2xl text-xs md:text-sm font-semibold ${
@@ -229,7 +234,7 @@ export default function ManajemenAkun() {
       console.log(formData.role);
       await validationSchema.validate(formData, { abortEarly: false });
       handleModalClose();
-     const response = await postWithAuth(
+      const response = await postWithAuth(
         "register-user-email",
         {
           email: formData.email,
@@ -244,7 +249,7 @@ export default function ManajemenAkun() {
       setIsLoading(false);
     } catch (error: unknown) {
       console.error(error);
-      // toast.error("An unexpected error occurred.");
+      toast.error("Invalid email.");
       if (typeof error === "object" && error !== null && "name" in error) {
         const validationError = error as ValidationError;
         if (validationError.name === "ValidationError") {
@@ -254,7 +259,7 @@ export default function ManajemenAkun() {
         console.error("Error:", (error as Error).message); // Tangani error lainnya
         toast.error("An unexpected error occurred.");
       }
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
